@@ -49,11 +49,4 @@ class Text {
         
         return sum;
     }    
-    public static double averageWordLength(){
-        int size = words.size;
-        double sumLength = 0;
-        for (String word : words){sumLength+=word.length;}
-        return sumLength/size;
-    } 
-    //public static double averageSentenceLength()
 }
