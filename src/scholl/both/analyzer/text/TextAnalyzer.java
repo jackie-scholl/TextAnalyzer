@@ -1,5 +1,4 @@
 package scholl.both.analyzer.text;
-
 import java.util.*;
 
 public class TextAnalyzer {
@@ -9,9 +8,9 @@ public class TextAnalyzer {
             args = newArgs;
         }
         
-        for (String s : args) {
-            Text t = new Text(s);
-            System.out.printf("%s: %d words, %d characters %n", t.getOriginal(), t.getWordCount(), t.getNumCharacters());
+        for (String str : args) {
+            Text t = new Text(str);
+            System.out.printf("%s: %d words, %d characters %n", t.getOriginal(), t.getWordCount(), t.getCharacterCount());
         }
     }
 }
@@ -25,8 +24,8 @@ class Text {
         
         words = new ArrayList<String>();
         String[] wordsArr = original.split("\\s");
-        for (String w : wordsArr) {
-            words.add(w);
+        for (String str : wordsArr) {
+            words.add(str);
         }
     }
     
@@ -42,10 +41,10 @@ class Text {
         return words.size();
     }
     
-    public int getNumCharacters() {
+    public int getCharacterCount() {
         int sum = 0;
-        for (String w : words) {
-            sum += w.length();
+        for (String str : words) {
+            sum += str.length();
         }
         
         return sum;
