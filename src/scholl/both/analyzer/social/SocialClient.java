@@ -11,7 +11,7 @@ public class SocialClient {
         List<String> texts = new ArrayList<String>();
         
         if (args.length == 0) {
-            String[] newArgs = {"-f", "sample.txt"};
+            String[] newArgs = {"hello world!", "hello", "First sentence. Second sentence.", "doopity doo baa baa."};
             args = newArgs;
         }
         
@@ -20,11 +20,21 @@ public class SocialClient {
             for (int i=0; i<args.length; i++) {
                 File f = new File(args[i]);
                 
-                InputStreamReader is = null;
+                Reader is = null;
                 try {
-                    is = new InputStreamReader(new FileInputStream(f));
+                    is = new BufferedReader(new FileReader(f));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
+                }
+                StringBuffer sb = new StringBuffer();
+                int ch = 0;
+                while (ch != -1) {
+                    sb.append((char) ch);
+                    try {
+                        ch = is.read();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 texts.add(args[i]);
             }
@@ -35,7 +45,8 @@ public class SocialClient {
         }
         
         for (String str : texts) {
-            //Text t = new Text(str);
+            Text t = new Text(str);
+            System.out.printf("%d words, %d characters: %s%n", t.getWordCount(), t.getCharacterCount(), t.getOriginal());
         }
     }
 }

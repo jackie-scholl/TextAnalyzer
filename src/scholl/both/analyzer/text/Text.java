@@ -3,7 +3,7 @@ package scholl.both.analyzer.text;
 import java.util.ArrayList;
 import java.util.List;
 
-class Text {
+public class Text {
     private final String original;
     private List<String> words;
 
