@@ -18,7 +18,11 @@ public class Text {
         }
         //Want to go through the text until I find a sentence ending mark, and then add everything between
         //that mark and the last mark to the list of sentences.
-        int lastSentenceEnd = -1;
+        //int lastSentenceEnd = -1;
+        //for(int i=0; i < this.original.length(); i++)
+        //{
+        //	if original.charAt(i)
+        //}
         
     }
     
