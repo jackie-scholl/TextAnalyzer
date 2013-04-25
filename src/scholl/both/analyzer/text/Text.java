@@ -6,6 +6,7 @@ import java.util.List;
 public class Text {
     private final String original;
     private List<String> words;
+    private List<String> sentences;
 
     public Text(String original) {
         this.original = original;
@@ -15,8 +16,12 @@ public class Text {
         for (String str : wordsArr) {
             words.add(str);
         }
+        //Want to go through the text until I find a sentence ending mark, and then add everything between
+        //that mark and the last mark to the list of sentences.
+        int lastSentenceEnd = -1;
+        
     }
-
+    
     public String getOriginal() {
         return original;
     }
