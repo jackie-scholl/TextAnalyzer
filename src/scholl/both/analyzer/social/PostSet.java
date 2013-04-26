@@ -41,11 +41,15 @@ public class PostSet {
     public PostSet getAllWithTag(String tag) {
         return new PostSet(postsByTag.get(tag));
     }
-    
+
     public PostSet clone() throws CloneNotSupportedException {
         PostSet other = (PostSet) super.clone();
         other.posts = new HashSet<Post>(posts);
         other.postsByTag = new HashMap<String, Set<Post>>(postsByTag);
         return other;
+    }
+    
+    public String toString() {
+        return "PostSet [posts=" + posts + "]";
     }
 }

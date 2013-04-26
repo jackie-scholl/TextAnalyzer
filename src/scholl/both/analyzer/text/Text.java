@@ -56,4 +56,8 @@ public class Text {
         return sumLength / size;
     }
     // public static double averageSentenceLength()
+
+    public String toString() {
+        return original;
+    }
 }

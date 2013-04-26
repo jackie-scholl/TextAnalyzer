@@ -72,7 +72,7 @@ public class SocialClient {
         // Parse the credentials
         JsonParser parser = new JsonParser();
         JsonObject obj = (JsonObject) parser.parse(json);
-
+        
         // Create a client
         JumblrClient client = new JumblrClient(
                 obj.getAsJsonPrimitive("consumer_key").getAsString(),
@@ -81,19 +81,20 @@ public class SocialClient {
         
         String blogName = "b41779690b83f182acc67d6388c7bac9";
         Blog b = client.blogInfo(blogName);
-        Map<String, Object> options = new HashMap<>();
+        Map<String, Object> options = new HashMap<String, Object>();
         options.put("reblog_info", "true");
-        //options.
         PostSet ps = new PostSet();
         for (com.tumblr.jumblr.types.Post p : b.posts(options)) {
-            User u = new User(p.getBlogName());
-            Set<String> tags = new HashSet<>();
+            User u = new SimpleUser(p.getBlogName());
+            Set<String> tags = new HashSet<String>();
             for (String t : p.getTags()) {
                 tags.add(t);
             }
-            Post np = new Post(u, p.getTimestamp(), p.getState(), null, tags);
+            String type = p.getType();
+            Post np = new Post(u, p.getTimestamp(), type, new SimpleUser(p.getRebloggedName()), tags);
             ps.add(np);
         }
         
+        System.out.println(ps);        
     }
 }
