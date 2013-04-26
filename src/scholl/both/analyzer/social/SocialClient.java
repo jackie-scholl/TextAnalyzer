@@ -4,6 +4,11 @@ import scholl.both.analyzer.text.*;
 import java.io.*;
 import java.util.*;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tumblr.jumblr.JumblrClient;
+import com.tumblr.jumblr.types.Blog;
+
 public class SocialClient {
     public static void main(String[] args) {
         List<String> texts = new ArrayList<String>();
@@ -48,5 +53,47 @@ public class SocialClient {
             System.out
                     .printf("%d words, %d characters: %s%n", t.getWordCount(), t.getCharacterCount(), t.getOriginal());
         }
+        
+        try {
+            thing();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    public static void thing() throws IOException {
+        // Read in the JSON data for the credentials
+        BufferedReader br = new BufferedReader(new FileReader("credentials.json"));
+        String json = "";
+        while (br.ready()) { json += br.readLine(); }
+        br.close();
+        
+        // Parse the credentials
+        JsonParser parser = new JsonParser();
+        JsonObject obj = (JsonObject) parser.parse(json);
+
+        // Create a client
+        JumblrClient client = new JumblrClient(
+                obj.getAsJsonPrimitive("consumer_key").getAsString(),
+                obj.getAsJsonPrimitive("consumer_secret").getAsString()
+                );
+        
+        String blogName = "b41779690b83f182acc67d6388c7bac9";
+        Blog b = client.blogInfo(blogName);
+        Map<String, Object> options = new HashMap<>();
+        options.put("reblog_info", "true");
+        //options.
+        PostSet ps = new PostSet();
+        for (com.tumblr.jumblr.types.Post p : b.posts(options)) {
+            User u = new User(p.getBlogName());
+            Set<String> tags = new HashSet<>();
+            for (String t : p.getTags()) {
+                tags.add(t);
+            }
+            Post np = new Post(u, p.getTimestamp(), p.getState(), null, tags);
+            ps.add(np);
+        }
+        
     }
 }

@@ -13,6 +13,6 @@ public class TextAnalyzer {
             Text t = new Text(str);
             System.out.printf("%s: %d words, %d characters %n", t.getOriginal(), t.getWordCount(),
                     t.getCharacterCount());
-        }
+        }        
     }
 }
