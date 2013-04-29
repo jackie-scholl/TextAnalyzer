@@ -62,7 +62,7 @@ public class PostSet {
         }
         return m;
     }
-    
+
     public PostSet clone() throws CloneNotSupportedException {
         PostSet other = (PostSet) super.clone();
         other.posts = new TreeSet<SocialPost>(posts);
@@ -70,8 +70,13 @@ public class PostSet {
         return other;
     }
     
+<<<<<<< HEAD
     @Override
     public String toString() {
         return "PostSet [posts=" + this.posts + "]";
+=======
+    public String toString() {
+        return "PostSet [posts=" + posts + "]";
+>>>>>>> 78e224b34b5c38d3e587740be6b906a2664e0da8
     }
 }

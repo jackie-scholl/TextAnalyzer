@@ -1,7 +1,12 @@
 package scholl.both.analyzer.social;
 
+<<<<<<< HEAD
 class SimpleUser {
     private final String name;
+=======
+class SimpleUser implements User {
+    String name;
+>>>>>>> 78e224b34b5c38d3e587740be6b906a2664e0da8
     
     public SimpleUser(String name) {
         this.name = name;
@@ -14,8 +19,12 @@ class SimpleUser {
     public String toString() {
         return name;
     }
+<<<<<<< HEAD
     
     @Override
+=======
+
+>>>>>>> 78e224b34b5c38d3e587740be6b906a2664e0da8
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -23,7 +32,10 @@ class SimpleUser {
         return result;
     }
 
+<<<<<<< HEAD
     @Override
+=======
+>>>>>>> 78e224b34b5c38d3e587740be6b906a2664e0da8
     public boolean equals(Object obj) {
         if (this == obj)
             return true;

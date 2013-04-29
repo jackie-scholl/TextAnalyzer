@@ -55,6 +55,7 @@ public class Text {
         return sumLength / size;
     }
     // public static double averageSentenceLength()
+<<<<<<< HEAD
     
     public Map<String, Integer> getWordCount2() {
         Map<String, Integer> m = new HashMap<>();
@@ -80,6 +81,9 @@ public class Text {
         return m;
     }
     
+=======
+
+>>>>>>> 78e224b34b5c38d3e587740be6b906a2664e0da8
     public String toString() {
         return original;
     }

@@ -81,8 +81,9 @@ public class SocialClient {
         String blogName = "b41779690b83f182acc67d6388c7bac9";
         
         Blog b = client.blogInfo(blogName);
-        Map<String, Object> options = new HashMap<>();
+        Map<String, Object> options = new HashMap<String, Object>();
         options.put("reblog_info", "true");
+<<<<<<< HEAD
         options.put("filter", "text");
         options.put("notes_info", "true");
         options.put("limit", "20");
@@ -184,5 +185,20 @@ public class SocialClient {
         
         SocialPost np = new SocialPost(u, p.getTimestamp(), text, mentioned, tags);
         return np;
+=======
+        PostSet ps = new PostSet();
+        for (com.tumblr.jumblr.types.Post p : b.posts(options)) {
+            User u = new SimpleUser(p.getBlogName());
+            Set<String> tags = new HashSet<String>();
+            for (String t : p.getTags()) {
+                tags.add(t);
+            }
+            String type = p.getType();
+            Post np = new Post(u, p.getTimestamp(), type, new SimpleUser(p.getRebloggedName()), tags);
+            ps.add(np);
+        }
+        
+        System.out.println(ps);        
+>>>>>>> 78e224b34b5c38d3e587740be6b906a2664e0da8
     }
 }
