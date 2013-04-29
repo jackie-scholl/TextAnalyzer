@@ -1,7 +1,6 @@
 package scholl.both.analyzer.text;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Text {
     private final String original;
@@ -56,4 +55,32 @@ public class Text {
         return sumLength / size;
     }
     // public static double averageSentenceLength()
+    
+    public Map<String, Integer> getWordCount2() {
+        Map<String, Integer> m = new HashMap<>();
+        for (String w : words) {
+            w = w.replaceAll("[\\.\"']", "").toLowerCase();
+            Integer count = m.get(w);
+            if (count == null) {
+                count = 0;
+            }
+            count++;
+            m.put(w, count);
+        }
+        m.remove("");
+        Set<String> toRemove = new HashSet<String>();
+        for (String k : m.keySet()) {
+            if (k.charAt(k.length()-1) == ':') {
+                toRemove.add(k);
+            }
+        }
+        for (String k : toRemove) {
+            m.remove(k);
+        }
+        return m;
+    }
+    
+    public String toString() {
+        return original;
+    }
 }

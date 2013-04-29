@@ -3,49 +3,75 @@ package scholl.both.analyzer.social;
 import java.util.*;
 
 public class PostSet {
-    private Set<Post> posts;
-    private Map<String, Set<Post>> postsByTag;
+    private SortedSet<SocialPost> posts;
+    private Map<String, SortedSet<SocialPost>> index;
     
     public PostSet() {
-        this.posts = new HashSet<Post>();
-        this.postsByTag = new HashMap<String, Set<Post>>();
+        this.posts = new TreeSet<SocialPost>();
+        this.index = new HashMap<String, SortedSet<SocialPost>>();
     }
     
-    public PostSet(Set<Post> posts) {
+    public PostSet(Set<SocialPost> posts) {
         this();
-        for (Post p : posts) {
+        for (SocialPost p : posts) {
             add(p);
         }
     }
     
     public void addAll(PostSet other) {
         posts.addAll(other.posts);
-        postsByTag.putAll(other.postsByTag);
+        index.putAll(other.index);
     }
     
-    public void addAll(Set<Post> other) {
+    public void addAll(Set<SocialPost> other) {
         addAll(new PostSet(other));
     }
     
-    public void add(Post p) {
+    public void add(SocialPost p) {
         posts.add(p);
         for (String tag : p.getTags()) {
-            Set<Post> postsForTag = postsByTag.get(tag);
+            SortedSet<SocialPost> postsForTag = index.get(tag);
             if (postsForTag == null) {
-                postsForTag = new HashSet<Post>();
+                postsForTag = new TreeSet<SocialPost>();
             }
             postsForTag.add(p);
+            index.put(tag, postsForTag);
         }
     }
     
+    public SocialPost[] getPosts() {
+        return posts.toArray(new SocialPost[0]);
+    }
+    
     public PostSet getAllWithTag(String tag) {
-        return new PostSet(postsByTag.get(tag));
+        return new PostSet(index.get(tag));
+    }
+    
+    public Map<String, Integer> getWordCount2() {
+        Map<String, Integer> m = new HashMap<>();
+        for (SocialPost p : posts) {
+            Map<String, Integer> n = p.getText().getWordCount2();
+            for (String w : n.keySet()) {
+                Integer count = m.get(w);
+                if (count == null) {
+                    count = 0;
+                }
+                count += n.get(w);
+                m.put(w, count);
+            }
+        }
+        return m;
     }
     
     public PostSet clone() throws CloneNotSupportedException {
         PostSet other = (PostSet) super.clone();
-        other.posts = new HashSet<Post>(posts);
-        other.postsByTag = new HashMap<String, Set<Post>>(postsByTag);
+        other.posts = new TreeSet<SocialPost>(posts);
+        other.index = new HashMap<String, SortedSet<SocialPost>>(index);
         return other;
+    }
+    
+    @Override
+    public String toString() {
+        return "PostSet [posts=" + this.posts + "]";
     }
 }

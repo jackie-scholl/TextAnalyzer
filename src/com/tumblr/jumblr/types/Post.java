@@ -1,15 +1,13 @@
 package com.tumblr.jumblr.types;
 
+import com.tumblr.jumblr.types.Note;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+
 //import org.apache.commons.lang3.StringUtils;
+import java.util.*;
 
 /**
  * This class is the base of all post types on Tumblr
@@ -34,6 +32,9 @@ public class Post extends Resource {
     
     private Long reblogged_from_id;
     private String reblogged_from_name;
+    private Integer note_count;
+    private Note[] notes;
+    
 
     /**
      * Get whether or not this post is liked
@@ -168,6 +169,17 @@ public class Post extends Resource {
      */
     public String getRebloggedName() {
         return reblogged_from_name;
+    }
+    
+    /**
+     * @return the note count
+     */
+    public Integer getNoteCount() {
+        return this.note_count;
+    }
+
+    public Note[] getNotes() {
+        return notes;
     }
 
     /**
@@ -336,6 +348,16 @@ public class Post extends Resource {
         //return tags == null ? "" : StringUtils.join(tags.toArray(new String[0]), ",");
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    /*@Override
+    public String toString() {
+        return "Post [id=" + this.id + ", reblog_key=" + this.reblog_key + ", blog_name=" + this.blog_name
+                + ", post_url=" + this.post_url + ", type=" + this.type + ", timestamp=" + this.timestamp + ", format="
+                + this.format + ", tags=" + this.tags + ", notes=" + Arrays.toString(this.notes) + "]";
+    }*/
+
     /**
      * Post toString
      * @return a nice representation of this post
@@ -344,5 +366,7 @@ public class Post extends Resource {
     public String toString() {
         return "[" + this.getClass().getName() + " (" + blog_name + ":" + id + ")]";
     }
+    
+    
 
 }
