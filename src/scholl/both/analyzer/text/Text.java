@@ -28,11 +28,18 @@ public class Text {
         }
         //Want to go through the text until I find a sentence ending mark, and then add everything between
         //that mark and the last mark to the list of sentences.
-        //int lastSentenceEnd = -1;
-        //for(int i=0; i < this.original.length(); i++)
-        //{
-        //	if original.charAt(i)
-        //}
+        int lastSentenceEnd = -1;
+        for(int i=0; i < this.original.length(); i++)
+        {
+        	if (original.charAt(i)=='.'){
+        		String prior = original.substring(i-4, i-1);
+        		//Covers titles and one obvious acronym case, the A.K.A. block.
+        		if (prior.matches("(*Dr)|(*Mr)|(Mrs)|(*Ms)|(Esq)|(\\p{Upper}\\.\\p{Upper})")) continue;
+        		
+        		//else if (original.charAt(i-3)=='M')
+        		
+        	}
+        }
         
     }
     
@@ -81,7 +88,8 @@ public class Text {
         return counter;
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
         return original;
     }
 }
