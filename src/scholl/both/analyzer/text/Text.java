@@ -50,8 +50,8 @@ public class Text {
         		if (original.substring(i-3,  i).matches("(.Dr)|(.Mr)|(Mrs)|(.Ms)|(Esq)|")) continue;
         		//Cover ellipses and acronyms
         		else if (original.substring(i-3,  i).matches("(\\p{Upper}\\.\\p{Upper})|(.\\.\\.)")) continue;
-        		else if (original.substring(i+1,i+3).matches("(\\p{Upper}\\.)|(\\.\\.)")) continue;
-        		else if (original.substring(i-1,i+2).matches("\\.{3}")) continue;
+        		//else if (original.substring(i+1,i+3).matches("(\\p{Upper}\\.)|(\\.\\.)")) continue;
+        		//else if (original.substring(i-1,i+2).matches("\\.{3}")) continue;
         		//If nothing else has forced the for loop to skip past this area, it will add everything from
         		//the last sentence ending up to this one. 
         		sentences.add(original.substring(lastSentenceEnd+1,i));
