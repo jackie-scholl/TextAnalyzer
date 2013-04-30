@@ -6,6 +6,11 @@ import scholl.both.analyzer.util.Counter;
 
 //TODO: Add Javadocs
 
+/**
+ * @author      Keller Scholl       <Keller.scholl@gmail.com>
+ * @version     0.3                 (current version number of program)
+ * @since       2013-04-30          (the version of the package this class was first added to)
+ */
 public class Text {
     private final String original;
     private List<String> words;
@@ -26,10 +31,12 @@ public class Text {
             if (str.equals("")) { continue; }
             words.add(str);
         }
+
         //Want to go through the text until I find a sentence ending mark, and then add everything between
         //that mark and the last mark to the list of sentences.
-        int lastSentenceEnd = -1;
+        
         sentences = new ArrayList<String>();
+        int lastSentenceEnd = -1;
         for(int i=0; i < this.original.length(); i++)
         {
         	if (original.charAt(i)=='.'){
@@ -47,7 +54,6 @@ public class Text {
         		lastSentenceEnd = i;
         	}
         }
-        
     }
     
     public String getOriginal() {
@@ -61,14 +67,17 @@ public class Text {
     public int getWordCount() {
         return words.size();
     }
+    
+    public List<String> getSentences() {
+    	return sentences;
+    }
+    
+    public int getSentenceCount() {
+    	return sentences.size();
+    }
 
     public int getCharacterCount() {
-        int sum = 0;
-        for (String str : words) {
-            sum += str.length();
-        }
-
-        return sum;
+    	return original.length();
     }
 
     public double averageWordLength() {
@@ -78,6 +87,15 @@ public class Text {
             sumLength += word.length();
         }
         return sumLength / size;
+    }
+    
+    public double averageSentenceLength() {
+    	int size = sentences.size();
+    	double sumLength = 0;
+    	for (String sentence : sentences) {
+    		sumLength += sentence.length();
+    	}
+    	return sumLength / size;
     }
     // public static double averageSentenceLength()
     
