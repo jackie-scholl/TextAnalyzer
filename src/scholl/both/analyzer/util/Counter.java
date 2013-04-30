@@ -50,10 +50,10 @@ public class Counter<K> {
         List<K> list = new ArrayList<K>();
         Comparator<Integer> inverseComparator = new Comparator<Integer>(){
             public int compare(Integer a, Integer b) {
-                return Integer.compare(b, a);
+                return new Integer(b).compareTo(a);
             }
         };
-        SortedMap<Integer, Set<K>> inverse = new TreeMap<>(inverseComparator);
+        SortedMap<Integer, Set<K>> inverse = new TreeMap<Integer, Set<K>>(inverseComparator);
         for (K key : map.keySet()) {
             int count = map.get(key);
             Set<K> set = inverse.get(count);
@@ -90,12 +90,20 @@ public class Counter<K> {
     
     public String toString() {
         List<K> list = getSorted();
-        String s = "{\n";
+        String s = "{";
         for (int i=0; i<list.size(); i++) {
-            //s += String.format("%s%s:%d", (i>0? ", " : ""), list.get(i), get(list.get(i)));
-            s += String.format("%s : %d%n", list.get(i), get(list.get(i)));
+            s += String.format("%s%s:%d", (i>0? ", " : ""), list.get(i), get(list.get(i)));
         }
         s += "}";
+        return s;
+    }
+    
+    public String toString2() {
+        List<K> list = getSorted();
+        String s = "";
+        for (int i=0; i<list.size(); i++) {
+            s += String.format("%s : %d%n", list.get(i), get(list.get(i)));
+        }
         return s;
     }
 }

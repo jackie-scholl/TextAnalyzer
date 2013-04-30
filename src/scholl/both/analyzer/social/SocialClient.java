@@ -8,6 +8,7 @@ import java.util.*;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TumblrApi;
 import org.scribe.model.Token;
+import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
 import com.google.gson.JsonObject;
@@ -96,6 +97,26 @@ public class SocialClient {
         
         OAuthService service = new ServiceBuilder().provider(TumblrApi.class).apiKey(consumerKey).apiSecret(consumerSecret).build();
         
+        Token request = service.getRequestToken();
+        System.out.println(request);
+        
+        String url = service.getAuthorizationUrl(request);
+        
+        WebserverStarter.main(new String[]{"8000"});
+        
+        System.out.printf("Go to this link in your browser: %s%nWhat is the URL?%n", url);
+        
+        Scanner sc = new Scanner(System.in);
+        String response = sc.nextLine();
+        
+        
+        Verifier verifier = new Verifier(response);
+        Token access = service.getAccessToken(request, verifier);
+        
+        client.setToken(access.getToken(), access.getSecret());
+        
+        System.out.println(client.user().getName());
+        
         // String blogName = "b41779690b83f182acc67d6388c7bac9";
         
         Map<String, Object> options = new HashMap<String, Object>();
@@ -108,15 +129,18 @@ public class SocialClient {
         
         String[] blogNames = {"dataandphilosophy", "b41779690b83f182acc67d6388c7bac9", "frittlesnink"};
         
+        int count = 10;
+        
         for (String blogName : blogNames) {
             System.setOut(new PrintStream(String.format("out//%s.txt", blogName)));
             
             Blog b = client.blogInfo(blogName);
             
-            PostSet ps = getPosts(b, options, 10);
-            System.out.println(ps.getWordCount2());
+            PostSet ps = getPosts(b, options, count);
+            System.out.println(ps.getWordCount2().toString2());
             
             System.setOut(original);
+            System.out.printf("Finished blog %s with %d posts.%n", blogName, ps.size());
         }
         
         System.out.println("Finished.");

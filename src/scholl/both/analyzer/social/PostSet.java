@@ -43,6 +43,10 @@ public class PostSet {
         }
     }
     
+    public int size() {
+        return posts.size();
+    }
+    
     public SocialPost[] getPosts() {
         return posts.toArray(new SocialPost[0]);
     }
@@ -52,7 +56,7 @@ public class PostSet {
     }
     
     public Counter<Character> getLetterCount2() {
-        Counter<Character> c = new Counter<>();
+        Counter<Character> c = new Counter<Character>();
         for (SocialPost p : posts) {
             c.addAll(p.getText().getLetterCount2());
         }
@@ -60,7 +64,7 @@ public class PostSet {
     }
     
     public Counter<String> getWordCount2() {
-        Counter<String> c = new Counter<>();
+        Counter<String> c = new Counter<String>();
         for (SocialPost p : posts) {
             c.addAll(p.getText().getWordCount2());
         }
