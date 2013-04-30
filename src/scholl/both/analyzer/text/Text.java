@@ -7,15 +7,21 @@ import scholl.both.analyzer.util.Counter;
 //TODO: Add Javadocs
 
 /**
- * @author      Keller Scholl       <Keller.scholl@gmail.com>
- * @version     0.3                 (current version number of program)
- * @since       2013-04-30          (the version of the package this class was first added to)
+ * @author      Keller Scholl <Keller.scholl@gmail.com>
+ * @version     0.3
+ * @since       2013-04-30
  */
 public class Text {
+	
+	//Sets up variables for later use.
     private final String original;
     private List<String> words;
     private List<String> sentences;
-
+    
+    /**
+     * Method that creates a text given a String. 
+     * @param The string that you want to analyze. 
+     */
     public Text(String original) {
         this.original = original;
 
@@ -46,7 +52,9 @@ public class Text {
         		else if (original.substring(i-3,  i).matches("(\\p{Upper}\\.\\p{Upper})|(.\\.\\.)")) continue;
         		else if (original.substring(i+1,i+3).matches("(\\p{Upper}\\.)|(\\.\\.)")) continue;
         		else if (original.substring(i-1,i+2).matches("\\.{3}")) continue;
-        		sentences.add(original.substring(lastSentenceEnd,i));
+        		//If nothing else has forced the for loop to skip past this area, it will add everything from
+        		//the last sentence ending up to this one. 
+        		sentences.add(original.substring(lastSentenceEnd+1,i));
         		lastSentenceEnd = i;
         	}
         	if (original.charAt(i)=='?'){
