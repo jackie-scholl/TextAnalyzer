@@ -32,9 +32,13 @@ public class Text {
         for(int i=0; i < this.original.length(); i++)
         {
         	if (original.charAt(i)=='.'){
-        		String prior = original.substring(i-4, i-1);
-        		//Covers titles and one obvious acronym case, the A.K.A. block.
-        		if (prior.matches("(*Dr)|(*Mr)|(Mrs)|(*Ms)|(Esq)|(\\p{Upper}\\.\\p{Upper})")) continue;
+        		//Covers titles
+        		if (original.substring(i-3,  i).matches("(.Dr)|(.Mr)|(Mrs)|(.Ms)|(Esq)|")) continue;
+        		//Cover ellipses and acronyms
+        		if (original.substring(i-3,  i).matches("(\\p{Upper}\\.\\p{Upper})|(.\\.\\.)")) continue;
+        		if (original.substring(i+1,i+3).matches("(\\p{Upper}\\.)|(\\.\\.)")) continue;
+        		if (original.substring(i-1,i+2).matches("\\.{3}")) continue;
+        		
         		
         		//else if (original.charAt(i-3)=='M')
         		
