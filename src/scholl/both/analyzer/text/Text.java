@@ -2,6 +2,10 @@ package scholl.both.analyzer.text;
 
 import java.util.*;
 
+import scholl.both.analyzer.util.Counter;
+
+//TODO: Add Javadocs
+
 public class Text {
     private final String original;
     private List<String> words;
@@ -13,6 +17,13 @@ public class Text {
         words = new ArrayList<String>();
         String[] wordsArr = original.split("\\s");
         for (String str : wordsArr) {
+            if (str.length() == 0 /* This is an empty string */
+                    || str.charAt(str.length()-1) == ':' /* This is a tumblr username followed by a colon to show a quote */
+                    || str.matches("(\\w+://)?(\\w+\\.)+(\\w+)([\\w/-=\\?\\\\]*)") /* This is a URL */) {
+                continue;
+            }
+            str = str.replaceAll("[\\p{Punct}\u2018\u2019\u201C\u201D]", ""); // Remove punctuation and quote marks
+            if (str.equals("")) { continue; }
             words.add(str);
         }
         //Want to go through the text until I find a sentence ending mark, and then add everything between
@@ -55,36 +66,43 @@ public class Text {
         return sumLength / size;
     }
     // public static double averageSentenceLength()
-<<<<<<< HEAD
     
-    public Map<String, Integer> getWordCount2() {
-        Map<String, Integer> m = new HashMap<>();
+    // TODO: Letter counter
+    public Counter<Character> getLetterCount2() {
+        return null;
+    }
+
+    public Counter<String> getWordCount2() {
+        Counter<String> counter = new Counter<String>();
         for (String w : words) {
-            w = w.replaceAll("[\\.\"']", "").toLowerCase();
-            Integer count = m.get(w);
-            if (count == null) {
-                count = 0;
-            }
-            count++;
-            m.put(w, count);
+            counter.add(w.toLowerCase());
         }
-        m.remove("");
-        Set<String> toRemove = new HashSet<String>();
-        for (String k : m.keySet()) {
-            if (k.charAt(k.length()-1) == ':') {
-                toRemove.add(k);
-            }
-        }
-        for (String k : toRemove) {
-            m.remove(k);
-        }
-        return m;
+        counter.remove("");
+        return counter;
     }
     
-=======
-
->>>>>>> 78e224b34b5c38d3e587740be6b906a2664e0da8
     public String toString() {
         return original;
     }
 }
+
+
+//Map<String, Integer> m = new HashMap<>();
+//w = w.replaceAll("[\\.\"']", "").toLowerCase();
+/*w = w.toLowerCase();
+Integer count = m.get(w);
+if (count == null) {
+    count = 0;
+}
+count++;
+m.put(w, count);*/
+
+/*Set<String> toRemove = new HashSet<String>();
+for (String k : m.keySet()) {
+    if (k.charAt(k.length()-1) == ':') {
+        toRemove.add(k);
+    }
+}
+for (String k : toRemove) {
+    m.remove(k);
+}*/

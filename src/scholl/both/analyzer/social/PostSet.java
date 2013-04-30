@@ -2,6 +2,10 @@ package scholl.both.analyzer.social;
 
 import java.util.*;
 
+import scholl.both.analyzer.util.Counter;
+
+// TODO: Add Javadocs
+
 public class PostSet {
     private SortedSet<SocialPost> posts;
     private Map<String, SortedSet<SocialPost>> index;
@@ -47,20 +51,20 @@ public class PostSet {
         return new PostSet(index.get(tag));
     }
     
-    public Map<String, Integer> getWordCount2() {
-        Map<String, Integer> m = new HashMap<>();
+    public Counter<Character> getLetterCount2() {
+        Counter<Character> c = new Counter<>();
         for (SocialPost p : posts) {
-            Map<String, Integer> n = p.getText().getWordCount2();
-            for (String w : n.keySet()) {
-                Integer count = m.get(w);
-                if (count == null) {
-                    count = 0;
-                }
-                count += n.get(w);
-                m.put(w, count);
-            }
+            c.addAll(p.getText().getLetterCount2());
         }
-        return m;
+        return c;
+    }
+    
+    public Counter<String> getWordCount2() {
+        Counter<String> c = new Counter<>();
+        for (SocialPost p : posts) {
+            c.addAll(p.getText().getWordCount2());
+        }
+        return c;
     }
 
     public PostSet clone() throws CloneNotSupportedException {
@@ -70,13 +74,22 @@ public class PostSet {
         return other;
     }
     
-<<<<<<< HEAD
     @Override
     public String toString() {
         return "PostSet [posts=" + this.posts + "]";
-=======
-    public String toString() {
-        return "PostSet [posts=" + posts + "]";
->>>>>>> 78e224b34b5c38d3e587740be6b906a2664e0da8
     }
 }
+
+
+//Map<String, Integer> m = new HashMap<>();
+
+/*for (String w : n.keySet()) {
+    Integer count = m.get(w);
+    if (count == null) {
+        count = 0;
+    }
+    count += n.get(w);
+    m.put(w, count);
+}*/
+
+//Map<String, Integer> n = p.getText().getWordCount2();

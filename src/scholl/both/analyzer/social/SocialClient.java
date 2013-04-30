@@ -1,6 +1,7 @@
 package scholl.both.analyzer.social;
 
 import scholl.both.analyzer.text.*;
+import scholl.both.analyzer.util.*;
 import java.io.*;
 import java.util.*;
 
@@ -78,90 +79,55 @@ public class SocialClient {
         JumblrClient client = new JumblrClient(obj.getAsJsonPrimitive("consumer_key").getAsString(), obj
                 .getAsJsonPrimitive("consumer_secret").getAsString());
         
-        String blogName = "b41779690b83f182acc67d6388c7bac9";
+        //String blogName = "b41779690b83f182acc67d6388c7bac9";
+        String blogName = "dataandphilosophy";
         
         Blog b = client.blogInfo(blogName);
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("reblog_info", "true");
-<<<<<<< HEAD
         options.put("filter", "text");
         options.put("notes_info", "true");
         options.put("limit", "20");
+
+        System.setOut(new PrintStream("out.txt"));
         
-        PostSet ps = new PostSet();
+        PostSet ps = getPosts(b, options, 100);
         
-        for (Post p : b.posts(options)) {
+        /*for (Post p : b.posts(options)) {
             SocialPost sp = socialFromTumblrPost(p);
-            System.out.println(sp.getText().getWordCount2());
+            //System.out.println(sp.getText().getWordCount2());
             ps.add(sp);
-        }
+        }*/
         
-        System.out.println(ps.getWordCount2());
+        System.out.println("\n"+ps.getWordCount2()+"\n");
         
-        for (SocialPost p : ps.getPosts()) {
+        /*for (SocialPost p : ps.getPosts()) {
             System.out.println(p);
-        }
-        
-        //doNotesStuff(b);
+        }*/
     }
     
-    public static void doNotesStuff(Blog b) {
-        JumblrClient c = b.getClient();
-        Map<String, Object> options = new HashMap<>();
-        options.put("reblog_info", "true");
-        options.put("filter", "text");
-        options.put("notes_info", "true");
-        options.put("id", "49118498864");
-        options.put("limit", "1");
+    public static PostSet getPosts(Blog b, Map<String, Object> options, int num) {
+        PostSet ps = new PostSet();
         
-        Post p = c.blogPosts(b.getName(), options).get(0);
-        
-        List<Note> notes = new ArrayList<Note>();
-        for (int i = 0; i < p.getNoteCount(); i += 50) {
-            options.put("start", i);
-            options.put("id", p.getId());
-            Post p2 = b.posts(options).get(0);
-            notes.addAll(Arrays.asList(p2.getNotes()));
+        int lim = 20;
+        int initialOffset = 0;
+        for (int i = initialOffset; i<num; i += lim) {
+            options.put("limit", lim);
+            options.put("offset", i);
+            List<Post> posts = b.posts(options);
+            for (Post p : posts) {
+                ps.add(socialFromTumblrPost(p));
+            }
+            //System.out.println(ps.getWordCount2());
         }
         
-        System.out.printf("%s: (%d)%n", p, notes.size());
-        for (Note n : notes) {
-            System.out.printf("  %s%n", n);
-        }
-        System.out.println();
-        
-        List<Post> posts = new ArrayList<Post>();
-        for (Note n : notes) {
-            if (n.getPostId() == null)
-                continue;
-            Map<String, Object> options2 = new HashMap<>();
-            options2.put("reblog_info", "true");
-            options2.put("id", n.getPostId());
-            Post q = c.blogPosts(b.getName(), options).get(0);
-            
-            System.out.printf("%s%n", n);
-            
-            System.out.printf("(%s-%d) : (%s-%d) [%tF %5$tr] [%s]%n", q.getBlogName(), q.getId(),
-                    q.getRebloggedName(), q.getRebloggedId(), q.getTimestamp()*1000L, q.getReblogKey());
-            
-            posts.add(q);
-        }
-        
-        for (Post q : posts) {
-            
-        }
-        System.out.println(posts);
-        
+        return ps;
     }
     
     public static SocialPost socialFromTumblrPost(Post p) {
-        SimpleUser u = new SimpleUser(p.getBlogName());
-        List<String> tags = new ArrayList<>();
-        for (String t : p.getTags()) {
-            tags.add(t);
-        }
-        
-        SimpleUser mentioned = new SimpleUser(p.getRebloggedName());
+        User u = new SimpleUser(p.getBlogName());
+                
+        User mentioned = new SimpleUser(p.getRebloggedName());
         
         String type = p.getType();
         String text = "unknown";
@@ -179,26 +145,44 @@ public class SocialClient {
             text = ((LinkPost) p).getDescription();
         }
         
-        /*
-         * long postId = p.getRebloggedId(); Post reblogged = client.blogPost(blogName, postId);
-         */
-        
-        SocialPost np = new SocialPost(u, p.getTimestamp(), text, mentioned, tags);
+        SocialPost np = new SocialPost(u, p.getTimestamp(), text, mentioned, p.getTags());
         return np;
-=======
-        PostSet ps = new PostSet();
-        for (com.tumblr.jumblr.types.Post p : b.posts(options)) {
-            User u = new SimpleUser(p.getBlogName());
-            Set<String> tags = new HashSet<String>();
-            for (String t : p.getTags()) {
-                tags.add(t);
-            }
-            String type = p.getType();
-            Post np = new Post(u, p.getTimestamp(), type, new SimpleUser(p.getRebloggedName()), tags);
-            ps.add(np);
-        }
         
-        System.out.println(ps);        
->>>>>>> 78e224b34b5c38d3e587740be6b906a2664e0da8
     }
 }
+
+/*List<String> tags = new ArrayList<>();
+for (String t : p.getTags()) {
+    tags.add(t);
+}*/
+
+/*
+ * public static void doNotesStuff(Blog b) { JumblrClient c = b.getClient(); Map<String, Object> options = new
+ * HashMap<>(); options.put("reblog_info", "true"); options.put("filter", "text"); options.put("notes_info", "true");
+ * options.put("id", "49118498864"); options.put("limit", "1");
+ * 
+ * Post p = c.blogPosts(b.getName(), options).get(0);
+ * 
+ * List<Note> notes = new ArrayList<Note>(); for (int i = 0; i < p.getNoteCount(); i += 50) { options.put("start", i);
+ * options.put("id", p.getId()); Post p2 = b.posts(options).get(0); notes.addAll(Arrays.asList(p2.getNotes())); }
+ * 
+ * System.out.printf("%s: (%d)%n", p, notes.size()); for (Note n : notes) { System.out.printf("  %s%n", n); }
+ * System.out.println();
+ * 
+ * List<Post> posts = new ArrayList<Post>(); for (Note n : notes) { if (n.getPostId() == null) continue; Map<String,
+ * Object> options2 = new HashMap<>(); options2.put("reblog_info", "true"); options2.put("id", n.getPostId()); Post q =
+ * c.blogPosts(b.getName(), options).get(0);
+ * 
+ * System.out.printf("%s%n", n);
+ * 
+ * System.out.printf("(%s-%d) : (%s-%d) [%tF %5$tr] [%s]%n", q.getBlogName(), q.getId(), q.getRebloggedName(),
+ * q.getRebloggedId(), q.getTimestamp()*1000L, q.getReblogKey());
+ * 
+ * posts.add(q); }
+ * 
+ * for (Post q : posts) {
+ * 
+ * } System.out.println(posts);
+ * 
+ * }
+ */

@@ -1,6 +1,8 @@
 package scholl.both.analyzer.social;
 
-interface User {
+//TODO: Add Javadocs
+
+public interface User {
 
     public abstract String getName();
 
