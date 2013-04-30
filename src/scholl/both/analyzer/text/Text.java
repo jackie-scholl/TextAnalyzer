@@ -29,19 +29,22 @@ public class Text {
         //Want to go through the text until I find a sentence ending mark, and then add everything between
         //that mark and the last mark to the list of sentences.
         int lastSentenceEnd = -1;
+        sentences = new ArrayList<String>();
         for(int i=0; i < this.original.length(); i++)
         {
         	if (original.charAt(i)=='.'){
         		//Covers titles
         		if (original.substring(i-3,  i).matches("(.Dr)|(.Mr)|(Mrs)|(.Ms)|(Esq)|")) continue;
         		//Cover ellipses and acronyms
-        		if (original.substring(i-3,  i).matches("(\\p{Upper}\\.\\p{Upper})|(.\\.\\.)")) continue;
-        		if (original.substring(i+1,i+3).matches("(\\p{Upper}\\.)|(\\.\\.)")) continue;
-        		if (original.substring(i-1,i+2).matches("\\.{3}")) continue;
-        		
-        		
-        		//else if (original.charAt(i-3)=='M')
-        		
+        		else if (original.substring(i-3,  i).matches("(\\p{Upper}\\.\\p{Upper})|(.\\.\\.)")) continue;
+        		else if (original.substring(i+1,i+3).matches("(\\p{Upper}\\.)|(\\.\\.)")) continue;
+        		else if (original.substring(i-1,i+2).matches("\\.{3}")) continue;
+        		sentences.add(original.substring(lastSentenceEnd,i));
+        		lastSentenceEnd = i;
+        	}
+        	if (original.charAt(i)=='?'){
+        		sentences.add(original.substring(lastSentenceEnd,i));
+        		lastSentenceEnd = i;
         	}
         }
         
