@@ -389,5 +389,8 @@ public class JumblrClient {
         }
         return mod;
     }
-
+    
+    public RequestBuilder getRequestBuilder() {
+        return requestBuilder;
+    }
 }

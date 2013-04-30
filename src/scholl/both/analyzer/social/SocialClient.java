@@ -5,6 +5,11 @@ import scholl.both.analyzer.util.*;
 import java.io.*;
 import java.util.*;
 
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.builder.api.TumblrApi;
+import org.scribe.model.Token;
+import org.scribe.oauth.OAuthService;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tumblr.jumblr.JumblrClient;
@@ -75,50 +80,63 @@ public class SocialClient {
         JsonParser parser = new JsonParser();
         JsonObject obj = (JsonObject) parser.parse(json);
         
+        String consumerKey = obj.getAsJsonPrimitive("consumer_key").getAsString();
+        String consumerSecret = obj.getAsJsonPrimitive("consumer_secret").getAsString();
         // Create a client
-        JumblrClient client = new JumblrClient(obj.getAsJsonPrimitive("consumer_key").getAsString(), obj
-                .getAsJsonPrimitive("consumer_secret").getAsString());
+        JumblrClient client = new JumblrClient(consumerKey, consumerSecret);
         
-        //String blogName = "b41779690b83f182acc67d6388c7bac9";
-        String blogName = "dataandphilosophy";
+        /*OAuthService service = client.getRequestBuilder().getOAuth();
+        Token t = service.getRequestToken();
+        String url = service.getAuthorizationUrl(t);
+        System.out.printf("Go to this URL to authenticate: %s%n", url);
+        (new Scanner(System.in)).nextLine();
+        System.out.println(t.getRawResponse());
+        client.setToken(t.getToken(), t.getSecret());
+        System.out.println(client.user().getName());*/
         
-        Blog b = client.blogInfo(blogName);
+        OAuthService service = new ServiceBuilder().provider(TumblrApi.class).apiKey(consumerKey).apiSecret(consumerSecret).build();
+        
+        // String blogName = "b41779690b83f182acc67d6388c7bac9";
+        
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("reblog_info", "true");
         options.put("filter", "text");
         options.put("notes_info", "true");
         options.put("limit", "20");
-
-        System.setOut(new PrintStream("out.txt"));
         
-        PostSet ps = getPosts(b, options, 100);
+        PrintStream original = System.out;
         
-        /*for (Post p : b.posts(options)) {
-            SocialPost sp = socialFromTumblrPost(p);
-            //System.out.println(sp.getText().getWordCount2());
-            ps.add(sp);
-        }*/
+        String[] blogNames = {"dataandphilosophy", "b41779690b83f182acc67d6388c7bac9", "frittlesnink"};
         
-        System.out.println("\n"+ps.getWordCount2()+"\n");
+        for (String blogName : blogNames) {
+            System.setOut(new PrintStream(String.format("out//%s.txt", blogName)));
+            
+            Blog b = client.blogInfo(blogName);
+            
+            PostSet ps = getPosts(b, options, 10);
+            System.out.println(ps.getWordCount2());
+            
+            System.setOut(original);
+        }
         
-        /*for (SocialPost p : ps.getPosts()) {
-            System.out.println(p);
-        }*/
+        System.out.println("Finished.");
     }
     
     public static PostSet getPosts(Blog b, Map<String, Object> options, int num) {
         PostSet ps = new PostSet();
         
         int lim = 20;
+        
+        lim = num>lim? lim : num;
+        
         int initialOffset = 0;
-        for (int i = initialOffset; i<num; i += lim) {
+        for (int i = initialOffset; i < num; i += lim) {
             options.put("limit", lim);
             options.put("offset", i);
             List<Post> posts = b.posts(options);
             for (Post p : posts) {
                 ps.add(socialFromTumblrPost(p));
             }
-            //System.out.println(ps.getWordCount2());
         }
         
         return ps;
@@ -126,7 +144,7 @@ public class SocialClient {
     
     public static SocialPost socialFromTumblrPost(Post p) {
         User u = new SimpleUser(p.getBlogName());
-                
+        
         User mentioned = new SimpleUser(p.getRebloggedName());
         
         String type = p.getType();
@@ -151,10 +169,9 @@ public class SocialClient {
     }
 }
 
-/*List<String> tags = new ArrayList<>();
-for (String t : p.getTags()) {
-    tags.add(t);
-}*/
+/*
+ * List<String> tags = new ArrayList<>(); for (String t : p.getTags()) { tags.add(t); }
+ */
 
 /*
  * public static void doNotesStuff(Blog b) { JumblrClient c = b.getClient(); Map<String, Object> options = new
@@ -185,4 +202,12 @@ for (String t : p.getTags()) {
  * } System.out.println(posts);
  * 
  * }
+ */
+
+/*
+ * for (Post p : b.posts(options)) { SocialPost sp = socialFromTumblrPost(p);
+ * //System.out.println(sp.getText().getWordCount2()); ps.add(sp); }
+ */
+/*
+ * for (SocialPost p : ps.getPosts()) { System.out.println(p); }
  */
