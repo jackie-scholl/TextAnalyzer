@@ -1,6 +1,6 @@
 package scholl.both.analyzer.social;
 
-class SimpleUser implements User{
+class SimpleUser implements SocialUser{
     private final String name;
     
     public SimpleUser(String name) {

@@ -2,7 +2,7 @@ package scholl.both.analyzer.social;
 
 //TODO: Add Javadocs
 
-public interface User {
+public interface SocialUser {
 
     public abstract String getName();
 

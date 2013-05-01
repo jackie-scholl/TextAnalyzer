@@ -1,8 +1,12 @@
 package scholl.both.analyzer.social;
 
 import scholl.both.analyzer.text.*;
+
 import java.io.*;
 import java.util.*;
+import java.awt.Desktop;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TumblrApi;
@@ -16,7 +20,7 @@ import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.*;
 
 public class SocialClient {
-    public static List<String> requests = new ArrayList<String>();
+    private static List<String> requests = new ArrayList<String>();
     
     public static void main(String[] args) {
         List<String> texts = new ArrayList<String>();
@@ -69,7 +73,7 @@ public class SocialClient {
         }
     }
     
-    public static void tumlbrThing() throws IOException {
+    private static void tumlbrThing() throws IOException {
         // Read in the JSON data for the credentials
         BufferedReader br = new BufferedReader(new FileReader("credentials.json"));
         String json = "";
@@ -87,44 +91,46 @@ public class SocialClient {
         // Create a client
         JumblrClient client = new JumblrClient(consumerKey, consumerSecret);
         
-        /*OAuthService service = client.getRequestBuilder().getOAuth();
-        Token t = service.getRequestToken();
-        String url = service.getAuthorizationUrl(t);
-        System.out.printf("Go to this URL to authenticate: %s%n", url);
-        (new Scanner(System.in)).nextLine();
-        System.out.println(t.getRawResponse());
-        client.setToken(t.getToken(), t.getSecret());
-        System.out.println(client.user().getName());*/
-        
         OAuthService service = new ServiceBuilder().provider(TumblrApi.class).apiKey(consumerKey).apiSecret(consumerSecret).build();
-        
         Token request = service.getRequestToken();
-        System.out.println(request);
         
         String url = service.getAuthorizationUrl(request);
-        
-        //WebserverStarter.main(new String[]{"8000"});
-        
-        System.out.printf("Go to this link in your browser, then hit enter: %s%n", url);
+        openBrowser(url);
         
         OAuthCallbackServer s = new OAuthCallbackServer(8002);
         String response = s.handleRequest();
         
-        Scanner sc = new Scanner(System.in);
-        //sc.nextLine();
-        
-        //String requestURL = requests.remove(0);
-        //String response = requestURL.replaceAll("callback\\?oauth_token=\\w+&oauth_verifier=(?<verifier>\\w+)", "$g{verifier}");
-        
-        Verifier verifier = new Verifier(response);
-        Token access = service.getAccessToken(request, verifier);
-        
+        Token access = service.getAccessToken(request, new Verifier(response));
         client.setToken(access.getToken(), access.getSecret());
         
         System.out.println(client.user().getName());
+        User u = client.user();
         
+        Set<Blog> blogs = new HashSet<Blog>();
         
-        // String blogName = "b41779690b83f182acc67d6388c7bac9";
+        System.out.printf("User %s has these blogs: %n", u.getName());
+        for (Blog b : u.getBlogs()) {
+            blogs.add(b);
+            
+            List<User> followers = getFollowers(b, new HashMap<String, Object>(), 100);
+            System.out.printf("\t%s (%s) has these %d followers:%n", b.getName(), b.getTitle(), followers.size());
+            
+            for (User u2 : followers) {
+                System.out.printf("\t\t%s%n", u2.getName());
+                Blog b3 = client.blogInfo(u2.getName());
+                blogs.add(b3);
+            }
+        }
+        
+        List<Blog> following = getFollowing(client, new HashMap<String, Object>(), 100);
+        System.out.printf("User %s is following these %d blogs: %n", following.size(), u.getName());
+        for (Blog b : following) {
+            System.out.printf("\t%s (%s)%n", b.getName(), b.getTitle());
+            blogs.add(b);
+        }
+        
+        System.out.println();
+        
         
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("reblog_info", "true");
@@ -132,28 +138,73 @@ public class SocialClient {
         options.put("notes_info", "true");
         options.put("limit", "20");
         
-        PrintStream original = System.out;
+        PrintStream originalOutStream = System.out;
         
         String[] blogNames = {"dataandphilosophy", "b41779690b83f182acc67d6388c7bac9", "frittlesnink"};
+        for (String blog : blogNames) {
+            blogs.add(client.blogInfo(blog));
+        }
         
         int count = 10;
         
-        for (String blogName : blogNames) {
-            System.setOut(new PrintStream(String.format("out//%s.txt", blogName)));
-            
-            Blog b = client.blogInfo(blogName);
+        for (Blog b : blogs) {
+            System.setOut(new PrintStream(String.format("out//%s.txt", b.getName())));
             
             PostSet ps = getPosts(b, options, count);
             System.out.println(ps.getWordCount2().toString2());
             
-            System.setOut(original);
-            System.out.printf("Finished blog %s with %d posts.%n", blogName, ps.size());
+            System.setOut(originalOutStream);
+            System.out.printf("Finished blog %s with %d posts.%n", b.getName(), ps.size());
         }
         
         System.out.println("Finished.");
     }
     
-    public static PostSet getPosts(Blog b, Map<String, Object> options, int num) {
+    private static void openBrowser(String url) throws IOException {
+        System.out.println(Desktop.isDesktopSupported());
+        Desktop d = Desktop.getDesktop();
+        URI uri;
+        try {
+            uri = new URI(url);
+            d.browse(uri);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static List<User> getFollowers(Blog b, Map<String, Object> options, int num) {
+        List<User> users = new ArrayList<User>();
+        
+        int lim = 20;
+        lim = num>lim? lim : num;
+        
+        int initialOffset = 0;
+        for (int i = initialOffset; i < num; i += lim) {
+            options.put("limit", lim);
+            options.put("offset", i);
+            users.addAll(b.followers(options));
+        }
+        
+        return users;
+    }
+    
+    private static List<Blog> getFollowing(JumblrClient c, Map<String, Object> options, int num) {
+        List<Blog> blogs = new ArrayList<Blog>();
+        
+        int lim = 20;
+        lim = num>lim? lim : num;
+        
+        int initialOffset = 0;
+        for (int i = initialOffset; i < num; i += lim) {
+            options.put("limit", lim);
+            options.put("offset", i);
+            blogs.addAll(c.userFollowing(options));
+        }
+        
+        return blogs;
+    }
+    
+    private static PostSet getPosts(Blog b, Map<String, Object> options, int num) {
         PostSet ps = new PostSet();
         
         int lim = 20;
@@ -173,10 +224,10 @@ public class SocialClient {
         return ps;
     }
     
-    public static SocialPost socialFromTumblrPost(Post p) {
-        User u = new SimpleUser(p.getBlogName());
+    private static SocialPost socialFromTumblrPost(Post p) {
+        SocialUser u = new SimpleUser(p.getBlogName());
         
-        User mentioned = new SimpleUser(p.getRebloggedName());
+        SocialUser mentioned = new SimpleUser(p.getRebloggedName());
         
         String type = p.getType();
         String text = "unknown";
@@ -205,6 +256,21 @@ public class SocialClient {
  */
 
 /*
+ * 
+ * /*OAuthService service = client.getRequestBuilder().getOAuth();
+        Token t = service.getRequestToken();
+        String url = service.getAuthorizationUrl(t);
+        System.out.printf("Go to this URL to authenticate: %s%n", url);
+        (new Scanner(System.in)).nextLine();
+        System.out.println(t.getRawResponse());
+        client.setToken(t.getToken(), t.getSecret());
+        System.out.println(client.user().getName());
+        Scanner sc = new Scanner(System.in);
+        //sc.nextLine();
+        
+        //String requestURL = requests.remove(0);
+        //String response = requestURL.replaceAll("callback\\?oauth_token=\\w+&oauth_verifier=(?<verifier>\\w+)", "$g{verifier}");
+        
  * public static void doNotesStuff(Blog b) { JumblrClient c = b.getClient(); Map<String, Object> options = new
  * HashMap<>(); options.put("reblog_info", "true"); options.put("filter", "text"); options.put("notes_info", "true");
  * options.put("id", "49118498864"); options.put("limit", "1");

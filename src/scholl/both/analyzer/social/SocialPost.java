@@ -12,13 +12,13 @@ import scholl.both.analyzer.text.Text;
  *
  */
 public class SocialPost implements Comparable<SocialPost> {
-    private final User poster;
+    private final SocialUser poster;
     private final long timestamp; // milliseconds since epoch
     private final Text text;
-    private final User mention;
+    private final SocialUser mention;
     private final List<String> tags;
 
-    public SocialPost(User poster, long timestamp, String text, User mention, List<String> tags) {
+    public SocialPost(SocialUser poster, long timestamp, String text, SocialUser mention, List<String> tags) {
         this.poster = poster;
         this.timestamp = timestamp;
         this.text = new Text(text);
@@ -39,7 +39,7 @@ public class SocialPost implements Comparable<SocialPost> {
      * Returns the user who published this post.
      * @return the poster
      */
-    public User getPoster() {
+    public SocialUser getPoster() {
         return this.poster;
     }
 
@@ -68,7 +68,7 @@ public class SocialPost implements Comparable<SocialPost> {
      * 
      * @return the mention
      */
-    public User getMention() {
+    public SocialUser getMention() {
         return this.mention;
     }
 
