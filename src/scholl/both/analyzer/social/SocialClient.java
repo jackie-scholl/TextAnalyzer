@@ -1,7 +1,6 @@
 package scholl.both.analyzer.social;
 
 import scholl.both.analyzer.text.*;
-import scholl.both.analyzer.util.*;
 import java.io.*;
 import java.util.*;
 
@@ -17,6 +16,8 @@ import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.*;
 
 public class SocialClient {
+    public static List<String> requests = new ArrayList<String>();
+    
     public static void main(String[] args) {
         List<String> texts = new ArrayList<String>();
         
@@ -107,8 +108,10 @@ public class SocialClient {
         System.out.printf("Go to this link in your browser: %s%nWhat is the URL?%n", url);
         
         Scanner sc = new Scanner(System.in);
-        String response = sc.nextLine();
+        sc.nextLine();
         
+        String requestURL = requests.remove(0);
+        String response = requestURL.replaceAll("callback\\?oauth_token=\\w+&oauth_verifier=(?<verifier>\\w+)", "$g{verifier}");
         
         Verifier verifier = new Verifier(response);
         Token access = service.getAccessToken(request, verifier);

@@ -7,11 +7,6 @@ import java.net.*;
  * NOTE: I copied this from http://fragments.turtlemeat.com/javawebserver.php
  */
 
-// file: server.java
-// the real (http) serverclass
-// it extends thread so the server is run in a different
-// thread than the gui, that is to make it responsive.
-// it's really just a macho coding thing.
 /**
  * An HTTP server.
  * 
@@ -158,6 +153,7 @@ public class Server extends Thread {
         s("\nClient requested:" + new File(path).getAbsolutePath() + "\n");
         FileInputStream requestedfile = null;
         
+
         try {
             // NOTE that there are several security consideration when passing
             // the untrusted string "path" to FileInputStream.
@@ -165,7 +161,7 @@ public class Server extends Thread {
             // current user is the user running the javaprogram.
             // you can do this by passing "../" in the url or specify absoulute path
             // or change drive (win)
-            
+
             // try to open the file,
             requestedfile = new FileInputStream(path);
         } catch (Exception e) {
@@ -178,7 +174,7 @@ public class Server extends Thread {
             ;
             s("error" + e.getMessage());
         } // print error to gui
-        
+
         // happy day scenario
         try {
             int type_is = 0;
@@ -195,7 +191,7 @@ public class Server extends Thread {
                 // write out the header, 200 ->everything is ok we are all happy.
             }
             output.writeBytes(construct_http_header(200, 5));
-            
+
             // if it was a HEAD request, we don't print any BODY
             if (method == 1) { // 1 is GET 2 is head and skips the body
                 while (true) {
@@ -207,7 +203,6 @@ public class Server extends Thread {
                     }
                     output.write(b);
                 }
-                
             }
             // clean up the files, close open handles
             output.close();
@@ -217,7 +212,7 @@ public class Server extends Thread {
         catch (Exception e) {}
         
     }
-    
+
     // this method makes the HTTP header for the response
     // the headers job is to tell the browser the result of the request
     // among if it was successful or not.
