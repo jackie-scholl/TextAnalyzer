@@ -107,7 +107,7 @@ public class SocialClient {
         
         System.out.printf("Go to this link in your browser, then hit enter: %s%n", url);
         
-        Server s = new Server(8002);
+        OAuthCallbackServer s = new OAuthCallbackServer(8002);
         String response = s.handleRequest();
         
         Scanner sc = new Scanner(System.in);
@@ -122,6 +122,7 @@ public class SocialClient {
         client.setToken(access.getToken(), access.getSecret());
         
         System.out.println(client.user().getName());
+        
         
         // String blogName = "b41779690b83f182acc67d6388c7bac9";
         
