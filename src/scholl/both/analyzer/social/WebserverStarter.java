@@ -73,7 +73,7 @@ public class WebserverStarter extends JFrame {
         this.validate();
         // create the actual serverstuff,
         // all that is implemented in another class
-        new Server(listen_port.intValue(), this);
+        new Server(listen_port.intValue());
     }
     
     // exit program when "X" is pressed.

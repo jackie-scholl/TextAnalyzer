@@ -103,15 +103,18 @@ public class SocialClient {
         
         String url = service.getAuthorizationUrl(request);
         
-        WebserverStarter.main(new String[]{"8000"});
+        //WebserverStarter.main(new String[]{"8000"});
         
-        System.out.printf("Go to this link in your browser: %s%nWhat is the URL?%n", url);
+        System.out.printf("Go to this link in your browser, then hit enter: %s%n", url);
+        
+        Server s = new Server(8002);
+        String response = s.handleRequest();
         
         Scanner sc = new Scanner(System.in);
-        sc.nextLine();
+        //sc.nextLine();
         
-        String requestURL = requests.remove(0);
-        String response = requestURL.replaceAll("callback\\?oauth_token=\\w+&oauth_verifier=(?<verifier>\\w+)", "$g{verifier}");
+        //String requestURL = requests.remove(0);
+        //String response = requestURL.replaceAll("callback\\?oauth_token=\\w+&oauth_verifier=(?<verifier>\\w+)", "$g{verifier}");
         
         Verifier verifier = new Verifier(response);
         Token access = service.getAccessToken(request, verifier);
