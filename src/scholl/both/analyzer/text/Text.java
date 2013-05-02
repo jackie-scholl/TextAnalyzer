@@ -42,7 +42,7 @@ public class Text {
         //that mark and the last mark to the list of sentences.
         
         sentences = new ArrayList<String>();
-        int lastSentenceEnd = -1;
+        int lastSentenceEnd = 0;
         //The minimum length of a sentence is four characters(I am, 
         //so periods before and after can safely be excluded.)
         for(int i=3; i < this.original.length()-4; i++)
