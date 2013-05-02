@@ -4,8 +4,6 @@ import java.util.*;
 
 import scholl.both.analyzer.util.Counter;
 
-//TODO: Add Javadocs
-
 /**
  * @author      Keller Scholl <Keller.scholl@gmail.com>
  * @version     0.3
@@ -65,7 +63,7 @@ public class Text {
         	}
         }
         //Ensures that a sentence is always ended. 
-        sentences.add(original.substring(lastSentenceEnd));
+        sentences.add(original.substring(lastSentenceEnd+1));
     }
     
     public String getOriginal() {
@@ -105,10 +103,17 @@ public class Text {
     public double averageSentenceLength() {
         return getSentenceCount()/(double)getWordCount();
     }
-    // public static double averageSentenceLength()
-    
+    public double getPunctuationDiversityIndex(){
+        //punctuation marks = , . ; : ?
+        
+    }
+    private int getCharCount(char desired){
+        //Compare the length of the original before and after replacing everything.
+        return 5;
+    }
     // TODO: Letter counter
     public Counter<Character> getLetterCount2() {
+        String cat = "dog".replaceAll("o"," ");
         return null;
     }
 
