@@ -42,8 +42,10 @@ public class Text {
         //that mark and the last mark to the list of sentences.
         
         sentences = new ArrayList<String>();
-        /*int lastSentenceEnd = -1;
-        for(int i=0; i < this.original.length(); i++)
+        int lastSentenceEnd = -1;
+        //The minimum length of a sentence is four characters(I am, 
+        //so periods before and after can safely be excluded.)
+        for(int i=3; i < this.original.length()-3; i++)
         {
         	if (original.charAt(i)=='.'){
         		//Covers titles
@@ -61,7 +63,9 @@ public class Text {
         		sentences.add(original.substring(lastSentenceEnd,i));
         		lastSentenceEnd = i;
         	}
-        }*/
+        }
+        //Ensures that a sentence is always ended. 
+        sentences.add(original.substring(lastSentenceEnd));
     }
     
     public String getOriginal() {
