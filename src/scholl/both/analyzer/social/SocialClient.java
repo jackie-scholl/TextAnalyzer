@@ -63,6 +63,8 @@ public class SocialClient {
     }
     
     private static void tumlbrThing() throws IOException {
+        long start = System.currentTimeMillis();
+        
         TumblrClient tclient = new TumblrClient();
         tclient.authenticate();
         
@@ -81,18 +83,24 @@ public class SocialClient {
             blogs.add(tclient.getUser(blog));
         }
         
-        int count = 40;
+        int count = 10;
         for (SocialUser b : blogs) {
+            long blogStart = System.currentTimeMillis();
+            
             PrintStream file = new PrintStream(String.format("out//%s.txt", b.getName()));
             
             PostSet ps = b.getPosts(count);
             file.println(ps.getWordCount2().toString2());
             file.close();
             
-            System.out.printf("Finished blog %s with %d posts.%n", b.getName(), ps.size());
+            long blogEnd = System.currentTimeMillis();
+            System.out.printf("Finished blog %s with %d posts - took %.3f seconds%n", b.getName(), ps.size(), (blogEnd-blogStart)/1000.0);
         }
         
-        System.out.println("Finished.");
+        long end = System.currentTimeMillis();
+        double timeTaken = (end-start)/1000.0;
+        
+        System.out.printf("Finished - took %.3f seconds", timeTaken);
     }
     
     public static void openBrowser(String url) throws IOException {
