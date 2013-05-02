@@ -20,7 +20,7 @@ public class Text {
     
     /**
      * Method that creates a text given a String. 
-     * @param The string that you want to analyze. 
+     * @param The string that you want to analyse. 
      */
     public Text(String original) {
         this.original = original;
@@ -45,7 +45,7 @@ public class Text {
         int lastSentenceEnd = -1;
         //The minimum length of a sentence is four characters(I am, 
         //so periods before and after can safely be excluded.)
-        for(int i=3; i < this.original.length()-3; i++)
+        for(int i=3; i < this.original.length()-4; i++)
         {
         	if (original.charAt(i)=='.'){
         		//Covers titles
@@ -91,7 +91,7 @@ public class Text {
     public int getCharacterCount() {
     	return original.length();
     }
-
+    
     public double averageWordLength() {
         int size = words.size();
         double sumLength = 0;
@@ -100,14 +100,10 @@ public class Text {
         }
         return sumLength / size;
     }
-    
+    //Needs to force getWordCount to be a double because otherwise integer division
+    //causes problems.
     public double averageSentenceLength() {
-    	int size = sentences.size();
-    	double sumLength = 0;
-    	for (String sentence : sentences) {
-    		sumLength += sentence.length();
-    	}
-    	return sumLength / size;
+        return getSentenceCount()/(double)getWordCount();
     }
     // public static double averageSentenceLength()
     
