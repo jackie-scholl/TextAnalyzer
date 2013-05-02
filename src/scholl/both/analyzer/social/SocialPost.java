@@ -26,14 +26,14 @@ public class SocialPost implements Comparable<SocialPost> {
         this.tags = Collections.unmodifiableList(tags);
     }
     
-    public SocialPost(SimpleUser poster, long timestamp, String text) {
+    public SocialPost(SocialUser poster, long timestamp, String text) {
         this(poster, timestamp, text, null, new ArrayList<String>());
     }
     
-    public SocialPost(String poster, long timestamp, String text, String mention, String[] tags) {
+    /*public SocialPost(String poster, long timestamp, String text, String mention, String[] tags) {
         this(new SimpleUser(poster), timestamp, text, new SimpleUser(mention),
                 Arrays.asList(tags));
-    }
+    }*/
     
     /**
      * Returns the user who published this post.

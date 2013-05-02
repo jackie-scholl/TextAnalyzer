@@ -5,6 +5,8 @@ package scholl.both.analyzer.social;
 public interface SocialUser {
 
     public abstract String getName();
+    
+    public abstract PostSet getPosts(int num);
 
     public abstract int hashCode();
 
