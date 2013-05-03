@@ -83,24 +83,39 @@ public class SocialClient {
             blogs.add(tclient.getUser(blog));
         }
         
-        int count = 10;
         for (SocialUser b : blogs) {
-            long blogStart = System.currentTimeMillis();
-            
-            PrintStream file = new PrintStream(String.format("out//%s.txt", b.getName()));
-            
-            PostSet ps = b.getPosts(count);
-            file.println(ps.getWordCount2().toString2());
-            file.close();
-            
-            long blogEnd = System.currentTimeMillis();
-            System.out.printf("Finished blog %s with %d posts - took %.3f seconds%n", b.getName(), ps.size(), (blogEnd-blogStart)/1000.0);
+            doStats(b, 10);
         }
         
         long end = System.currentTimeMillis();
         double timeTaken = (end-start)/1000.0;
         
         System.out.printf("Finished - took %.3f seconds", timeTaken);
+    }
+    
+    public static void doStats(SocialUser b, int count) {
+        long blogStart = System.currentTimeMillis();
+        
+        PostSet ps = b.getPosts(count);
+        
+        try {
+            File outputFolder = new File("out");
+            outputFolder.mkdir();
+            File userFolder = new File(outputFolder, b.getName());
+            userFolder.mkdir();
+            File wordFrequencies = new File(userFolder, "wordFrequencies.txt");
+            wordFrequencies.createNewFile();
+            PrintStream fileStream = new PrintStream(wordFrequencies);
+            
+            fileStream.println(ps.getWordCount2().toString2());
+            fileStream.close();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        long blogEnd = System.currentTimeMillis();
+        System.out.printf("Finished blog %s with %d posts - took %.3f seconds%n", b.getName(), ps.size(), (blogEnd-blogStart)/1000.0);
     }
     
     public static void openBrowser(String url) throws IOException {

@@ -41,6 +41,10 @@ public class TumblrUser implements SocialUser {
         return blog.toString();
     }
     
+    public int compareTo(SocialUser other) {
+        return this.getName().compareTo(other.getName());
+    }
+    
     public int hashCode() {
         final int prime = 31;
         int result = 1;
