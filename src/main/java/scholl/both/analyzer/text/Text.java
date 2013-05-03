@@ -105,7 +105,7 @@ public class Text {
     }
     public double getPunctuationDiversityIndex(){
         //punctuation marks = , . ; : ?
-        
+        return 0;
     }
     private int getCharCount(char desired){
         //Compare the length of the original before and after replacing everything.
