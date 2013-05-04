@@ -14,12 +14,11 @@ import com.sun.net.httpserver.HttpServer;
 /**
  * An HTTP server.
  * 
- * NOTE: I modified this from http://fragments.turtlemeat.com/javawebserver.php
+ * NOTE: I modified this from http://stackoverflow.com/a/3732328/1772907
  * 
  * @author Jackson
  */
 public class OAuthCallbackServer {
-    private final int port; // port we are going to listen to
     private URI request;
     private HttpServer server;
     
@@ -29,11 +28,10 @@ public class OAuthCallbackServer {
      * @param listenPort port to bind to (default 80)
      */
     public OAuthCallbackServer(int listenPort) {
-        port = listenPort;
         request = null;
         
         try {
-            server = HttpServer.create(new InetSocketAddress(port), 0);
+            server = HttpServer.create(new InetSocketAddress(listenPort), 0);
             server.createContext("/callback", new MyHandler(this));
             server.setExecutor(null); // creates a default executor
             server.start();
@@ -50,16 +48,14 @@ public class OAuthCallbackServer {
         }
         
         public void handle(HttpExchange t) throws IOException {
-            String response = "This is the response" +
-                    "<script type=\"text/javascript\">window.open('javascript:window.open(\"\", \"_self\", \"\");" +
-                    "window.close();', '_self');</script>";
             StringBuffer sb = new StringBuffer();
             Reader r = new FileReader("callback_response_page.html");
             while (r.ready()) {
                 sb.append((char) r.read());
             }
             r.close();
-            response = sb.toString();
+            
+            String response = sb.toString();
             
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
@@ -67,7 +63,6 @@ public class OAuthCallbackServer {
             os.close();
             
             s.setRequest(t.getRequestURI());
-            
         }
     }
     
@@ -85,42 +80,53 @@ public class OAuthCallbackServer {
         }
         server.stop(1);
         
-        System.out.printf("URI: %s%n", request);
-        String tmp = request.getQuery();
-        System.out.printf("Path: %s%n", tmp);
-        
-        String verifier = tmp.replaceAll(
+        String verifier = request.getQuery().replaceAll(
                 "oauth_token=\\w+&oauth_verifier=(\\w+)", "$1");
         System.out.printf("Verifier: %s%n", verifier);
         
         return verifier;
-        
     }
     
+    
+    
+}
+
+/*
+ * OLD CODE
+
+
+
+
+
+
+
+
+        
+        //System.out.printf("URI: %s%n", request);
+        //String tmp = request.getQuery();
+        //System.out.printf("Path: %s%n", tmp);
+
     /**
-     * Get a request on the set port and return the verifier as a string.
+     * This method makes the HTTP header for the response.
      * 
-     * @return the OAuth verifier
-     * @throws IOException
-     */
-    public String handleRequest() throws IOException {
-        System.out.printf("A simple HTTP server, used for OAuth callback.%n%n");
-        System.out.printf("Trying to bind to localhost on port %d...", port);
-        
-        ServerSocket serverSocket = new ServerSocket(port);
-        
-        System.out.printf("Ready, Waiting for requests...%n");
-        
-        try {
-            // this call waits/blocks until someone connects to the port we are listening to
-            Socket connectionSocket = serverSocket.accept();
-            
-            return getOAuthVerifier(
-                    new BufferedReader(new InputStreamReader(connectionSocket.getInputStream())),
-                    new DataOutputStream(connectionSocket.getOutputStream()));
-        } finally {
-            serverSocket.close();
+     * @param returnCode HTTP response code
+     * @return HTTP header
+     *
+    private String constructHeader(int returnCode) {
+        String responseString = "";
+        if (returnCode == 200) {
+            responseString = "OK";
+        } else if (returnCode == 501) {
+            responseString = "Not Implemented";
+        } else {
+            responseString = "(return code unknown)";
         }
+        
+        String s = String
+                .format("HTTP/1.0 %d %s%s", returnCode, responseString,
+                        "%nConnection: close%nServer: SimpleHTTPtutorial v0%nContent-Type: text/html%n%n\r\n");
+        
+        return s;
     }
     
     private String getOAuthVerifier(BufferedReader input, DataOutputStream output)
@@ -140,41 +146,37 @@ public class OAuthCallbackServer {
                 "GET /callback\\?oauth_token=\\w+&oauth_verifier=(\\w+) HTTP/1.1", "$1");
         print.print("<script type=\"text/javascript\">\r\nwindow.open('javascript:window.open(\"\", "
                 + "\"_self\", \"\");window.close();', '_self');\r\n</script>");
-        // print.printf("%nVerifier: %s%n", verifier);
         print.close();
         
         return verifier;
     }
-    
-    /**
-     * This method makes the HTTP header for the response.
-     * 
-     * @param returnCode HTTP response code
-     * @return HTTP header
-     */
-    private String constructHeader(int returnCode) {
-        String responseString = "";
-        if (returnCode == 200) {
-            responseString = "OK";
-        } else if (returnCode == 501) {
-            responseString = "Not Implemented";
-        } else {
-            responseString = "(return code unknown)";
-        }
-        
-        String s = String
-                .format("HTTP/1.0 %d %s%s", returnCode, responseString,
-                        "%nConnection: close%nServer: SimpleHTTPtutorial v0%nContent-Type: text/html%n%n\r\n");
-        
-        return s;
-    }
-}
 
-/*
- * OLD CODE
- * 
- * 
- * <!--
+/**
+     * Get a request on the set port and return the verifier as a string.
+     * 
+     * @return the OAuth verifier
+     * @throws IOException
+     *
+    private String handleRequest() throws IOException {
+        System.out.printf("A simple HTTP server, used for OAuth callback.%n%n");
+        System.out.printf("Trying to bind to localhost on port %d...", port);
+        
+        ServerSocket serverSocket = new ServerSocket(port);
+        
+        System.out.printf("Ready, Waiting for requests...%n");
+        
+        try {
+            // this call waits/blocks until someone connects to the port we are listening to
+            Socket connectionSocket = serverSocket.accept();
+            
+            return getOAuthVerifier(
+                    new BufferedReader(new InputStreamReader(connectionSocket.getInputStream())),
+                    new DataOutputStream(connectionSocket.getOutputStream()));
+        } finally {
+            serverSocket.close();
+        }
+    } 
+ <!--
 window.open('javascript:window.open(\"\", \"_self\", \"\");" +
                     "window.close();', '_self');
 //-->
