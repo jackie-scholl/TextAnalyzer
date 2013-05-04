@@ -13,7 +13,7 @@ public class SocialStats {
         outputFolder = new File("out");
         outputFolder.mkdir();
     }
-
+    
     static void tumlbrThing() throws IOException {
         long start = System.currentTimeMillis();
         
@@ -30,7 +30,7 @@ public class SocialStats {
         options.put("notes_info", "true");
         options.put("limit", "20");
         
-        String[] blogNames = {"dataandphilosophy"};
+        String[] blogNames = { "dataandphilosophy" };
         for (String blog : blogNames) {
             blogs.add(tclient.getUser(blog));
         }
@@ -40,22 +40,37 @@ public class SocialStats {
         }
         
         long end = System.currentTimeMillis();
-        double timeTaken = (end-start)/1000.0;
+        double timeTaken = (end - start) / 1000.0;
         
         System.out.printf("Finished - took %.3f seconds", timeTaken);
     }
-
+    
     public static void doStats(SocialUser b, int count) {
         long blogStart = System.currentTimeMillis();
         
         PostSet ps = b.getPosts(count);
         
         File userFolder = new File(outputFolder, b.getName());
+        delete(userFolder);
         userFolder.mkdir();
         getWordFrequencies(userFolder, ps);
+        getGeneral(userFolder, ps, b);
         
         long blogEnd = System.currentTimeMillis();
-        System.out.printf("Finished blog %s with %d posts - took %.3f seconds%n", b.getName(), ps.size(), (blogEnd-blogStart)/1000.0);
+        System.out.printf("Finished blog %s with %d posts - took %.3f seconds%n", b.getName(),
+                ps.size(), (blogEnd - blogStart) / 1000.0);
+    }
+    
+    private static void delete(File f) {
+        if (f == null) {
+            return;
+        }
+        if (f.isDirectory()) {
+            for (File f2 : f.listFiles()) {
+                delete(f2);
+            }
+        }
+        f.delete();
     }
     
     public static void getWordFrequencies(File userFolder, PostSet ps) {
@@ -77,13 +92,13 @@ public class SocialStats {
         }
     }
     
-    public static void getGeneralStats(File userFolder, PostSet ps, SocialUser u) {
-        File generalStats = new File(userFolder, "generalStats.txt");
+    public static void getGeneral(File userFolder, PostSet ps, SocialUser u) {
+        File general = new File(userFolder, "general.txt");
         
         PrintStream stream = null;
         try {
-            generalStats.createNewFile();
-            stream = new PrintStream(generalStats);
+            general.createNewFile();
+            stream = new PrintStream(general);
             
             stream.printf("Name: %s%n", u.getName());
             stream.printf("Title: %s%n", u.getTitle());
