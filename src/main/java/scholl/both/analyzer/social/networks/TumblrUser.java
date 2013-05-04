@@ -1,6 +1,7 @@
 package scholl.both.analyzer.social.networks;
 
 import scholl.both.analyzer.social.*;
+
 import java.util.*;
 
 import com.tumblr.jumblr.JumblrClient;
@@ -25,18 +26,60 @@ public class TumblrUser implements SocialUser {
         return blog.getName();
     }
 
+    /**
+     * Returns the blog title
+     * @return blog title
+     * @see com.tumblr.jumblr.types.Blog#getTitle()
+     */
+    public String getTitle() {
+        return blog.getTitle();
+    }
+
+    /**
+     * Returns the blog description
+     * @return the blog description
+     * @see com.tumblr.jumblr.types.Blog#getDescription()
+     */
+    public String getDescription() {
+        return blog.getDescription();
+    }
+
     public PostSet getPosts(int num) {
         return TumblrClient.getPosts(blog, new HashMap<String, Object>(), num);
     }
 
-    public Integer getPostCount() {
+    public int getPostCount() {
         return blog.getPostCount();
     }
 
-    public List<User> followers() {
-        return blog.followers();
+    public List<SocialUser> getFollowers() {
+        return getFollowers(new HashMap<String, Object>());
     }
     
+    /**
+     * @param options
+     * @return the followers of this blog
+     * @see com.tumblr.jumblr.types.Blog#followers(java.util.Map)
+     */
+    public List<SocialUser> getFollowers(Map<String, ?> options) {
+        List<SocialUser> l = new ArrayList<SocialUser>();
+        for (User u : blog.followers(options)) {
+            Blog b = client.blogInfo(u.getName());
+            SocialUser su = new TumblrUser(b);
+            l.add(su);
+        }
+        
+        return l;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see com.tumblr.jumblr.types.Blog#getUpdated()
+     */
+    public long getLastUpdated() {
+        return 1000L*blog.getUpdated();
+    }
+
     public String toString() {
         return blog.toString();
     }
