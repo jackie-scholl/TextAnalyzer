@@ -1,6 +1,5 @@
 package scholl.both.analyzer.social;
 
-import scholl.both.analyzer.social.networks.TumblrClient;
 import scholl.both.analyzer.text.*;
 
 import java.awt.Desktop;
@@ -56,66 +55,10 @@ public class SocialClient {
         }
         
         try {
-            tumlbrThing();
+            SocialStats.tumlbrThing();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    
-    private static void tumlbrThing() throws IOException {
-        long start = System.currentTimeMillis();
-        
-        TumblrClient tclient = new TumblrClient();
-        tclient.authenticate();
-        
-        System.out.println(tclient.getAuthenticatedUser().getName());
-        
-        Set<SocialUser> blogs = tclient.getInterestingUsers();
-        
-        Map<String, Object> options = new HashMap<String, Object>();
-        options.put("reblog_info", "true");
-        options.put("filter", "text");
-        options.put("notes_info", "true");
-        options.put("limit", "20");
-        
-        String[] blogNames = {"dataandphilosophy"};
-        for (String blog : blogNames) {
-            blogs.add(tclient.getUser(blog));
-        }
-        
-        for (SocialUser b : blogs) {
-            doStats(b, 10);
-        }
-        
-        long end = System.currentTimeMillis();
-        double timeTaken = (end-start)/1000.0;
-        
-        System.out.printf("Finished - took %.3f seconds", timeTaken);
-    }
-    
-    public static void doStats(SocialUser b, int count) {
-        long blogStart = System.currentTimeMillis();
-        
-        PostSet ps = b.getPosts(count);
-        
-        try {
-            File outputFolder = new File("out");
-            outputFolder.mkdir();
-            File userFolder = new File(outputFolder, b.getName());
-            userFolder.mkdir();
-            File wordFrequencies = new File(userFolder, "wordFrequencies.txt");
-            wordFrequencies.createNewFile();
-            PrintStream fileStream = new PrintStream(wordFrequencies);
-            
-            fileStream.println(ps.getWordCount2().toString2());
-            fileStream.close();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        long blogEnd = System.currentTimeMillis();
-        System.out.printf("Finished blog %s with %d posts - took %.3f seconds%n", b.getName(), ps.size(), (blogEnd-blogStart)/1000.0);
     }
     
     public static void openBrowser(String url) throws IOException {
