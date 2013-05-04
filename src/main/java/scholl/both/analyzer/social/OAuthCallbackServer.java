@@ -6,9 +6,6 @@ import java.net.*;
 /**
  * An HTTP server.
  * 
- * WARNING: Considered highly dangerous. Not ready for production use. To be honest, not ready for
- * development use.
- * 
  * NOTE: I modified this from http://fragments.turtlemeat.com/javawebserver.php
  * 
  * @author Jackson
