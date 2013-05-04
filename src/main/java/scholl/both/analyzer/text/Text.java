@@ -1,8 +1,8 @@
-package main.java.scholl.both.analyzer.text;
+package scholl.both.analyzer.text;
 
 import java.util.*;
 
-import main.java.scholl.both.analyzer.util.Counter;
+import scholl.both.analyzer.util.Counter;
 
 /**
  * @author      Keller Scholl <Keller.scholl@gmail.com>
@@ -119,8 +119,6 @@ public class Text {
                  Math.pow(colonCount, 2)+
                  Math.pow(questionCount, 2)
                  );
-        //punctuation marks = , . ; : ?
-        return 0;
     }
     public int getCharCount(char desired){
         return getLetterCount2().get(desired);

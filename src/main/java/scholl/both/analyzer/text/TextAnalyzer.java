@@ -1,4 +1,4 @@
-package main.java.scholl.both.analyzer.text;
+package scholl.both.analyzer.text;
 
 import java.util.*;
 
