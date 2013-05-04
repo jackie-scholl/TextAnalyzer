@@ -46,9 +46,9 @@ public class TumblrClient {
         String url = service.getAuthorizationUrl(request);
         SocialClient.openBrowser(url);
 
-        OAuthCallbackServer s = new OAuthCallbackServer(8002);
-        String response = s.handleRequest();
-
+        OAuthCallbackServer s = new OAuthCallbackServer(8004);
+        String response = s.getVerifier();
+        
         Token access = service.getAccessToken(request, new Verifier(response));
         client.setToken(access.getToken(), access.getSecret());
     }
