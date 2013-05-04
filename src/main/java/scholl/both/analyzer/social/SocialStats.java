@@ -14,6 +14,37 @@ public class SocialStats {
         outputFolder.mkdir();
     }
 
+    static void tumlbrThing() throws IOException {
+        long start = System.currentTimeMillis();
+        
+        TumblrClient tclient = new TumblrClient();
+        tclient.authenticate();
+        
+        System.out.println(tclient.getAuthenticatedUser().getName());
+        
+        Set<SocialUser> blogs = tclient.getInterestingUsers();
+        
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("reblog_info", "true");
+        options.put("filter", "text");
+        options.put("notes_info", "true");
+        options.put("limit", "20");
+        
+        String[] blogNames = {"dataandphilosophy"};
+        for (String blog : blogNames) {
+            blogs.add(tclient.getUser(blog));
+        }
+        
+        for (SocialUser b : blogs) {
+            doStats(b, 10);
+        }
+        
+        long end = System.currentTimeMillis();
+        double timeTaken = (end-start)/1000.0;
+        
+        System.out.printf("Finished - took %.3f seconds", timeTaken);
+    }
+
     public static void doStats(SocialUser b, int count) {
         long blogStart = System.currentTimeMillis();
         
@@ -44,38 +75,28 @@ public class SocialStats {
                 fileStream.close();
             }
         }
-        
     }
-
-    static void tumlbrThing() throws IOException {
-        long start = System.currentTimeMillis();
+    
+    public static void getGeneralStats(File userFolder, PostSet ps, SocialUser u) {
+        File generalStats = new File(userFolder, "generalStats.txt");
         
-        TumblrClient tclient = new TumblrClient();
-        tclient.authenticate();
-        
-        System.out.println(tclient.getAuthenticatedUser().getName());
-        
-        Set<SocialUser> blogs = tclient.getInterestingUsers();
-        
-        Map<String, Object> options = new HashMap<String, Object>();
-        options.put("reblog_info", "true");
-        options.put("filter", "text");
-        options.put("notes_info", "true");
-        options.put("limit", "20");
-        
-        String[] blogNames = {"dataandphilosophy"};
-        for (String blog : blogNames) {
-            blogs.add(tclient.getUser(blog));
+        PrintStream stream = null;
+        try {
+            generalStats.createNewFile();
+            stream = new PrintStream(generalStats);
+            
+            stream.printf("Name: %s%n", u.getName());
+            stream.printf("Title: %s%n", u.getTitle());
+            stream.printf("Description: %s%n", u.getDescription());
+            stream.printf("Number of posts: %d%n", u.getPostCount());
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
         }
-        
-        for (SocialUser b : blogs) {
-            doStats(b, 10);
-        }
-        
-        long end = System.currentTimeMillis();
-        double timeTaken = (end-start)/1000.0;
-        
-        System.out.printf("Finished - took %.3f seconds", timeTaken);
     }
     
 }
