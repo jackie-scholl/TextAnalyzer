@@ -1,8 +1,8 @@
-package scholl.both.analyzer.text;
+package main.java.scholl.both.analyzer.text;
 
 import java.util.*;
 
-import scholl.both.analyzer.util.Counter;
+import main.java.scholl.both.analyzer.util.Counter;
 
 /**
  * @author      Keller Scholl <Keller.scholl@gmail.com>
@@ -104,17 +104,34 @@ public class Text {
         return getSentenceCount()/(double)getWordCount();
     }
     public double getPunctuationDiversityIndex(){
+        Counter<Character> count = getLetterCount2();
+        double periodCount = count.get('.');
+        double commaCount  = count.get(',');
+        double semiCount   = count.get(';');
+        double colonCount  = count.get(':');
+        double questionCount=count.get('?');
+        double totalCount = periodCount+commaCount+semiCount+colonCount+questionCount;
+        
+        return Math.pow(totalCount,2)/
+                (Math.pow(periodCount, 2)+
+                 Math.pow(commaCount, 2)+
+                 Math.pow(semiCount, 2)+
+                 Math.pow(colonCount, 2)+
+                 Math.pow(questionCount, 2)
+                 );
         //punctuation marks = , . ; : ?
         return 0;
     }
-    private int getCharCount(char desired){
-        //Compare the length of the original before and after replacing everything.
-        return 5;
+    public int getCharCount(char desired){
+        return getLetterCount2().get(desired);
     }
     // TODO: Letter counter
     public Counter<Character> getLetterCount2() {
-        String cat = "dog".replaceAll("o"," ");
-        return null;
+        Counter<Character> count = new Counter<Character>();
+        for (char cha : original.toCharArray()) {
+            count.add(cha);
+        }
+        return count;
     }
 
     public Counter<String> getWordCount2() {
