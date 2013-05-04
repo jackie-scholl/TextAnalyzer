@@ -105,20 +105,26 @@ public class Text {
     }
     public double getPunctuationDiversityIndex(){
         Counter<Character> count = getLetterCount2();
+        char[] chars = {'.', ',', ';', ':', '?'};
+        List<Double> counts = new ArrayList<Double>();
+        for (char c : chars)
+            counts.add((double) count.get(c));
+        
         double periodCount = count.get('.');
         double commaCount  = count.get(',');
-        double semiCount   = count.get(';');
+        double semiColonCount   = count.get(';');
         double colonCount  = count.get(':');
         double questionCount=count.get('?');
-        double totalCount = periodCount+commaCount+semiCount+colonCount+questionCount;
+        double totalCount = periodCount+commaCount+semiColonCount+colonCount+questionCount;
         
         return Math.pow(totalCount,2)/
                 (Math.pow(periodCount, 2)+
                  Math.pow(commaCount, 2)+
-                 Math.pow(semiCount, 2)+
+                 Math.pow(semiColonCount, 2)+
                  Math.pow(colonCount, 2)+
                  Math.pow(questionCount, 2)
                  );
+        //punctuation marks = , . ; : ?
     }
     public int getCharCount(char desired){
         return getLetterCount2().get(desired);
