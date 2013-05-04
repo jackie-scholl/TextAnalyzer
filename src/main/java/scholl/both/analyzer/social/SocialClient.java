@@ -76,11 +76,8 @@ public class SocialClient {
 
 /*
  * List<String> tags = new ArrayList<>(); for (String t : p.getTags()) { tags.add(t); }
- */
-
-/*
- * 
- * /*OAuthService service = client.getRequestBuilder().getOAuth();
+ 
+ OAuthService service = client.getRequestBuilder().getOAuth();
         Token t = service.getRequestToken();
         String url = service.getAuthorizationUrl(t);
         System.out.printf("Go to this URL to authenticate: %s%n", url);
