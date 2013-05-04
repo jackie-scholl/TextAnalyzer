@@ -18,7 +18,7 @@ public class Text {
     
     /**
      * Method that creates a text given a String. 
-     * @param The string that you want to analyse. 
+     * @param original the string that you want to analyze. 
      */
     public Text(String original) {
         this.original = original;
