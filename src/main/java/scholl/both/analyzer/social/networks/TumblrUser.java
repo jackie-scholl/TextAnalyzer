@@ -96,7 +96,6 @@ public class TumblrUser implements SocialUser {
         private final Blog blog;
         
         public PostGetter(Blog blog, Map<String, Object> options, PostSet ps) {
-            System.out.println(options);
             this.options = new HashMap<String, Object>(options);
             this.ps = ps;
             this.blog = blog;
