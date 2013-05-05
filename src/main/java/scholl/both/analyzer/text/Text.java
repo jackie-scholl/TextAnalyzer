@@ -21,6 +21,7 @@ public class Text {
      * @param original the string that you want to analyze. 
      */
     public Text(String original) {
+        //Strips out links
         original = original.replaceAll("(\\w+://)?(\\w+\\.)+(\\w+)([\\w\\+\\?/\\\\=-]+)*", "");
         
         this.original = original;
