@@ -109,27 +109,17 @@ public class Text {
         List<Double> counts = new ArrayList<Double>();
         for (char c : chars)
             counts.add((double) count.get(c));
-        
-        double periodCount = count.get('.');
-        double commaCount  = count.get(',');
-        double semiColonCount   = count.get(';');
-        double colonCount  = count.get(':');
-        double questionCount=count.get('?');
-        double totalCount = periodCount+commaCount+semiColonCount+colonCount+questionCount;
-        
-        return Math.pow(totalCount,2)/
-                (Math.pow(periodCount, 2)+
-                 Math.pow(commaCount, 2)+
-                 Math.pow(semiColonCount, 2)+
-                 Math.pow(colonCount, 2)+
-                 Math.pow(questionCount, 2)
-                 );
-        //punctuation marks = , . ; : ?
+        double totalCount = 0;
+        double bottomSum = 0;
+        for (Double d : counts){
+            totalCount+=d;
+            bottomSum+=Math.pow(d, 2);
+        }
+        return Math.pow(totalCount,2)/bottomSum;
     }
     public int getCharCount(char desired){
         return getLetterCount2().get(desired);
     }
-    // TODO: Letter counter
     public Counter<Character> getLetterCount2() {
         Counter<Character> count = new Counter<Character>();
         for (char cha : original.toCharArray()) {
