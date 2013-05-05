@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.*;
 
 public class SocialStats {
-    
     private static File outputFolder;
     
     static {
