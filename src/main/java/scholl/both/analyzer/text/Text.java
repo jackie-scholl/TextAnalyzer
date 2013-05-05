@@ -106,7 +106,7 @@ public class Text {
     public double averageSentenceLength() {
         return getSentenceCount()/(double)getWordCount();
     }
-    public int getCharCount(char desired){
+    public long getCharCount(char desired){
         return getLetterCount2().get(desired);
     }
     public Counter<Character> getLetterCount2() {

@@ -14,14 +14,14 @@ import java.util.*;
  * @param <K> key type
  */
 public class Counter<K> {
-    private Map<K, Integer> map;
-    private int sum;
+    private Map<K, Long> map;
+    private long sum;
     
     /**
      * Sole constructor. Makes a new Counter object with no keys defined.
      */
     public Counter() {
-        map = new HashMap<K, Integer>();
+        map = new HashMap<K, Long>();
         sum = 0;
     }
     
@@ -31,7 +31,7 @@ public class Counter<K> {
      * @param key key to increment
      * @return the new count for key
      */
-    public int add(K key) {
+    public long add(K key) {
         return add(key, 1);
     }
     
@@ -42,9 +42,9 @@ public class Counter<K> {
      * @param amount amount to increase the count by
      * @return the new count for key
      */
-    public int add(K key, int amount) {
+    public long add(K key, long amount) {
         sum += amount;
-        int count = get(key);
+        long count = get(key);
         count += amount;
         map.put(key, count);
         return count;
@@ -68,8 +68,8 @@ public class Counter<K> {
      * @param value value to set key ot
      * @return the previous value of the key
      */
-    public int set(K key, int value) {
-        int previousValue = get(key);
+    public long set(K key, long value) {
+        long previousValue = get(key);
         map.put(key, value);
         return previousValue;
     }
@@ -84,8 +84,8 @@ public class Counter<K> {
      * @param key key to reset count of
      * @return the previous count
      */
-    public int remove(K key) {
-        int count = get(key);
+    public long remove(K key) {
+        long count = get(key);
         sum -= count;
         map.remove(key);
         return count;
@@ -97,12 +97,20 @@ public class Counter<K> {
      * @param key key to get count of
      * @return the count associated with the key
      */
-    public int get(K key) {
-        Integer x = map.get(key);
+    public long get(K key) {
+        Long x = map.get(key);
         if (x == null) {
-            x = 0;
+            x = 0L;
         }
         return x;
+    }
+    
+    public long getSum() {
+        long sum = 0;
+        for (K key : getKeys()) {
+            sum += get(key);
+        }
+        return sum;
     }
     
     /**
@@ -112,15 +120,15 @@ public class Counter<K> {
      */
     public List<K> getSorted() {
         List<K> list = new ArrayList<K>();
-        Comparator<Integer> inverseComparator = new Comparator<Integer>() {
+        Comparator<Long> inverseComparator = new Comparator<Long>() {
             @Override
-            public int compare(Integer a, Integer b) {
-                return new Integer(b).compareTo(a);
+            public int compare(Long a, Long b) {
+                return new Long(b).compareTo(a);
             }
         };
-        SortedMap<Integer, Set<K>> inverse = new TreeMap<Integer, Set<K>>(inverseComparator);
+        SortedMap<Long, Set<K>> inverse = new TreeMap<Long, Set<K>>(inverseComparator);
         for (K key : map.keySet()) {
-            int count = map.get(key);
+            long count = map.get(key);
             Set<K> set = inverse.get(count);
             if (set == null) {
                 set = new HashSet<K>();
@@ -152,8 +160,8 @@ public class Counter<K> {
      * 
      * @return the copied map
      */
-    public Map<K, Integer> getMap() {
-        Map<K, Integer> map2 = new HashMap<K, Integer>();
+    public Map<K, Long> getMap() {
+        Map<K, Long> map2 = new HashMap<K, Long>();
         map2.putAll(map);
         return map2;
     }
