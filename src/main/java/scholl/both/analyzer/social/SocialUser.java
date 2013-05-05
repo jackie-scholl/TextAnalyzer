@@ -5,7 +5,7 @@ import java.util.List;
 //TODO: Add Javadocs
 
 public interface SocialUser {
-
+    
     public abstract String getName();
     
     public abstract String getTitle();
@@ -25,9 +25,11 @@ public interface SocialUser {
      * @return time last updated
      */
     public abstract long getLastUpdated();
-
+    
+    @Override
     public abstract int hashCode();
-
+    
+    @Override
     public abstract boolean equals(Object obj);
-
+    
 }

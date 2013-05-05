@@ -1,15 +1,10 @@
 package scholl.both.analyzer.social;
 
 import java.io.*;
-import java.net.*;
-
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URI;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 
 /**
  * An HTTP server.
@@ -47,6 +42,7 @@ public class OAuthCallbackServer {
             this.s = s;
         }
         
+        @Override
         public void handle(HttpExchange t) throws IOException {
             StringBuffer sb = new StringBuffer();
             Reader r = new FileReader("callback_response_page.html");
@@ -80,14 +76,12 @@ public class OAuthCallbackServer {
         }
         server.stop(1);
         
-        String verifier = request.getQuery().replaceAll(
-                "oauth_token=\\w+&oauth_verifier=(\\w+)", "$1");
+        String verifier = request.getQuery().replaceAll("oauth_token=\\w+&oauth_verifier=(\\w+)",
+                "$1");
         System.out.printf("Verifier: %s%n", verifier);
         
         return verifier;
     }
-    
-    
     
 }
 

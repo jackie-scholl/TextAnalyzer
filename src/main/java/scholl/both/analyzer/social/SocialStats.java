@@ -61,9 +61,8 @@ public class SocialStats {
     }
     
     private static void delete(File f) {
-        if (f == null) {
+        if (f == null)
             return;
-        }
         if (f.isDirectory()) {
             for (File f2 : f.listFiles()) {
                 delete(f2);

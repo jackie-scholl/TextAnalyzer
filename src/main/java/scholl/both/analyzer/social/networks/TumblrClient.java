@@ -10,6 +10,7 @@ import org.scribe.builder.api.TumblrApi;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tumblr.jumblr.JumblrClient;
@@ -18,7 +19,7 @@ import com.tumblr.jumblr.types.*;
 public class TumblrClient {
     private JumblrClient client;
     private String consumerKey, consumerSecret;
-
+    
     public TumblrClient() throws IOException {
         // Read in the JSON data for the credentials
         BufferedReader br = new BufferedReader(new FileReader("credentials.json"));
@@ -27,32 +28,33 @@ public class TumblrClient {
             json += br.readLine();
         }
         br.close();
-
+        
         // Parse the credentials
         JsonParser parser = new JsonParser();
         JsonObject obj = (JsonObject) parser.parse(json);
-
+        
         consumerKey = obj.getAsJsonPrimitive("consumer_key").getAsString();
         consumerSecret = obj.getAsJsonPrimitive("consumer_secret").getAsString();
+        
         // Create a client
         client = new JumblrClient(consumerKey, consumerSecret);
     }
-
+    
     public void authenticate() throws IOException {
         OAuthService service = new ServiceBuilder().provider(TumblrApi.class).apiKey(consumerKey)
                 .apiSecret(consumerSecret).build();
         Token request = service.getRequestToken();
-
+        
         String url = service.getAuthorizationUrl(request);
         SocialClient.openBrowser(url);
-
+        
         OAuthCallbackServer s = new OAuthCallbackServer(8004);
         String response = s.getVerifier();
         
         Token access = service.getAccessToken(request, new Verifier(response));
         client.setToken(access.getToken(), access.getSecret());
     }
-
+    
     public JumblrClient getJumblr() {
         return client;
     }
@@ -71,7 +73,8 @@ public class TumblrClient {
             s.add(new TumblrUser(b));
             
             List<User> followers = TumblrClient.getFollowers(b, new HashMap<String, Object>(), 100);
-            System.out.printf("\t%s (%s) has these %d followers:%n", b.getName(), b.getTitle(), followers.size());
+            System.out.printf("\t%s (%s) has these %d followers:%n", b.getName(), b.getTitle(),
+                    followers.size());
             
             for (User u2 : followers) {
                 System.out.printf("\t\t%s%n", u2.getName());
@@ -80,7 +83,8 @@ public class TumblrClient {
             }
         }
         
-        List<Blog> following = TumblrClient.getFollowing(client, new HashMap<String, Object>(), 100);
+        List<Blog> following = TumblrClient
+                .getFollowing(client, new HashMap<String, Object>(), 100);
         System.out.printf("User %s is following these %d blogs: %n", u.getName(), following.size());
         for (Blog b : following) {
             System.out.printf("\t%s (%s)%n", b.getName(), b.getTitle());
@@ -99,12 +103,12 @@ public class TumblrClient {
     public SocialUser getUser(String b) {
         return getUser(client.blogInfo(b));
     }
-
+    
     public static List<User> getFollowers(Blog b, Map<String, Object> options, int num) {
         List<User> users = new ArrayList<User>();
         
         int lim = 20;
-        lim = num>lim? lim : num;
+        lim = num > lim ? lim : num;
         
         int initialOffset = 0;
         for (int i = initialOffset; i < num; i += lim) {
@@ -115,12 +119,12 @@ public class TumblrClient {
         
         return users;
     }
-
+    
     public static List<Blog> getFollowing(JumblrClient c, Map<String, Object> options, int num) {
         List<Blog> blogs = new ArrayList<Blog>();
         
         int lim = 20;
-        lim = num>lim? lim : num;
+        lim = num > lim ? lim : num;
         
         int initialOffset = 0;
         for (int i = initialOffset; i < num; i += lim) {
@@ -131,11 +135,9 @@ public class TumblrClient {
         
         return blogs;
     }
-
-    public static SocialPost socialFromTumblrPost(Post p) {
+    
+    public static SocialPost getSocialPost(Post p) {
         SocialUser u = new TumblrUser(p.getBlogName(), p.getClient());
-        
-        //SocialUser mentioned = new TumblrUser(p.getRebloggedName(), p.getClient());
         
         String type = p.getType();
         String text = "unknown";
@@ -153,25 +155,25 @@ public class TumblrClient {
             text = ((LinkPost) p).getDescription();
         }
         
-        SocialPost np = new SocialPost(u, p.getTimestamp(), text, null, p.getTags());
-        return np;
+        return new SocialPost(u, p.getTimestamp(), text, null, p.getTags());
         
     }
-
+    
     public static PostSet getPosts(Blog b, Map<String, Object> options, int num) {
         PostSet ps = new PostSet();
         
         int lim = 20;
-        
-        lim = num>lim? lim : num;
+        lim = num > lim ? lim : num;
         
         int initialOffset = 0;
         for (int i = initialOffset; i < num; i += lim) {
-            options.put("limit", lim);
+            int diff = num - i;
+            diff = diff > lim ? lim : diff;
+            options.put("limit", diff);
             options.put("offset", i);
             List<Post> posts = b.posts(options);
             for (Post p : posts) {
-                ps.add(TumblrClient.socialFromTumblrPost(p));
+                ps.add(TumblrClient.getSocialPost(p));
             }
         }
         

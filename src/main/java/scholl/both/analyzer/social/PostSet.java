@@ -1,8 +1,8 @@
 package scholl.both.analyzer.social;
 
-import java.util.*;
-
 import scholl.both.analyzer.util.Counter;
+
+import java.util.*;
 
 // TODO: Add Javadocs
 
@@ -25,11 +25,11 @@ public class PostSet {
     public SocialPost[] getPosts() {
         return posts.toArray(new SocialPost[0]);
     }
-
+    
     public PostSet getAllWithTag(String tag) {
         return new PostSet(index.get(tag));
     }
-
+    
     public int size() {
         return posts.size();
     }
@@ -49,7 +49,7 @@ public class PostSet {
         }
         return c;
     }
-
+    
     public void add(SocialPost p) {
         posts.add(p);
         for (String tag : p.getTags()) {
@@ -61,16 +61,17 @@ public class PostSet {
             index.put(tag, postsForTag);
         }
     }
-
+    
     public void addAll(PostSet other) {
         posts.addAll(other.posts);
         index.putAll(other.index);
     }
-
+    
     public void addAll(Iterable<SocialPost> other) {
         addAll(new PostSet(other));
     }
-
+    
+    @Override
     public PostSet clone() throws CloneNotSupportedException {
         PostSet other = (PostSet) super.clone();
         other.posts = new TreeSet<SocialPost>(posts);
@@ -83,17 +84,3 @@ public class PostSet {
         return "PostSet [posts=" + this.posts + "]";
     }
 }
-
-
-//Map<String, Integer> m = new HashMap<>();
-
-/*for (String w : n.keySet()) {
-    Integer count = m.get(w);
-    if (count == null) {
-        count = 0;
-    }
-    count += n.get(w);
-    m.put(w, count);
-}*/
-
-//Map<String, Integer> n = p.getText().getWordCount2();

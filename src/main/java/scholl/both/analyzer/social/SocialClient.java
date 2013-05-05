@@ -1,12 +1,13 @@
 package scholl.both.analyzer.social;
 
-import scholl.both.analyzer.text.*;
+import scholl.both.analyzer.text.Text;
 
 import java.awt.Desktop;
-import java.io.*;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SocialClient {
     public static void main(String[] args) {
@@ -28,7 +29,7 @@ public class SocialClient {
             e.printStackTrace();
         }
     }
-
+    
     public static void openBrowser(String url) throws IOException {
         System.out.println(Desktop.isDesktopSupported());
         Desktop d = Desktop.getDesktop();
