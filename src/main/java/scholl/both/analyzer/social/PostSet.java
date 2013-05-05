@@ -37,6 +37,13 @@ public class PostSet {
         return posts.last();
     }
     
+    public SocialPost getOldest() {
+        if (posts.isEmpty()) {
+            return null;
+        }
+        return posts.first();
+    }
+    
     public int size() {
         return posts.size();
     }
