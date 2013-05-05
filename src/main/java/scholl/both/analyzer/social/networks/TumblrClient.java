@@ -83,12 +83,17 @@ public class TumblrClient {
             }
         }
         
-        List<SocialUser> following = getFollowing(new HashMap<String, Object>(), 100);
+        List<SocialUser> following = getFollowing(100);
         System.out.printf("User %s is following these %d blogs: %n", authenticated.getName(),
                 following.size());
         for (SocialUser b : following) {
             System.out.printf("\t%s (%s)%n", b.getName(), b.getTitle());
             s.add(b);
+        }
+        
+        String[] otherBlogs = new String[] {"dataandphilosophy", "old-shoes-for-new-feet"};
+        for (String str : otherBlogs) {
+            s.add(new TumblrUser(str, client));
         }
         
         System.out.println();
@@ -147,7 +152,7 @@ public class TumblrClient {
             text = ((LinkPost) p).getDescription();
         }
         
-        return new SocialPost(u, p.getTimestamp(), text, null, p.getTags());
+        return new SocialPost(u, p.getTimestamp()*1000L, text, null, p.getTags());
         
     }
 }
