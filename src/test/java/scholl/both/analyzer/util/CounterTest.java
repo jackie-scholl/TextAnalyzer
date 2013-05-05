@@ -16,13 +16,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CounterTest {
     
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        
-    }
-    
     @Test
     public void simpleTest() {
         Counter<String> cntr = new Counter<String>();
