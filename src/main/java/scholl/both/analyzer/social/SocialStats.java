@@ -42,7 +42,6 @@ public class SocialStats implements Runnable {
         tclient.authenticate();
         
         long start = System.currentTimeMillis();
-        
         System.out.println(tclient.getAuthenticatedUser().getName());
         
         Set<SocialUser> blogs = tclient.getInterestingUsers();
