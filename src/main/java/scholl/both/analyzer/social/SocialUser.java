@@ -2,20 +2,54 @@ package scholl.both.analyzer.social;
 
 import java.util.List;
 
-//TODO: Add Javadocs
-
+/**
+ * Represents a social user or blog
+ * 
+ * @author Jackson
+ */
 public interface SocialUser {
     
+    /**
+     * Get the name of the user/blog.
+     * 
+     * @return the name of the user/blog
+     */
     public abstract String getName();
     
+    /**
+     * Get the title of the user or blog.
+     * 
+     * @return the name of the user/blog
+     */
     public abstract String getTitle();
     
+    /**
+     * Get the description of the user or blog.
+     * 
+     * @return the description of the user/blog
+     */
     public abstract String getDescription();
     
+    /**
+     * Get the last num posts.
+     * 
+     * @param num number of posts to return
+     * @return the last num posts
+     */
     public abstract PostSet getPosts(int num);
     
+    /**
+     * Get the number of posts.
+     * 
+     * @return the number of posts
+     */
     public abstract int getPostCount();
     
+    /**
+     * Get a list of the user's followers.
+     * 
+     * @return the user's followers
+     */
     public abstract List<SocialUser> getFollowers();
     
     /**
