@@ -3,11 +3,10 @@ package scholl.both.analyzer.util;
 import java.util.*;
 
 /**
- * For every key, keeps a count. The count can be zero or negative. Unset keys
- * act as if they were 0. Keys are either <b>defined</b> or <b>undefined</b>.
- * An undefined key will act as if it has a value of 0. A defined key may have
- * a value of 0 and still be defined for the purposes of enumerating the
- * defined keys (see {@link #getKeys getKeys} and {@link #getSorted getSorted}).
+ * For every key, keeps a count. The count can be zero or negative. Unset keys act as if they were
+ * 0. Keys are either <b>defined</b> or <b>undefined</b>. An undefined key will act as if it has a
+ * value of 0. A defined key may have a value of 0 and still be defined for the purposes of
+ * enumerating the defined keys (see {@link #getKeys getKeys} and {@link #getSorted getSorted}).
  * This implementation is NOT thread-safe.
  * 
  * @author Jackson
@@ -114,6 +113,7 @@ public class Counter<K> {
     public List<K> getSorted() {
         List<K> list = new ArrayList<K>();
         Comparator<Integer> inverseComparator = new Comparator<Integer>() {
+            @Override
             public int compare(Integer a, Integer b) {
                 return new Integer(b).compareTo(a);
             }
@@ -175,6 +175,7 @@ public class Counter<K> {
      * {}
      * </pre>
      */
+    @Override
     public String toString() {
         List<K> list = getSorted();
         String s = "{";
