@@ -95,7 +95,7 @@ public class SocialPost implements Comparable<SocialPost> {
     public String toString() {
         return "Post [poster=" + this.poster
                 + ", timestamp=" + this.timestamp
-                + ", post=\"" + this.text + "\""
+                //+ ", post=\"" + this.text + "\""
                 + ", mention=" + this.mention
                 + ", tags=" + this.tags
                 + "]";

@@ -7,17 +7,16 @@ import java.util.*;
 
 public class SocialStats {
     private static File outputFolder;
-    
     static {
         outputFolder = new File("out");
         outputFolder.mkdir();
     }
     
     static void tumlbrThing() throws IOException {
-        long start = System.currentTimeMillis();
-        
         TumblrClient tclient = new TumblrClient();
         tclient.authenticate();
+        
+        long start = System.currentTimeMillis();
         
         System.out.println(tclient.getAuthenticatedUser().getName());
         
@@ -34,8 +33,23 @@ public class SocialStats {
             blogs.add(tclient.getUser(blog));
         }
         
+        List<Thread> threads = new ArrayList<Thread>();
         for (SocialUser b : blogs) {
-            doStats(b, 10);
+            if (SocialClient.THREADING) {
+                Thread t = new Thread(new StatsDoer(b, 40));
+                t.start();
+                threads.add(t);
+            } else {
+                doStats(b, 10);
+            }
+        }
+        
+        try {
+            for (Thread t : threads) {
+                t.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         
         long end = System.currentTimeMillis();
@@ -44,8 +58,22 @@ public class SocialStats {
         System.out.printf("Finished - took %.3f seconds", timeTaken);
     }
     
+    private static class StatsDoer implements Runnable {
+        private final SocialUser b;
+        private final int count;
+        
+        public StatsDoer(SocialUser b, int count) {
+            this.b = b;
+            this.count = count;
+        }
+        
+        public void run() {
+            doStats(b, count);
+        }
+    }
+    
     public static void doStats(SocialUser b, int count) {
-        long blogStart = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         
         PostSet ps = b.getPosts(count);
         
@@ -57,7 +85,7 @@ public class SocialStats {
         
         long blogEnd = System.currentTimeMillis();
         System.out.printf("Finished blog %s with %d posts - took %.3f seconds%n", b.getName(),
-                ps.size(), (blogEnd - blogStart) / 1000.0);
+                ps.size(), (blogEnd - start) / 1000.0);
     }
     
     private static void delete(File f) {
@@ -102,7 +130,7 @@ public class SocialStats {
             stream.printf("Title: %s%n", u.getTitle());
             stream.printf("Description: %s%n", u.getDescription());
             stream.printf("Number of posts: %d%n", u.getPostCount());
-            stream.printf("Most recent post: %tc%n", ps.getMostRecent().getTimestamp());
+            stream.printf("Most recent post: %tc%n", ps.size() == 0? 0L : ps.getMostRecent().getTimestamp());
             stream.close();
         } catch (IOException e) {
             e.printStackTrace();

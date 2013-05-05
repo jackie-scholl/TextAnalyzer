@@ -66,10 +66,10 @@ public class TumblrClient {
     public Set<SocialUser> getInterestingUsers() {
         Set<SocialUser> s = new HashSet<SocialUser>();
         
-        User u = client.user();
+        User authenticated = client.user();
         
-        System.out.printf("User %s has these blogs: %n", u.getName());
-        for (Blog b : u.getBlogs()) {
+        System.out.printf("User %s has these blogs: %n", authenticated.getName());
+        for (Blog b : authenticated.getBlogs()) {
             SocialUser blog = new TumblrUser(b);
             s.add(blog);
             
@@ -81,15 +81,14 @@ public class TumblrClient {
                 System.out.printf("\t\t%s%n", follower.getName());
                 s.add(follower);
             }
-            
         }
         
-        List<Blog> following = TumblrClient
-                .getFollowing(client, new HashMap<String, Object>(), 100);
-        System.out.printf("User %s is following these %d blogs: %n", u.getName(), following.size());
-        for (Blog b : following) {
+        List<SocialUser> following = getFollowing(new HashMap<String, Object>(), 100);
+        System.out.printf("User %s is following these %d blogs: %n", authenticated.getName(),
+                following.size());
+        for (SocialUser b : following) {
             System.out.printf("\t%s (%s)%n", b.getName(), b.getTitle());
-            s.add(new TumblrUser(b));
+            s.add(b);
         }
         
         System.out.println();
@@ -105,12 +104,9 @@ public class TumblrClient {
         return getUser(client.blogInfo(b));
     }
     
-    public List<User> getFollowers(Blog b, Map<String, Object> options, int num) {
-        return TumblrUser.getFollowers(b, options, num);
-    }
-    
-    public static List<Blog> getFollowing(JumblrClient c, Map<String, Object> options, int num) {
+    public List<SocialUser> getFollowing(Map<String, Object> options, int num) {
         List<Blog> blogs = new ArrayList<Blog>();
+        List<SocialUser> following = new ArrayList<SocialUser>();
         
         int lim = 20;
         lim = num > lim ? lim : num;
@@ -119,10 +115,17 @@ public class TumblrClient {
         for (int i = initialOffset; i < num; i += lim) {
             options.put("limit", lim);
             options.put("offset", i);
-            blogs.addAll(c.userFollowing(options));
+            for (Blog b : client.userFollowing(options)) {
+                following.add(new TumblrUser(b));
+            }
+            blogs.addAll(client.userFollowing(options));
         }
         
-        return blogs;
+        return following;
+    }
+    
+    public List<SocialUser> getFollowing(int num) {
+        return getFollowing(new HashMap<String, Object>(), num);
     }
     
     public static SocialPost getSocialPost(Post p) {
@@ -147,31 +150,15 @@ public class TumblrClient {
         return new SocialPost(u, p.getTimestamp(), text, null, p.getTags());
         
     }
-    
-    public static PostSet getPosts(Blog b, Map<String, Object> options, int num) {
-        PostSet ps = new PostSet();
-        
-        int lim = 20;
-        lim = num > lim ? lim : num;
-        
-        int initialOffset = 0;
-        for (int i = initialOffset; i < num; i += lim) {
-            int diff = num - i;
-            diff = diff > lim ? lim : diff;
-            options.put("limit", diff);
-            options.put("offset", i);
-            List<Post> posts = b.posts(options);
-            for (Post p : posts) {
-                ps.add(TumblrClient.getSocialPost(p));
-            }
-        }
-        
-        return ps;
-    }
 }
 
+/*
 
-/*List<User> followers = TumblrUser.getFollowers(b, new HashMap<String, Object>(), 100);
+
+
+
+
+List<User> followers = TumblrUser.getFollowers(b, new HashMap<String, Object>(), 100);
 System.out.printf("\t%s (%s) has these %d followers:%n", b.getName(), b.getTitle(),
         followers.size());
 
@@ -179,4 +166,24 @@ for (User u2 : followers) {
     System.out.printf("\t\t%s%n", u2.getName());
     Blog b3 = client.blogInfo(u2.getName());
     s.add(new TumblrUser(b3));
-}*/
+}
+/*public static List<Blog> getFollowing(JumblrClient c, Map<String, Object> options, int num) {
+        
+        /*List<Blog> blogs = new ArrayList<Blog>();
+        
+        int lim = 20;
+        lim = num > lim ? lim : num;
+        
+        int initialOffset = 0;
+        for (int i = initialOffset; i < num; i += lim) {
+            options.put("limit", lim);
+            options.put("offset", i);
+            blogs.addAll(c.userFollowing(options));
+        }
+        
+        return blogs;
+    }
+    
+
+
+*/

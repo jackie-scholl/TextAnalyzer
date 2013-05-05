@@ -7,8 +7,8 @@ import java.util.*;
 // TODO: Add Javadocs
 
 public class PostSet {
-    private SortedSet<SocialPost> posts;
-    private Map<String, SortedSet<SocialPost>> index;
+    private volatile SortedSet<SocialPost> posts;
+    private volatile Map<String, SortedSet<SocialPost>> index;
     
     public PostSet() {
         this.posts = new TreeSet<SocialPost>();
@@ -31,6 +31,9 @@ public class PostSet {
     }
     
     public SocialPost getMostRecent() {
+        if (posts.isEmpty()) {
+            return null;
+        }
         return posts.last();
     }
     

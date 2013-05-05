@@ -1,25 +1,23 @@
 package scholl.both.analyzer.social.networks;
 
-import scholl.both.analyzer.social.PostSet;
-import scholl.both.analyzer.social.SocialUser;
+import scholl.both.analyzer.social.*;
 
 import java.util.*;
 
 import com.tumblr.jumblr.JumblrClient;
-import com.tumblr.jumblr.types.Blog;
-import com.tumblr.jumblr.types.User;
+import com.tumblr.jumblr.types.*;
 
 public class TumblrUser implements SocialUser {
-    private final JumblrClient client;
+    private final JumblrClient jclient;
     private final Blog blog;
     
     public TumblrUser(Blog blog) {
         this.blog = blog;
-        this.client = blog.getClient();
+        this.jclient = blog.getClient();
     }
     
     public TumblrUser(String blogName, JumblrClient client) {
-        this.client = client;
+        this.jclient = client;
         this.blog = client.blogInfo(blogName);
     }
     
@@ -52,7 +50,66 @@ public class TumblrUser implements SocialUser {
     
     @Override
     public PostSet getPosts(int num) {
-        return TumblrClient.getPosts(blog, new HashMap<String, Object>(), num);
+        return getPosts(new HashMap<String, Object>(), num);
+    }
+    
+    public PostSet getPosts(Map<String, Object> options, int num) {
+        PostSet ps = new PostSet();
+        
+        int lim = 20;
+        lim = num > lim ? lim : num;
+        
+        List<Thread> threads = new ArrayList<Thread>();
+        int initialOffset = 0;
+        for (int i = initialOffset; i < num; i += lim) {
+            int diff = num - i;
+            diff = diff > lim ? lim : diff;
+            options.put("limit", lim);
+            options.put("offset", i);
+            
+            PostGetter pg = new PostGetter(blog, options, ps);
+            
+            if (SocialClient.THREADING){ 
+                Thread t = new Thread(pg);
+                t.start();
+                threads.add(t);
+            } else {
+                pg.run();
+            }
+            
+        }
+        
+        try {
+            for (Thread t : threads) {
+                t.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        return ps;
+    }
+    
+    private static class PostGetter implements Runnable {
+        private final Map<String, Object> options;
+        private volatile PostSet ps;
+        private final Blog blog;
+        
+        public PostGetter(Blog blog, Map<String, Object> options, PostSet ps) {
+            System.out.println(options);
+            this.options = new HashMap<String, Object>(options);
+            this.ps = ps;
+            this.blog = blog;
+        }
+        
+        public void run() {
+            List<Post> posts = blog.posts(options);
+            for (Post p : posts) {
+                synchronized (ps) {
+                    ps.add(TumblrClient.getSocialPost(p));
+                }
+            }
+        }
     }
     
     @Override
@@ -83,7 +140,7 @@ public class TumblrUser implements SocialUser {
             options.put("limit", lim);
             options.put("offset", i);
             for (User u : blog.followers(options)) {
-                Blog b = client.blogInfo(u.getName());
+                Blog b = jclient.blogInfo(u.getName());
                 SocialUser su = new TumblrUser(b);
                 followers.add(su);
             }
@@ -107,7 +164,7 @@ public class TumblrUser implements SocialUser {
         
         return followers;
     }
-
+    
     /**
      * {@inheritDoc}
      * 

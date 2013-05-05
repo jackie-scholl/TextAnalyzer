@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SocialClient {
+    public static final boolean THREADING = true;
+
     public static void main(String[] args) {
         List<String> texts = new ArrayList<String>();
         
