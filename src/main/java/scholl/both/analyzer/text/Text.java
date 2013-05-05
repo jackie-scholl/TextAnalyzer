@@ -130,6 +130,9 @@ public class Text {
         return getLetterCount2().get(desired);
     }
     // TODO: Letter counter
+    
+    // TODO: public int getLetterCount() (counts total number of characters)
+    
     public Counter<Character> getLetterCount2() {
         Counter<Character> count = new Counter<Character>();
         for (char cha : original.toCharArray()) {
