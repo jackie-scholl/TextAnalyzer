@@ -15,44 +15,23 @@ public class PostSet {
         this.index = new HashMap<String, SortedSet<SocialPost>>();
     }
     
-    public PostSet(Set<SocialPost> posts) {
+    public PostSet(Iterable<SocialPost> posts) {
         this();
         for (SocialPost p : posts) {
             add(p);
         }
     }
     
-    public void addAll(PostSet other) {
-        posts.addAll(other.posts);
-        index.putAll(other.index);
-    }
-    
-    public void addAll(Set<SocialPost> other) {
-        addAll(new PostSet(other));
-    }
-    
-    public void add(SocialPost p) {
-        posts.add(p);
-        for (String tag : p.getTags()) {
-            SortedSet<SocialPost> postsForTag = index.get(tag);
-            if (postsForTag == null) {
-                postsForTag = new TreeSet<SocialPost>();
-            }
-            postsForTag.add(p);
-            index.put(tag, postsForTag);
-        }
-    }
-    
-    public int size() {
-        return posts.size();
-    }
-    
     public SocialPost[] getPosts() {
         return posts.toArray(new SocialPost[0]);
     }
-    
+
     public PostSet getAllWithTag(String tag) {
         return new PostSet(index.get(tag));
+    }
+
+    public int size() {
+        return posts.size();
     }
     
     public Counter<Character> getLetterCount2() {
@@ -69,6 +48,27 @@ public class PostSet {
             c.addAll(p.getText().getWordCount2());
         }
         return c;
+    }
+
+    public void add(SocialPost p) {
+        posts.add(p);
+        for (String tag : p.getTags()) {
+            SortedSet<SocialPost> postsForTag = index.get(tag);
+            if (postsForTag == null) {
+                postsForTag = new TreeSet<SocialPost>();
+            }
+            postsForTag.add(p);
+            index.put(tag, postsForTag);
+        }
+    }
+
+    public void addAll(PostSet other) {
+        posts.addAll(other.posts);
+        index.putAll(other.index);
+    }
+
+    public void addAll(Iterable<SocialPost> other) {
+        addAll(new PostSet(other));
     }
 
     public PostSet clone() throws CloneNotSupportedException {
