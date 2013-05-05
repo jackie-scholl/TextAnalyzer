@@ -62,7 +62,7 @@ public class TumblrUser implements SocialUser {
     
     @Override
     public List<SocialUser> getFollowers() {
-        return getFollowers(new HashMap<String, Object>());
+        return getFollowers(new HashMap<String, Object>(), 100);
     }
     
     /**
@@ -72,17 +72,42 @@ public class TumblrUser implements SocialUser {
      * @return the followers of this blog
      * @see com.tumblr.jumblr.types.Blog#followers(java.util.Map)
      */
-    public List<SocialUser> getFollowers(Map<String, ?> options) {
-        List<SocialUser> l = new ArrayList<SocialUser>();
-        for (User u : blog.followers(options)) {
-            Blog b = client.blogInfo(u.getName());
-            SocialUser su = new TumblrUser(b);
-            l.add(su);
+    public List<SocialUser> getFollowers(Map<String, Object> options, int num) {
+        List<SocialUser> followers = new ArrayList<SocialUser>();
+        
+        int lim = 20;
+        lim = num > lim ? lim : num;
+        
+        int initialOffset = 0;
+        for (int i = initialOffset; i < num; i += lim) {
+            options.put("limit", lim);
+            options.put("offset", i);
+            for (User u : blog.followers(options)) {
+                Blog b = client.blogInfo(u.getName());
+                SocialUser su = new TumblrUser(b);
+                followers.add(su);
+            }
         }
         
-        return l;
+        return followers;
     }
     
+    public static List<User> getFollowers(Blog b, Map<String, Object> options, int num) {
+        List<User> followers = new ArrayList<User>();
+        
+        int lim = 20;
+        lim = num > lim ? lim : num;
+        
+        int initialOffset = 0;
+        for (int i = initialOffset; i < num; i += lim) {
+            options.put("limit", lim);
+            options.put("offset", i);
+            followers.addAll(b.followers(options));
+        }
+        
+        return followers;
+    }
+
     /**
      * {@inheritDoc}
      * 

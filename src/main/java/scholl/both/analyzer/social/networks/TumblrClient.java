@@ -70,17 +70,18 @@ public class TumblrClient {
         
         System.out.printf("User %s has these blogs: %n", u.getName());
         for (Blog b : u.getBlogs()) {
-            s.add(new TumblrUser(b));
+            SocialUser blog = new TumblrUser(b);
+            s.add(blog);
             
-            List<User> followers = TumblrClient.getFollowers(b, new HashMap<String, Object>(), 100);
+            List<SocialUser> followers = blog.getFollowers();
             System.out.printf("\t%s (%s) has these %d followers:%n", b.getName(), b.getTitle(),
                     followers.size());
             
-            for (User u2 : followers) {
-                System.out.printf("\t\t%s%n", u2.getName());
-                Blog b3 = client.blogInfo(u2.getName());
-                s.add(new TumblrUser(b3));
+            for (SocialUser follower : followers) {
+                System.out.printf("\t\t%s%n", follower.getName());
+                s.add(follower);
             }
+            
         }
         
         List<Blog> following = TumblrClient
@@ -104,20 +105,8 @@ public class TumblrClient {
         return getUser(client.blogInfo(b));
     }
     
-    public static List<User> getFollowers(Blog b, Map<String, Object> options, int num) {
-        List<User> users = new ArrayList<User>();
-        
-        int lim = 20;
-        lim = num > lim ? lim : num;
-        
-        int initialOffset = 0;
-        for (int i = initialOffset; i < num; i += lim) {
-            options.put("limit", lim);
-            options.put("offset", i);
-            users.addAll(b.followers(options));
-        }
-        
-        return users;
+    public List<User> getFollowers(Blog b, Map<String, Object> options, int num) {
+        return TumblrUser.getFollowers(b, options, num);
     }
     
     public static List<Blog> getFollowing(JumblrClient c, Map<String, Object> options, int num) {
@@ -180,3 +169,14 @@ public class TumblrClient {
         return ps;
     }
 }
+
+
+/*List<User> followers = TumblrUser.getFollowers(b, new HashMap<String, Object>(), 100);
+System.out.printf("\t%s (%s) has these %d followers:%n", b.getName(), b.getTitle(),
+        followers.size());
+
+for (User u2 : followers) {
+    System.out.printf("\t\t%s%n", u2.getName());
+    Blog b3 = client.blogInfo(u2.getName());
+    s.add(new TumblrUser(b3));
+}*/
