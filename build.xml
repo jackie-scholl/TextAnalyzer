@@ -6,6 +6,7 @@
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="TextAnalyzer">
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="../../../../../Program Files/eclipse"/>
+    <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
@@ -20,6 +21,11 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src/test/java">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
     </target>
     <target name="clean">
         <delete dir="bin"/>
@@ -31,6 +37,7 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
             <src path="src/main/java"/>
+            <src path="src/test/java"/>
             <classpath refid="TextAnalyzer.classpath"/>
         </javac>
     </target>
@@ -52,5 +59,21 @@
         <java classname="scholl.both.analyzer.social.SocialClient" failonerror="true" fork="yes">
             <classpath refid="TextAnalyzer.classpath"/>
         </java>
+    </target>
+    <target name="CounterTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="scholl.both.analyzer.util.CounterTest" todir="${junit.output.dir}"/>
+            <classpath refid="TextAnalyzer.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
     </target>
 </project>
