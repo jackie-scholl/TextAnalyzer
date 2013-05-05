@@ -4,6 +4,7 @@ import java.util.*;
 import scholl.both.analyzer.social.PostSet;
 import scholl.both.analyzer.social.SocialPost;
 import scholl.both.analyzer.text.Text;
+import org.apache.commons.math3.stat.correlation.*;
 
 public class TextAnalyzer {
     SocialPost[] posts;
@@ -31,5 +32,22 @@ public class TextAnalyzer {
     TextAnalyzer(PostSet p){
         posts = p.getPosts();
     }
-    
+    //Example
+    //I want to see if sentence length and word length
+    //are correlated across posts
+    double sentenceWordLengthCorrelation(){
+        //Set up two arrays to hold the variables.
+        double[] avgWordLengthArr    = new double[posts.length];
+        double[] avgSentenceLengthArr= new double[posts.length];
+        //Add the variables into the arrays
+        for (int i = 0; i < posts.length; i++){
+            avgSentenceLengthArr[i] = 
+                    posts[i].getText().averageSentenceLength();
+            avgWordLengthArr[i] = 
+                    posts[i].getText().averageWordLength();
+        }
+        //Returns the standard measure of correlation
+        return new Covariance().covariance(
+                avgWordLengthArr, avgSentenceLengthArr);
+    }
 }
