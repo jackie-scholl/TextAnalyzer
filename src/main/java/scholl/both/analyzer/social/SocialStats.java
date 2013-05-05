@@ -102,6 +102,7 @@ public class SocialStats {
             stream.printf("Title: %s%n", u.getTitle());
             stream.printf("Description: %s%n", u.getDescription());
             stream.printf("Number of posts: %d%n", u.getPostCount());
+            stream.printf("Most recent post: %tc%n", ps.getMostRecent().getTimestamp());
             stream.close();
         } catch (IOException e) {
             e.printStackTrace();

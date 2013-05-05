@@ -30,6 +30,10 @@ public class PostSet {
         return new PostSet(index.get(tag));
     }
     
+    public SocialPost getMostRecent() {
+        return posts.last();
+    }
+    
     public int size() {
         return posts.size();
     }
