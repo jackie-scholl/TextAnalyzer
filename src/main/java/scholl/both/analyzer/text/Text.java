@@ -21,6 +21,8 @@ public class Text {
      * @param original the string that you want to analyze. 
      */
     public Text(String original) {
+        original = original.replaceAll("(\\w+://)?(\\w+\\.)+(\\w+)([\\w\\+\\?/\\\\=-]+)*", "");
+        
         this.original = original;
 
         words = new ArrayList<String>();
@@ -66,6 +68,10 @@ public class Text {
         sentences.add(original.substring(lastSentenceEnd+1));
     }
     
+    public int getCharacterCount() {
+    	return original.length();
+    }
+
     public String getOriginal() {
         return original;
     }
@@ -78,18 +84,6 @@ public class Text {
         return words.size();
     }
     
-    public List<String> getSentences() {
-    	return sentences;
-    }
-    
-    public int getSentenceCount() {
-    	return sentences.size();
-    }
-
-    public int getCharacterCount() {
-    	return original.length();
-    }
-    
     public double averageWordLength() {
         int size = words.size();
         double sumLength = 0;
@@ -98,24 +92,19 @@ public class Text {
         }
         return sumLength / size;
     }
+
+    public List<String> getSentences() {
+    	return sentences;
+    }
+    
+    public int getSentenceCount() {
+    	return sentences.size();
+    }
+
     //Needs to force getWordCount to be a double because otherwise integer division
     //causes problems.
     public double averageSentenceLength() {
         return getSentenceCount()/(double)getWordCount();
-    }
-    public double getPunctuationDiversityIndex(){
-        Counter<Character> count = getLetterCount2();
-        char[] chars = {'.', ',', ';', ':', '?'};
-        List<Double> counts = new ArrayList<Double>();
-        for (char c : chars)
-            counts.add((double) count.get(c));
-        double totalCount = 0;
-        double bottomSum = 0;
-        for (Double d : counts){
-            totalCount+=d;
-            bottomSum+=Math.pow(d, 2);
-        }
-        return Math.pow(totalCount,2)/bottomSum;
     }
     public int getCharCount(char desired){
         return getLetterCount2().get(desired);
@@ -137,6 +126,21 @@ public class Text {
         return counter;
     }
     
+    public double getPunctuationDiversityIndex(){
+        Counter<Character> count = getLetterCount2();
+        char[] chars = {'.', ',', ';', ':', '?'};
+        List<Double> counts = new ArrayList<Double>();
+        for (char c : chars)
+            counts.add((double) count.get(c));
+        double totalCount = 0;
+        double bottomSum = 0;
+        for (Double d : counts){
+            totalCount+=d;
+            bottomSum+=Math.pow(d, 2);
+        }
+        return Math.pow(totalCount,2)/bottomSum;
+    }
+
     @Override
 	public String toString() {
         return original;
