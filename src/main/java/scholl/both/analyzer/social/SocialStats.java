@@ -7,6 +7,8 @@ import java.util.*;
 
 public class SocialStats implements Runnable {
     private static final int COUNT = 500;
+    private double postsPerHour = 0.0;
+    //private int retries = 0;
     
     private static File outputFolder;
     static {
@@ -38,7 +40,7 @@ public class SocialStats implements Runnable {
     }
     
     static void tumlbrThing() throws IOException {
-        TumblrClient tclient = new TumblrClient();
+        TumblrClient tclient = new TumblrClient("credentials.json");
         tclient.authenticate();
         
         long start = System.currentTimeMillis();
@@ -76,22 +78,35 @@ public class SocialStats implements Runnable {
         
         System.out.printf("Finished - took %.3f seconds", timeTaken);
     }
+    
     /*
      * 100 - 49
      * 300 - 94
      */
     public void run() {
-        long start = System.currentTimeMillis();
+        run(5);
+    }
+    
+    public void run(int retriesLeft) {
+        try {
+            long start = System.currentTimeMillis();
+            
+            PostSet ps = b.getPosts(count);
         
-        PostSet ps = b.getPosts(count);
-        
-        getWordFrequencies(ps);
-        double postsPerHour = getGeneral(ps);
-        
-        long end = System.currentTimeMillis();
-        System.out.printf("Finished blog %-40s with %3d posts (%-9.5g posts per hour) " +
-        		"- took %.3f seconds%n", b.getName(), ps.size(), postsPerHour,
-        		(end - start) / 1000.0);
+            getWordFrequencies(ps);
+            getGeneral(ps);
+            
+            long end = System.currentTimeMillis();
+            System.out.printf("Finished blog %-40s with %3d posts (%-9.5g posts per hour) " +
+                    "- took %.3f seconds%n", b.getName(), ps.size(), postsPerHour,
+                    (end - start) / 1000.0);
+        } catch (IOException e) {
+            if (retriesLeft <= 0) {
+                e.printStackTrace();
+            } else {
+                run(retriesLeft-1);
+            }
+        }
     }
     
     public static void doStats(SocialUser b, int count) {
@@ -99,7 +114,7 @@ public class SocialStats implements Runnable {
         ss.run();
     }
     
-    public void getWordFrequencies(PostSet ps) {
+    public void getWordFrequencies(PostSet ps) throws IOException {
         File wordFrequencies = new File(userFolder, "wordFrequencies.txt");
         
         PrintStream fileStream = null;
@@ -109,8 +124,6 @@ public class SocialStats implements Runnable {
             
             fileStream.println(ps.getWordCount2().toString2());
             fileStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             if (fileStream != null) {
                 fileStream.close();
@@ -118,48 +131,44 @@ public class SocialStats implements Runnable {
         }
     }
     
-    public double getGeneral(PostSet ps) {
-        double postsPerHour = 0.0;
+    public void getGeneral(PostSet ps) throws IOException {
+        postsPerHour = 0.0;
         File general = new File(userFolder, "general.txt");
         
         PrintStream stream = null;
         try {
             general.createNewFile();
             stream = new PrintStream(general);
-            
-            stream.printf("Name: %s%n", b.getName());
-            stream.printf("Title: %s%n", b.getTitle());
-            stream.printf("Description: %s%n", b.getDescription());
-            stream.printf("Number of posts (total): %d%n", b.getPostCount());
-            stream.printf("Number of posts (surveyed): %d%n", ps.size());
-            
-            if (ps.size() > 0) {
-                long mostRecent = ps.getMostRecent().getTimestamp();
-                long oldest = ps.getOldest().getTimestamp();
-                double timeDiffHours = (mostRecent - oldest) / (1000.0*60.0*60.0);
-                postsPerHour = ps.size() / timeDiffHours;
-                
-                stream.printf("Most recent post: %tc%n", mostRecent);
-                stream.printf("Oldest post: %tc%n", oldest);
-                stream.printf("Difference: %.3g hours%n", timeDiffHours);
-                stream.printf("Estimated post rate: %n");
-                stream.printf("\t%.5g posts per hour%n", postsPerHour);
-                stream.printf("\t%.5g posts per day%n", postsPerHour*24.0);
-            } else {
-                stream.printf("Cannot get time data, there were no posts%n");
-            }
-            
-            stream.printf("Letter frequencies: %n%s", ps.getLetterCount2().toString2());
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             if (stream != null) {
                 stream.close();
             }
         }
         
-        return postsPerHour;
+        stream.printf("Name: %s%n", b.getName());
+        stream.printf("Title: %s%n", b.getTitle());
+        stream.printf("Description: %s%n", b.getDescription());
+        stream.printf("Number of posts (total): %d%n", b.getPostCount());
+        stream.printf("Number of posts (surveyed): %d%n", ps.size());
+        
+        if (ps.size() > 0) {
+            long mostRecent = ps.getMostRecent().getTimestamp();
+            long oldest = ps.getOldest().getTimestamp();
+            double timeDiffHours = (mostRecent - oldest) / (1000.0 * 60.0 * 60.0);
+            postsPerHour = ps.size() / timeDiffHours;
+            
+            stream.printf("Most recent post: %tc%n", mostRecent);
+            stream.printf("Oldest post: %tc%n", oldest);
+            stream.printf("Difference: %.3g hours%n", timeDiffHours);
+            stream.printf("Estimated post rate: %n");
+            stream.printf("\t%.5g posts per hour%n", postsPerHour);
+            stream.printf("\t%.5g posts per day%n", postsPerHour * 24.0);
+        } else {
+            stream.printf("Cannot get time data, there were no posts%n");
+        }
+        
+        stream.printf("Letter frequencies: %n%s", ps.getLetterCount2().toString2());
+        stream.close();
     }
     
 }

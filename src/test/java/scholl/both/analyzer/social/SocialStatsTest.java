@@ -2,13 +2,15 @@ package scholl.both.analyzer.social;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * Class to test the class {@link Counter}.
+ * Class to test the class {@link SocialStats}.
  * 
  * @author Jackson
  * 
@@ -18,6 +20,10 @@ public class SocialStatsTest {
     
     @Test
     public void simpleTest() {
-        SocialStats.tumlbrThing();
+        try {
+            SocialStats.tumlbrThing();
+        } catch (IOException e) {
+            org.junit.Assert.assertTrue("Failure - IO exception:\n", false);
+        }
     }
 }

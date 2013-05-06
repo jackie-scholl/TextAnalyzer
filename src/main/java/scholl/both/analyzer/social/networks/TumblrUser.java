@@ -84,6 +84,7 @@ public class TumblrUser implements SocialUser {
                 t.join();
             }
         } catch (InterruptedException e) {
+            System.err.println("Interrupted while waiting for worker threads of getPosts to finish.");
             e.printStackTrace();
         }
         
