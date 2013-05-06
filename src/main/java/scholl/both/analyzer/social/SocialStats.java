@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.*;
 
 public class SocialStats implements Runnable {
-    //private static final int COUNT = 100;
     private double postsPerHour = 0.0;
     //private int retries = 0;
     
