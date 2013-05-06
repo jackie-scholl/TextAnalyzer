@@ -20,9 +20,21 @@ public class TumblrClient {
     private JumblrClient client;
     private String consumerKey, consumerSecret;
     
+    /*public TumblrClient() {
+        this.client = new JumblrClient();
+    }*/
+    
     public TumblrClient() throws IOException {
+        this("credentials.json");
+    }
+    
+    public TumblrClient(String credentialsFileName) throws IOException {
+        this(new File(credentialsFileName));
+    }
+    
+    public TumblrClient(File credentialsFile) throws IOException {
         // Read in the JSON data for the credentials
-        BufferedReader br = new BufferedReader(new FileReader("credentials.json"));
+        BufferedReader br = new BufferedReader(new FileReader(credentialsFile));
         String json = "";
         while (br.ready()) {
             json += br.readLine();
@@ -30,13 +42,17 @@ public class TumblrClient {
         br.close();
         
         // Parse the credentials
-        JsonParser parser = new JsonParser();
-        JsonObject obj = (JsonObject) parser.parse(json);
+        //JsonParser parser = new JsonParser();
+        JsonObject obj = (JsonObject) (new JsonParser()).parse(json);
         
         consumerKey = obj.getAsJsonPrimitive("consumer_key").getAsString();
         consumerSecret = obj.getAsJsonPrimitive("consumer_secret").getAsString();
         
         // Create a client
+        client = new JumblrClient(consumerKey, consumerSecret);
+    }
+    
+    public TumblrClient(String consumerKey, String consumerSecret) {
         client = new JumblrClient(consumerKey, consumerSecret);
     }
     
