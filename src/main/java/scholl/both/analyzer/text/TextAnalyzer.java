@@ -1,6 +1,5 @@
 package scholl.both.analyzer.text;
 
-import java.util.*;
 import scholl.both.analyzer.social.PostSet;
 import scholl.both.analyzer.social.SocialPost;
 import scholl.both.analyzer.text.Text;
