@@ -19,6 +19,7 @@ import org.junit.runners.JUnit4;
 public class SocialStatsTest {
     
     @Test
+    @Ignore
     public void simpleTest() {
         try {
             SocialStats.tumlbrThing(300);
