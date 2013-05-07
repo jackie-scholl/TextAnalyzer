@@ -209,7 +209,7 @@ public class TumblrUser implements SocialUser {
         if (blog == null) {
             if (other.blog != null)
                 return false;
-        } else if (!blog.equals(other.blog))
+        } else if (!getName().equals(other.getName()))
             return false;
         return true;
     }
