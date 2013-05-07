@@ -1,7 +1,6 @@
 package scholl.both.analyzer.social.networks;
 
 import scholl.both.analyzer.social.*;
-import scholl.both.analyzer.social.networks.TumblrUser.PostGetter;
 
 import java.io.*;
 import java.util.*;
