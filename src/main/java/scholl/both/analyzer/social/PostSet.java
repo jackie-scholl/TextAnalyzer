@@ -8,11 +8,12 @@ import java.util.*;
 
 public class PostSet {
     private volatile SortedSet<SocialPost> posts;
-    private volatile Map<String, SortedSet<SocialPost>> index;
+    private volatile Map<String, SortedSet<SocialPost>> tagIndex;
+
     
     public PostSet() {
         this.posts = new TreeSet<SocialPost>();
-        this.index = new HashMap<String, SortedSet<SocialPost>>();
+        this.tagIndex = new HashMap<String, SortedSet<SocialPost>>();
     }
     
     public PostSet(Iterable<SocialPost> posts) {
@@ -27,7 +28,7 @@ public class PostSet {
     }
     
     public PostSet getAllWithTag(String tag) {
-        return new PostSet(index.get(tag));
+        return new PostSet(tagIndex.get(tag));
     }
     
     public SocialPost getMostRecent() {
@@ -44,6 +45,16 @@ public class PostSet {
         return posts.first();
     }
     
+    public PostSet getAllByUser(SocialUser u) {
+        PostSet ps = new PostSet();
+        for (SocialPost p : posts) {
+            if (u.equals(p.getPoster())) {
+                ps.add(p);
+            }
+        }
+        return ps;
+    }
+
     public int size() {
         return posts.size();
     }
@@ -67,18 +78,18 @@ public class PostSet {
     public void add(SocialPost p) {
         posts.add(p);
         for (String tag : p.getTags()) {
-            SortedSet<SocialPost> postsForTag = index.get(tag);
+            SortedSet<SocialPost> postsForTag = tagIndex.get(tag);
             if (postsForTag == null) {
                 postsForTag = new TreeSet<SocialPost>();
             }
             postsForTag.add(p);
-            index.put(tag, postsForTag);
+            tagIndex.put(tag, postsForTag);
         }
     }
     
     public void addAll(PostSet other) {
         posts.addAll(other.posts);
-        index.putAll(other.index);
+        tagIndex.putAll(other.tagIndex);
     }
     
     public void addAll(Iterable<SocialPost> other) {
@@ -89,7 +100,7 @@ public class PostSet {
     public PostSet clone() throws CloneNotSupportedException {
         PostSet other = (PostSet) super.clone();
         other.posts = new TreeSet<SocialPost>(posts);
-        other.index = new HashMap<String, SortedSet<SocialPost>>(index);
+        other.tagIndex = new HashMap<String, SortedSet<SocialPost>>(tagIndex);
         return other;
     }
     
