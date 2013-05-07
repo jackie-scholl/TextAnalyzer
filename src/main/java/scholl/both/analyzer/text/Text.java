@@ -12,7 +12,7 @@ import scholl.both.analyzer.util.Counter;
 public class Text {
 	
 	//Sets up variables for later use.
-    private final String original;
+    private String original;
     private List<String> words;
     private List<String> sentences;
     
@@ -21,6 +21,22 @@ public class Text {
      * @param original the string that you want to analyze. 
      */
     public Text(String original) {
+        TextMaker(original);
+    }
+    /**
+     * Takes in an array of strings, mashes them together. 
+     * @param original the strings that you want to analyze. 
+     */
+    public Text(String[] originArr){
+        String o = "";
+        for (String s : originArr) {
+            o.concat(s);
+        }
+        TextMaker(o);
+    }
+    
+    private void TextMaker(String original){
+        //Strips out links
         original = original.replaceAll("(\\w+://)?(\\w+\\.)+(\\w+)([\\w\\+\\?/\\\\=-]+)*", "");
         
         this.original = original;
