@@ -13,6 +13,7 @@ public class Text {
 	
 	//Sets up variables for later use.
     private String original;
+    private String clean;
     private List<String> words;
     private List<String> sentences;
     
@@ -25,7 +26,7 @@ public class Text {
     }
     /**
      * Takes in an array of strings, mashes them together. 
-     * @param original the strings that you want to analyze. 
+     * @param originArr the strings that you want to analyze.
      */
     public Text(String[] originArr){
         String o = "";
@@ -36,10 +37,11 @@ public class Text {
     }
     
     private void TextMaker(String original){
+        this.original = original;
         //Strips out links
         original = original.replaceAll("(\\w+://)?(\\w+\\.)+(\\w+)([\\w\\+\\?/\\\\=-]+)*", "");
         
-        this.original = original;
+        this.clean = original;
 
         words = new ArrayList<String>();
         String[] wordsArr = original.split("\\s");
@@ -61,7 +63,7 @@ public class Text {
         int lastSentenceEnd = -1;
         //The minimum length of a sentence is four characters(I am, 
         //so periods before and after can safely be excluded.)
-        for(int i=3; i < this.original.length()-4; i++)
+        for(int i=3; i < this.clean.length()-4; i++)
         {
         	if (original.charAt(i)=='.'){
         		//Covers titles
@@ -85,11 +87,11 @@ public class Text {
     }
     
     public int getCharacterCount() {
-    	return original.length();
+    	return clean.length();
     }
 
     public String getOriginal() {
-        return original;
+        return clean;
     }
 
     public List<String> getWords() {
@@ -127,7 +129,7 @@ public class Text {
     }
     public Counter<Character> getLetterCount2() {
         Counter<Character> count = new Counter<Character>();
-        for (char cha : original.toCharArray()) {
+        for (char cha : clean.toCharArray()) {
             count.add(cha);
         }
         return count;
@@ -159,7 +161,7 @@ public class Text {
 
     @Override
 	public String toString() {
-        return original;
+        return clean;
     }
 }
 
