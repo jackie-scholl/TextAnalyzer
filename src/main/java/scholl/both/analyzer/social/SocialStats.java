@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.*;
 
 public class SocialStats implements Runnable {
-    private static final int COUNT = 500;
+    private static final int COUNT = 100;
     private double postsPerHour = 0.0;
     //private int retries = 0;
     
@@ -29,6 +29,7 @@ public class SocialStats implements Runnable {
     }
     
     private static void delete(File f) {
+        
         if (f == null)
             return;
         if (f.isDirectory()) {
@@ -37,6 +38,9 @@ public class SocialStats implements Runnable {
             }
         }
         f.delete();
+        if (f.exists()) {
+            System.err.printf("Something went wrong - file %s still exists%n", f);
+        }
     }
     
     static void tumlbrThing() throws IOException {
@@ -101,6 +105,7 @@ public class SocialStats implements Runnable {
                     "- took %.3f seconds%n", b.getName(), ps.size(), postsPerHour,
                     (end - start) / 1000.0);
         } catch (IOException e) {
+            System.err.printf("Failed on user %s, folder %s.%n", b, userFolder);
             if (retriesLeft <= 0) {
                 e.printStackTrace();
             } else {
