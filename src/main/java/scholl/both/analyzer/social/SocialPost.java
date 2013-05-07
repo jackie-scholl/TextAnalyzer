@@ -12,18 +12,17 @@ import java.util.*;
  * @author Jackson
  * 
  */
-public class SocialPost implements Comparable<SocialPost> {
+public class SocialPost extends Text implements Comparable<SocialPost> {
     private final SocialUser poster;
     private final long timestamp; // milliseconds since epoch
-    private final Text text;
     private final SocialUser mention;
     private final List<String> tags;
     
     public SocialPost(SocialUser poster, long timestamp, String text, SocialUser mention,
             List<String> tags) {
+        super(text);
         this.poster = poster;
         this.timestamp = timestamp;
-        this.text = new Text(text);
         this.mention = mention;
         this.tags = Collections.unmodifiableList(tags);
     }
@@ -48,15 +47,6 @@ public class SocialPost implements Comparable<SocialPost> {
      */
     public long getTimestamp() {
         return this.timestamp;
-    }
-    
-    /**
-     * Return the text of the post, as a Text object.
-     * 
-     * @return the text
-     */
-    public Text getText() {
-        return this.text;
     }
     
     /**

@@ -62,7 +62,7 @@ public class PostSet {
     public Counter<Character> getLetterCount2() {
         Counter<Character> c = new Counter<Character>();
         for (SocialPost p : posts) {
-            c.addAll(p.getText().getLetterCount2());
+            c.addAll(p.getLetterCount2());
         }
         return c;
     }
@@ -70,7 +70,7 @@ public class PostSet {
     public Counter<String> getWordCount2() {
         Counter<String> c = new Counter<String>();
         for (SocialPost p : posts) {
-            c.addAll(p.getText().getWordCount2());
+            c.addAll(p.getWordCount2());
         }
         return c;
     }
