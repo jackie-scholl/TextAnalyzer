@@ -31,6 +31,10 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
         this(poster, timestamp, text, null, new ArrayList<String>());
     }
     
+    public SocialPost(String text) {
+        this(null, System.currentTimeMillis(), text);
+    }
+    
     /**
      * Returns the user who published this post.
      * 

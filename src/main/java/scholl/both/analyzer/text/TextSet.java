@@ -9,7 +9,7 @@ import java.util.*;
 import org.apache.commons.math3.stat.correlation.*;
 
 public class TextSet {
-    protected final Set<Text> texts;
+    private PostSet texts;
     
     /**
      * Main method is a basic test if given no arguments. If it is given arguments, it returns the
@@ -31,12 +31,17 @@ public class TextSet {
     }
     
     /**
-     * Makes an instance of TextAnalyzer with the given texts.
+     * Base constructor.
      * 
      */
-    public TextSet(Set<Text> texts){
-        this.texts = texts;
+    public TextSet(){
+        this.texts = new PostSet();
     }
+    
+    public void add(String t) {
+        texts.add(new SocialPost(t));
+    }
+    
     
     /**
      * Example: I want to see if sentence length and word length are correlated across posts.
@@ -49,11 +54,10 @@ public class TextSet {
         double[] avgSentenceLengths = new double[texts.size()];
         //Add the variables into the arrays
         int i = 0;
-        for (Text t : texts){
+        for (Text t : texts.toSet()){
             avgWordLengths[i] = t.averageWordLength();
             avgSentenceLengths[i] = t.averageSentenceLength();
         }
-        
         
         //Returns the standard measure of correlation
         return new Covariance().covariance(

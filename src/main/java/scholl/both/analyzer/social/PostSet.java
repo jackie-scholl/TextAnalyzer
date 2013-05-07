@@ -7,12 +7,13 @@ import java.util.*;
 // TODO: Add Javadocs
 
 public class PostSet {
+    
     private volatile SortedSet<SocialPost> posts;
     private volatile Map<String, SortedSet<SocialPost>> tagIndex;
 
     
     public PostSet() {
-        this.posts = new TreeSet<SocialPost>();
+        posts = new TreeSet<SocialPost>();
         this.tagIndex = new HashMap<String, SortedSet<SocialPost>>();
     }
     
@@ -95,6 +96,13 @@ public class PostSet {
     public void addAll(Iterable<SocialPost> other) {
         addAll(new PostSet(other));
     }
+    
+    public Set<SocialPost> toSet() {
+        Set<SocialPost> s = new HashSet<SocialPost>();
+        s.addAll(posts);
+        return s;
+    }
+    
     
     @Override
     public PostSet clone() throws CloneNotSupportedException {
