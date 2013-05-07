@@ -42,7 +42,6 @@ public class OAuthCallbackServer {
             this.s = s;
         }
         
-        @Override
         public void handle(HttpExchange t) throws IOException {
             StringBuffer sb = new StringBuffer();
             Reader r = new FileReader("callback_response_page.html");

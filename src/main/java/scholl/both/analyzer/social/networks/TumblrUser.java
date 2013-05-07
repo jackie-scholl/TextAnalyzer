@@ -26,7 +26,6 @@ public class TumblrUser implements SocialUser {
         this(client.blogInfo(blogName), client, null);
     }
     
-    @Override
     public String getName() {
         return blog.getName();
     }
@@ -37,7 +36,6 @@ public class TumblrUser implements SocialUser {
      * @return blog title
      * @see com.tumblr.jumblr.types.Blog#getTitle()
      */
-    @Override
     public String getTitle() {
         return blog.getTitle();
     }
@@ -48,12 +46,10 @@ public class TumblrUser implements SocialUser {
      * @return the blog description
      * @see com.tumblr.jumblr.types.Blog#getDescription()
      */
-    @Override
     public String getDescription() {
         return blog.getDescription();
     }
     
-    @Override
     public PostSet getPosts(int num) {
         return getPosts(new HashMap<String, Object>(), num);
     }
@@ -117,12 +113,10 @@ public class TumblrUser implements SocialUser {
         }
     }
     
-    @Override
     public int getPostCount() {
         return blog.getPostCount();
     }
     
-    @Override
     public List<SocialUser> getFollowers() {
         return getFollowers(new HashMap<String, Object>(), 100);
     }
@@ -175,7 +169,6 @@ public class TumblrUser implements SocialUser {
      * 
      * @see com.tumblr.jumblr.types.Blog#getUpdated()
      */
-    @Override
     public long getLastUpdated() {
         return 1000L * blog.getUpdated();
     }

@@ -86,7 +86,6 @@ public class SocialPost implements Comparable<SocialPost> {
      * Compares by timestamp; the result is positive if this post is more recent, zero if they were
      * published at the same time, and negative if the other post was published first.
      */
-    @Override
     public int compareTo(SocialPost other) {
         return new Long(this.timestamp).compareTo(other.timestamp);
     }

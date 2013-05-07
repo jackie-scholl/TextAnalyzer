@@ -12,7 +12,6 @@ import java.lang.reflect.Type;
  */
 public class JsonElementDeserializer implements JsonDeserializer {
 
-    @Override
     public Object deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
         return je;
     }

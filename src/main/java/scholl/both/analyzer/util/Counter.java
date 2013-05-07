@@ -121,7 +121,6 @@ public class Counter<K> {
     public List<K> getSorted() {
         List<K> list = new ArrayList<K>();
         Comparator<Long> inverseComparator = new Comparator<Long>() {
-            @Override
             public int compare(Long a, Long b) {
                 return new Long(b).compareTo(a);
             }

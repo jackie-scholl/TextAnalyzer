@@ -12,7 +12,6 @@ import java.lang.reflect.Type;
  */
 public class PostDeserializer implements JsonDeserializer<Object> {
 
-    @Override
     public Object deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
         JsonObject jobject = je.getAsJsonObject();
         String typeName = jobject.get("type").getAsString();
