@@ -8,17 +8,22 @@ import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.*;
 
 public class TumblrUser implements SocialUser {
+    private final TumblrClient tclient;
     private final JumblrClient jclient;
     private final Blog blog;
     
-    public TumblrUser(Blog blog) {
+    public TumblrUser(Blog blog, JumblrClient jclient, TumblrClient tclient) {
         this.blog = blog;
-        this.jclient = blog.getClient();
+        this.jclient = jclient;
+        this.tclient = tclient;
+    }
+    
+    public TumblrUser(Blog blog) {
+        this(blog, blog.getClient(), null);
     }
     
     public TumblrUser(String blogName, JumblrClient client) {
-        this.jclient = client;
-        this.blog = client.blogInfo(blogName);
+        this(client.blogInfo(blogName), client, null);
     }
     
     @Override
