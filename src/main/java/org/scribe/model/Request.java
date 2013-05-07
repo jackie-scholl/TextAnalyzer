@@ -72,6 +72,14 @@ public class Request
 
   public Response send()
   {
+    for(int i=0; i<5; i++)
+    {
+      try {
+        return send(NOOP);
+      } catch (OAuthConnectionException e) {
+        ;
+      }
+    }
     return send(NOOP);
   }
 
