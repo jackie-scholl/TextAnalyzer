@@ -1,6 +1,7 @@
 package scholl.both.analyzer.social.networks;
 
 import scholl.both.analyzer.social.*;
+import scholl.both.analyzer.social.networks.TumblrUser.PostGetter;
 
 import java.io.*;
 import java.util.*;
@@ -22,6 +23,11 @@ public class TumblrClient {
     
     /*public TumblrClient() {
         this.client = new JumblrClient();
+    }*/
+    
+    /*public TumblrClient(JumblrClient client) {
+        this.client = client;
+        this.consumerKey = client.
     }*/
     
     public TumblrClient() throws IOException {
@@ -169,7 +175,65 @@ public class TumblrClient {
         }
         
         return new SocialPost(u, p.getTimestamp()*1000L, text, null, p.getTags());
+    }
+    
+    public PostSet getPosts(Blog blog, Map<String, Object> options, int num) {
+        PostSet ps = new PostSet();
         
+        int lim = 20;
+        lim = num > lim ? lim : num;
+        
+        List<Thread> threads = new ArrayList<Thread>();
+        int initialOffset = 0;
+        for (int i = initialOffset; i < num; i += lim) {
+            int diff = num - i;
+            diff = diff > lim ? lim : diff;
+            options.put("limit", lim);
+            options.put("offset", i);
+            
+            PostGetter pg = new PostGetter(blog, options, ps);
+            
+            if (SocialClient.THREADING){ 
+                Thread t = new Thread(pg);
+                t.start();
+                threads.add(t);
+            } else {
+                pg.run();
+            }
+            
+        }
+        
+        try {
+            for (Thread t : threads) {
+                t.join();
+            }
+        } catch (InterruptedException e) {
+            System.err.println("Interrupted while waiting for worker threads of getPosts to finish.");
+            e.printStackTrace();
+        }
+        
+        return ps;
+    }
+    
+    private static class PostGetter implements Runnable {
+        private final Map<String, Object> options;
+        private volatile PostSet ps;
+        private final Blog blog;
+        
+        public PostGetter(Blog blog, Map<String, Object> options, PostSet ps) {
+            this.options = new HashMap<String, Object>(options);
+            this.ps = ps;
+            this.blog = blog;
+        }
+        
+        public void run() {
+            List<Post> posts = blog.posts(options);
+            for (Post p : posts) {
+                synchronized (ps) {
+                    ps.add(TumblrClient.getSocialPost(p));
+                }
+            }
+        }
     }
 }
 
