@@ -21,7 +21,7 @@ public class SocialStatsTest {
     @Test
     public void simpleTest() {
         try {
-            SocialStats.tumlbrThing();
+            SocialStats.tumlbrThing(300);
         } catch (IOException e) {
             org.junit.Assert.assertTrue("Failure - IO exception:\n", false);
         }

@@ -26,7 +26,7 @@ public class SocialClient {
         }
         
         try {
-            SocialStats.tumlbrThing();
+            SocialStats.tumlbrThing(300);
         } catch (IOException e) {
             e.printStackTrace();
         }

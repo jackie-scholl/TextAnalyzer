@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.*;
 
 public class SocialStats implements Runnable {
-    private static final int COUNT = 100;
+    //private static final int COUNT = 100;
     private double postsPerHour = 0.0;
     //private int retries = 0;
     
@@ -43,7 +43,7 @@ public class SocialStats implements Runnable {
         }
     }
     
-    static void tumlbrThing() throws IOException {
+    static void tumlbrThing(int COUNT) throws IOException {
         TumblrClient tclient = new TumblrClient("credentials.json");
         tclient.authenticate();
         
@@ -80,7 +80,7 @@ public class SocialStats implements Runnable {
         long end = System.currentTimeMillis();
         double timeTaken = (end - start) / 1000.0;
         
-        System.out.printf("Finished - took %.3f seconds", timeTaken);
+        System.out.printf("Finished - took %.3f seconds%n", timeTaken);
     }
     
     /*
