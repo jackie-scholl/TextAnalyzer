@@ -7,7 +7,6 @@ import java.util.*;
 
 public class SocialStats implements Runnable {
     private double postsPerHour = 0.0;
-    //private int retries = 0;
     
     private static File outputFolder;
     static {
