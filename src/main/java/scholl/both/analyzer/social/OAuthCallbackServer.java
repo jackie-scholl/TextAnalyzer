@@ -13,6 +13,7 @@ import com.sun.net.httpserver.*;
  * 
  * @author Jackson
  */
+@SuppressWarnings("restriction")
 public class OAuthCallbackServer {
     private URI request;
     private HttpServer server;
