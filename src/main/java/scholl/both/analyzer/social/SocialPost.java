@@ -74,6 +74,32 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
         return tags.toArray(new String[]{});
     }
     
+    @Override
+    public String toString() {
+        final int maxLen = 10;
+        StringBuilder builder = new StringBuilder();
+        builder.append("SocialPost [");
+        if (this.poster != null) {
+            builder.append("poster=");
+            builder.append(this.poster);
+            builder.append(", ");
+        }
+        builder.append("timestamp=");
+        builder.append(this.timestamp);
+        builder.append(", ");
+        if (this.mention != null) {
+            builder.append("mention=");
+            builder.append(this.mention);
+            builder.append(", ");
+        }
+        if (this.tags != null) {
+            builder.append("tags=");
+            builder.append(this.tags.subList(0, Math.min(this.tags.size(), maxLen)));
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
     /**
      * {@inheritDoc}
      * 
@@ -84,7 +110,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
         return new Long(this.timestamp).compareTo(other.timestamp);
     }
     
-    @Override
+    /*@Override
     public String toString() {
         return "Post [poster=" + this.poster
                 + ", timestamp=" + this.timestamp
@@ -92,5 +118,5 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
                 + ", mention=" + this.mention
                 + ", tags=" + this.tags
                 + "]";
-    }
+    }*/
 }
