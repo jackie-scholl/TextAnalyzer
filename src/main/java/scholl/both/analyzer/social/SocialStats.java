@@ -6,6 +6,8 @@ import java.io.*;
 import java.util.*;
 
 public class SocialStats implements Runnable {
+    public static final int MAX_BLOGS = 10;
+    
     private static File outputFolder;
     static {
         outputFolder = new File("out");
@@ -147,6 +149,7 @@ public class SocialStats implements Runnable {
         options.put("limit", "20");
         
         List<Thread> threads = new ArrayList<Thread>();
+        int i = 0;
         for (SocialUser b : blogs) {
             if (MainClient.THREADING) {
                 Thread t = new Thread(new SocialStats(b, COUNT));
@@ -154,6 +157,10 @@ public class SocialStats implements Runnable {
                 threads.add(t);
             } else {
                 doStats(b, 10);
+            }
+            i++;
+            if (i > MAX_BLOGS) {
+                break;
             }
         }
         

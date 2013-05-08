@@ -1,6 +1,9 @@
 package scholl.both.analyzer.social;
 
+import scholl.both.analyzer.social.networks.TwitterClient;
 import scholl.both.analyzer.text.Text;
+
+import twitter4j.TwitterException;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -26,7 +29,15 @@ public class MainClient {
         }
         
         try {
-            SocialStats.tumlbrThing(300);
+            TwitterClient.main(new String[0]);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (TwitterException e1) {
+            e1.printStackTrace();
+        }
+        
+        try {
+            SocialStats.tumlbrThing(20);
         } catch (IOException e) {
             e.printStackTrace();
         }
