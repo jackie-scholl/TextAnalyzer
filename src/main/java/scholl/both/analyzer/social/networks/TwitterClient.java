@@ -18,46 +18,6 @@ import java.util.Set;
 public class TwitterClient implements SocialClient {
     private Twitter twitter;
     
-    public static void main(String[] args) throws IOException, TwitterException {
-        System.out.println("Hello World!");
-        
-        /*BufferedReader br = new BufferedReader(new FileReader("twitter_credentials.txt"));
-        String consumerKey = br.readLine();
-        String consumerSecret = br.readLine();
-        String accessToken = br.readLine();
-        String tokenSecret = br.readLine();
-        br.close();
-        
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-                .setOAuthConsumerKey(consumerKey)
-                .setOAuthConsumerSecret(consumerSecret)
-                .setOAuthAccessToken(accessToken)
-                .setOAuthAccessTokenSecret(tokenSecret);
-        TwitterFactory tf = new TwitterFactory(cb.build());
-        Twitter twitter = tf.getInstance();*/
-        
-        TwitterClient c = new TwitterClient("twitter_credentials.txt");
-        
-        /*
-        User user = twitter.verifyCredentials();
-        List<Status> statuses = twitter.getHomeTimeline();
-        System.out.println("Showing @" + user.getScreenName() + "'s home timeline.");
-        for (Status status : statuses) {
-            System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
-        }
-        
-        long cursor = -1;
-        List<User> following = new ArrayList<User>();
-        while (cursor != 0) {
-            PagableResponseList<User> l = twitter.getFriendsList(user.getId(), cursor);
-            following.addAll(l);
-            cursor = l.getNextCursor();
-        }
-        System.out.println(following);
-        */
-    }
-    
     public TwitterClient(String fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         String consumerKey = br.readLine();
@@ -84,12 +44,11 @@ public class TwitterClient implements SocialClient {
     public SocialUser getAuthenticatedUser(){
         try {
             User u = twitter.verifyCredentials();
-            
+            return new TwitterUser(u);
         } catch (TwitterException e) {
             e.printStackTrace();
+            return null;
         }
-        // TODO Auto-generated method stub
-        return null;
     }
 
     public Set<SocialUser> getInterestingUsers() {
@@ -115,9 +74,11 @@ public class TwitterClient implements SocialClient {
     
     private class TwitterUser implements SocialUser {
         private User user;
+        private String name;
         
         public TwitterUser(User u) {
             this.user = u;
+            this.name = u.getName();
         }
         
         public String getName() {
@@ -167,6 +128,45 @@ public class TwitterClient implements SocialClient {
         public long getLastUpdated() {
             return getPosts(1).getMostRecent().getTimestamp();
         }
+
+        @Override
+        public String toString() {
+            return "TwitterUser [name=" + this.name + "]";
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (!(obj instanceof TwitterUser))
+                return false;
+            TwitterUser other = (TwitterUser) obj;
+            if (!getOuterType().equals(other.getOuterType()))
+                return false;
+            if (this.name == null) {
+                if (other.name != null)
+                    return false;
+            } else if (!this.name.equals(other.name))
+                return false;
+            return true;
+        }
+
+        private TwitterClient getOuterType() {
+            return TwitterClient.this;
+        }
+
+        
         
     }
     
@@ -178,3 +178,45 @@ public class TwitterClient implements SocialClient {
         
     }*/
 }
+
+
+
+/*public static void main(String[] args) throws IOException, TwitterException {
+    System.out.println("Hello World!");
+    
+    /*BufferedReader br = new BufferedReader(new FileReader("twitter_credentials.txt"));
+    String consumerKey = br.readLine();
+    String consumerSecret = br.readLine();
+    String accessToken = br.readLine();
+    String tokenSecret = br.readLine();
+    br.close();
+    
+    ConfigurationBuilder cb = new ConfigurationBuilder();
+    cb.setDebugEnabled(true)
+            .setOAuthConsumerKey(consumerKey)
+            .setOAuthConsumerSecret(consumerSecret)
+            .setOAuthAccessToken(accessToken)
+            .setOAuthAccessTokenSecret(tokenSecret);
+    TwitterFactory tf = new TwitterFactory(cb.build());
+    Twitter twitter = tf.getInstance();*
+    
+    TwitterClient c = new TwitterClient("twitter_credentials.txt");
+    
+    /*
+    User user = twitter.verifyCredentials();
+    List<Status> statuses = twitter.getHomeTimeline();
+    System.out.println("Showing @" + user.getScreenName() + "'s home timeline.");
+    for (Status status : statuses) {
+        System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
+    }
+    
+    long cursor = -1;
+    List<User> following = new ArrayList<User>();
+    while (cursor != 0) {
+        PagableResponseList<User> l = twitter.getFriendsList(user.getId(), cursor);
+        following.addAll(l);
+        cursor = l.getNextCursor();
+    }
+    System.out.println(following);
+    *
+}*/

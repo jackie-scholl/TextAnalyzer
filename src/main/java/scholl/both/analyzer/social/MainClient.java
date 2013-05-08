@@ -27,20 +27,6 @@ public class MainClient {
             System.out.printf("%d words, %d characters: %s%n", t.getWordCount(),
                     t.getCharacterCount(), t.getOriginal());
         }
-        
-        try {
-            TwitterClient.main(new String[0]);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } catch (TwitterException e1) {
-            e1.printStackTrace();
-        }
-        
-        try {
-            SocialStats.tumlbrThing(20);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     
     public static void openBrowser(String url) throws IOException {

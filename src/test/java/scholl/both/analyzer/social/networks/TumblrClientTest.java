@@ -24,7 +24,7 @@ public class TumblrClientTest {
     public void simpleTest() {
         SocialClient tc = null;
         try {
-            tc = new TumblrClient("tumblr_credentials.json");
+            tc = new TumblrClient("twitter_credentials.txt");
         } catch (IOException e) {
             org.junit.Assert.assertTrue("Failure on creating client - IO exception:\n", false);
         }
@@ -32,7 +32,9 @@ public class TumblrClientTest {
         try {
             tc.authenticate();
         } catch (IOException e) {
-            org.junit.Assert.assertTrue("Failure on authenticating client - IO exception:\n", false);
+            e.printStackTrace();
         }
+        
+        System.out.println(tc.getAuthenticatedUser());
     }
 }
