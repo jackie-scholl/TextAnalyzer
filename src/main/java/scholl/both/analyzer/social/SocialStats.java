@@ -6,18 +6,18 @@ import java.io.*;
 import java.util.*;
 
 public class SocialStats implements Runnable {
-    private double postsPerHour = 0.0;
-    
     private static File outputFolder;
     static {
         outputFolder = new File("out");
         outputFolder.mkdir();
     }
-    
+
     private final SocialUser b;
     private final int count;
     private final File userFolder;
     
+    private double postsPerHour = 0.0;
+
     public SocialStats(SocialUser b, int count) {
         this.b = b;
         this.count = count;
@@ -40,51 +40,7 @@ public class SocialStats implements Runnable {
             System.err.printf("Something went wrong - file %s still exists%n", f);
         }
     }
-    
-    static void tumlbrThing(int COUNT) throws IOException {
-        TumblrClient tclient = new TumblrClient("credentials.json");
-        tclient.authenticate();
-        
-        long start = System.currentTimeMillis();
-        System.out.println(tclient.getAuthenticatedUser().getName());
-        
-        Set<SocialUser> blogs = tclient.getInterestingUsers();
-        
-        Map<String, Object> options = new HashMap<String, Object>();
-        //options.put("reblog_info", "true");
-        options.put("filter", "text");
-        //options.put("notes_info", "true");
-        options.put("limit", "20");
-        
-        List<Thread> threads = new ArrayList<Thread>();
-        for (SocialUser b : blogs) {
-            if (SocialClient.THREADING) {
-                Thread t = new Thread(new SocialStats(b, COUNT));
-                t.start();
-                threads.add(t);
-            } else {
-                doStats(b, 10);
-            }
-        }
-        
-        try {
-            for (Thread t : threads) {
-                t.join();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
-        long end = System.currentTimeMillis();
-        double timeTaken = (end - start) / 1000.0;
-        
-        System.out.printf("Finished - took %.3f seconds%n", timeTaken);
-    }
-    
-    /*
-     * 100 - 49
-     * 300 - 94
-     */
+
     public void run() {
         run(5);
     }
@@ -173,57 +129,46 @@ public class SocialStats implements Runnable {
         stream.printf("Letter frequencies: %n%s", ps.getLetterCount2().toString2());
         stream.close();
     }
+
+    
+    static void tumlbrThing(int COUNT) throws IOException {
+        TumblrClient tclient = new TumblrClient("tumblr_credentials.json");
+        tclient.authenticate();
+        
+        long start = System.currentTimeMillis();
+        System.out.println(tclient.getAuthenticatedUser().getName());
+        
+        Set<SocialUser> blogs = tclient.getInterestingUsers();
+        
+        Map<String, Object> options = new HashMap<String, Object>();
+        //options.put("reblog_info", "true");
+        options.put("filter", "text");
+        //options.put("notes_info", "true");
+        options.put("limit", "20");
+        
+        List<Thread> threads = new ArrayList<Thread>();
+        for (SocialUser b : blogs) {
+            if (MainClient.THREADING) {
+                Thread t = new Thread(new SocialStats(b, COUNT));
+                t.start();
+                threads.add(t);
+            } else {
+                doStats(b, 10);
+            }
+        }
+        
+        try {
+            for (Thread t : threads) {
+                t.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        long end = System.currentTimeMillis();
+        double timeTaken = (end - start) / 1000.0;
+        
+        System.out.printf("Finished - took %.3f seconds%n", timeTaken);
+    }
     
 }
-
-/*
-
-
-
-
-
-
-
-
-
-                //stream.printf("\t%.5g posts per second%n", postRate);
-                //stream.printf("\t%.5g posts per minute%n", postRate*60.0);
-                //stream.printf("\t%.5g posts per week%n", postRate*(60.0*60.0*24.0*7.0));
-                //System.out.printf("%s: %.5g posts per hour%n", b.getName(), postRate*(60.0*60.0));
-long start = System.currentTimeMillis();
-        
-        PostSet ps = b.getPosts(count);
-        
-        File userFolder = new File(outputFolder, b.getName());
-        delete(userFolder);
-        userFolder.mkdir();
-        getWordFrequencies(userFolder, ps);
-        getGeneral(userFolder, ps, b);
-        
-        long blogEnd = System.currentTimeMillis();
-        System.out.printf("Finished blog %s with %d posts - took %.3f seconds%n", b.getName(),
-                ps.size(), (blogEnd - start) / 1000.0);
-                
-
-    
-    /*private static class StatsDoer implements Runnable {
-        private final SocialUser b;
-        private final int count;
-        
-        public StatsDoer(SocialUser b, int count) {
-            this.b = b;
-            this.count = count;
-        }
-        
-        public void run() {
-            doStats(b, count);
-        }
-    }
-
-    
-    
-    
-    
-    
-    
-*/
