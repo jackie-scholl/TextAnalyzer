@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SocialClient {
+public class MainClient {
     public static final boolean THREADING = true;
 
     public static void main(String[] args) {
