@@ -1,6 +1,7 @@
 package scholl.both.analyzer.social.networks;
 
 import scholl.both.analyzer.social.PostSet;
+import scholl.both.analyzer.social.SocialPost;
 import scholl.both.analyzer.social.SocialUser;
 
 import twitter4j.*;
@@ -10,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +21,7 @@ public class TwitterClient implements SocialClient {
     public static void main(String[] args) throws IOException, TwitterException {
         System.out.println("Hello World!");
         
-        BufferedReader br = new BufferedReader(new FileReader("twitter_credentials.txt"));
+        /*BufferedReader br = new BufferedReader(new FileReader("twitter_credentials.txt"));
         String consumerKey = br.readLine();
         String consumerSecret = br.readLine();
         String accessToken = br.readLine();
@@ -33,8 +35,11 @@ public class TwitterClient implements SocialClient {
                 .setOAuthAccessToken(accessToken)
                 .setOAuthAccessTokenSecret(tokenSecret);
         TwitterFactory tf = new TwitterFactory(cb.build());
-        Twitter twitter = tf.getInstance();
+        Twitter twitter = tf.getInstance();*/
         
+        TwitterClient c = new TwitterClient("twitter_credentials.txt");
+        
+        /*
         User user = twitter.verifyCredentials();
         List<Status> statuses = twitter.getHomeTimeline();
         System.out.println("Showing @" + user.getScreenName() + "'s home timeline.");
@@ -50,6 +55,7 @@ public class TwitterClient implements SocialClient {
             cursor = l.getNextCursor();
         }
         System.out.println(following);
+        */
     }
     
     public TwitterClient(String fileName) throws IOException {
@@ -78,6 +84,7 @@ public class TwitterClient implements SocialClient {
     public SocialUser getAuthenticatedUser(){
         try {
             User u = twitter.verifyCredentials();
+            
         } catch (TwitterException e) {
             e.printStackTrace();
         }
@@ -86,17 +93,32 @@ public class TwitterClient implements SocialClient {
     }
 
     public Set<SocialUser> getInterestingUsers() {
-        // TODO Auto-generated method stub
-        return null;
+        Set<SocialUser> s = new HashSet<SocialUser>();
+        s.addAll(getFollowing(20));
+        return s;
     }
 
     public List<SocialUser> getFollowing(int num) {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            List<User> a;
+            a = twitter.getFriendsList(twitter.verifyCredentials().getId(), -1);
+            List<SocialUser> b = new ArrayList<SocialUser>();
+            for (User u : a) {
+                b.add(new TwitterUser(u));
+            }
+            return b;
+        } catch (TwitterException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     private class TwitterUser implements SocialUser {
         private User user;
+        
+        public TwitterUser(User u) {
+            this.user = u;
+        }
         
         public String getName() {
             return user.getName();
@@ -111,8 +133,15 @@ public class TwitterClient implements SocialClient {
         }
 
         public PostSet getPosts(int num) {
-            
-            // TODO Auto-generated method stub
+            try {
+                ResponseList<Status> l = twitter.getUserTimeline(user.getId());
+                PostSet ps = new PostSet();
+                for (Status s : l) {
+                    ps.add(getSocial(s));
+                }
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -122,14 +151,30 @@ public class TwitterClient implements SocialClient {
         }
 
         public List<SocialUser> getFollowers() {
-            // TODO Auto-generated method stub
-            return null;
+            try {
+                List<User> l = twitter.getFollowersList(user.getId(), -1);
+                List<SocialUser> ls = new ArrayList<SocialUser>();
+                for (User u : l) {
+                    ls.add(new TwitterUser(u));
+                }
+                return ls;
+            } catch (TwitterException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
 
         public long getLastUpdated() {
-            // TODO Auto-generated method stub
-            return 0;
+            return getPosts(1).getMostRecent().getTimestamp();
         }
         
     }
+    
+    private SocialPost getSocial(Status s) {
+        return new SocialPost(s.getText(), new TwitterUser(s.getUser()), s.getCreatedAt().getTime());
+    }
+    
+    /*private class TwitterPost extends SocialPost {
+        
+    }*/
 }
