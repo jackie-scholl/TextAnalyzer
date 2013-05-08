@@ -3,6 +3,7 @@ package scholl.both.analyzer.social.networks;
 import static org.junit.Assert.assertEquals;
 
 import scholl.both.analyzer.social.PostSet;
+import scholl.both.analyzer.social.SocialPost;
 import scholl.both.analyzer.social.SocialUser;
 
 import java.io.IOException;
@@ -28,11 +29,14 @@ public class TwitterClientTest {
         }
         
         SocialUser u = tc.getAuthenticatedUser();
-        assertEquals("raptortech97", u.getName());
+        assertEquals("raptortech97", u.getTitle());
         
         for (SocialUser su : tc.getInterestingUsers()) {
             PostSet ps = su.getPosts(20);
-            System.out.printf("%s: %s%n", su.getName(), ps);
+            System.out.printf("%s: %n", su.getName());
+            for (SocialPost p : ps.toSet()) {
+                System.out.printf("\t%s%n", p);
+            }
         }
     }
 }
