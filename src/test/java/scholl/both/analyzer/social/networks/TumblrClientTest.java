@@ -24,7 +24,7 @@ public class TumblrClientTest {
     public void simpleTest() {
         TumblrClient tc = null;
         try {
-            tc = new TumblrClient();
+            tc = new TumblrClient("tumblr_credentials.json");
         } catch (IOException e) {
             org.junit.Assert.assertTrue("Failure on creating client - IO exception:\n", false);
         }
