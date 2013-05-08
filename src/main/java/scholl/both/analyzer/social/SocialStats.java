@@ -177,5 +177,4 @@ public class SocialStats implements Runnable {
         
         System.out.printf("Finished - took %.3f seconds%n", timeTaken);
     }
-    
 }
