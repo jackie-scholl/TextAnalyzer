@@ -1,5 +1,6 @@
 package scholl.both.analyzer.social;
 
+import scholl.both.analyzer.social.networks.SocialClient;
 import scholl.both.analyzer.social.networks.TumblrClient;
 
 import java.io.*;
@@ -134,7 +135,7 @@ public class SocialStats implements Runnable {
 
     
     static void tumlbrThing(int COUNT) throws IOException {
-        TumblrClient tclient = new TumblrClient("tumblr_credentials.json");
+        SocialClient tclient = new TumblrClient("tumblr_credentials.json");
         tclient.authenticate();
         
         long start = System.currentTimeMillis();

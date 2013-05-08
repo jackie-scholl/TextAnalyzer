@@ -16,7 +16,7 @@ import com.google.gson.JsonParser;
 import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.*;
 
-public class TumblrClient {
+public class TumblrClient implements SocialClient {
     
     public final static boolean THREADING = true;
     private JumblrClient client;
@@ -56,6 +56,9 @@ public class TumblrClient {
         return obj;
     }
     
+    /* (non-Javadoc)
+     * @see scholl.both.analyzer.social.networks.SocialClient#authenticate()
+     */
     public void authenticate() throws IOException {
         assert service != null;
         
@@ -73,14 +76,16 @@ public class TumblrClient {
         client.setToken(access.getToken(), access.getSecret());
     }
     
-    public JumblrClient getJumblr() {
-        return client;
-    }
-    
+    /* (non-Javadoc)
+     * @see scholl.both.analyzer.social.networks.SocialClient#getAuthenticatedUser()
+     */
     public SocialUser getAuthenticatedUser() {
         return new TumblrUser(client.blogInfo(client.user().getName()));
     }
     
+    /* (non-Javadoc)
+     * @see scholl.both.analyzer.social.networks.SocialClient#getInterestingUsers()
+     */
     public Set<SocialUser> getInterestingUsers() {
         Set<SocialUser> s = new HashSet<SocialUser>();
         
@@ -127,6 +132,9 @@ public class TumblrClient {
         return getUser(client.blogInfo(b));
     }
     
+    /* (non-Javadoc)
+     * @see scholl.both.analyzer.social.networks.SocialClient#getFollowing(int)
+     */
     public List<SocialUser> getFollowing(int num) {
         return getFollowing(new HashMap<String, Object>(), num);
     }

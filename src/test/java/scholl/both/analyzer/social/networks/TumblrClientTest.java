@@ -22,7 +22,7 @@ public class TumblrClientTest {
     @Test
     @Ignore
     public void simpleTest() {
-        TumblrClient tc = null;
+        SocialClient tc = null;
         try {
             tc = new TumblrClient("tumblr_credentials.json");
         } catch (IOException e) {
