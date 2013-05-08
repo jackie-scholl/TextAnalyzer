@@ -27,12 +27,12 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
         this.tags = Collections.unmodifiableList(tags);
     }
     
-    public SocialPost(SocialUser poster, long timestamp, String text) {
+    public SocialPost(String text, SocialUser poster, long timestamp) {
         this(poster, timestamp, text, null, new ArrayList<String>());
     }
     
     public SocialPost(String text) {
-        this(null, System.currentTimeMillis(), text);
+        this(text, null, System.currentTimeMillis());
     }
     
     /**
