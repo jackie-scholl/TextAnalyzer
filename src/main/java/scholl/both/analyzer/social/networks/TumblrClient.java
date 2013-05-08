@@ -17,19 +17,31 @@ import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.*;
 
 public class TumblrClient {
+    
     public final static boolean THREADING = true;
     private JumblrClient client;
-    private String consumerKey, consumerSecret;
+    private OAuthService service;
 
-    public TumblrClient() throws IOException {
-        this("credentials.json");
-    }
-    
     public TumblrClient(String credentialsFileName) throws IOException {
         this(new File(credentialsFileName));
     }
     
     public TumblrClient(File credentialsFile) throws IOException {
+        this(readCredential(credentialsFile));
+    }
+    
+    private TumblrClient(JsonObject obj) {
+        this(obj.getAsJsonPrimitive("consumer_key").getAsString(),
+                obj.getAsJsonPrimitive("consumer_secret").getAsString());
+    }
+    
+    public TumblrClient(String consumerKey, String consumerSecret) {
+        this.client = new JumblrClient(consumerKey, consumerSecret);
+        service = new ServiceBuilder().provider(TumblrApi.class).apiKey(consumerKey)
+                .apiSecret(consumerSecret).build();
+    }
+    
+    public static JsonObject readCredential(File credentialsFile) throws IOException {
         // Read in the JSON data for the credentials
         BufferedReader br = new BufferedReader(new FileReader(credentialsFile));
         String json = "";
@@ -39,32 +51,25 @@ public class TumblrClient {
         br.close();
         
         // Parse the credentials
-        //JsonParser parser = new JsonParser();
         JsonObject obj = (JsonObject) (new JsonParser()).parse(json);
         
-        consumerKey = obj.getAsJsonPrimitive("consumer_key").getAsString();
-        consumerSecret = obj.getAsJsonPrimitive("consumer_secret").getAsString();
-        
-        // Create a client
-        client = new JumblrClient(consumerKey, consumerSecret);
-    }
-    
-    public TumblrClient(String consumerKey, String consumerSecret) {
-        client = new JumblrClient(consumerKey, consumerSecret);
+        return obj;
     }
     
     public void authenticate() throws IOException {
-        OAuthService service = new ServiceBuilder().provider(TumblrApi.class).apiKey(consumerKey)
-                .apiSecret(consumerSecret).build();
+        assert service != null;
+        
         Token request = service.getRequestToken();
+        System.out.println(request);
         
         String url = service.getAuthorizationUrl(request);
-        SocialClient.openBrowser(url);
+        MainClient.openBrowser(url);
         
         OAuthCallbackServer s = new OAuthCallbackServer(8004);
         String response = s.getVerifier();
         
         Token access = service.getAccessToken(request, new Verifier(response));
+        System.out.printf("Access token: %s%n", access);
         client.setToken(access.getToken(), access.getSecret());
     }
     
@@ -79,7 +84,7 @@ public class TumblrClient {
     public Set<SocialUser> getInterestingUsers() {
         Set<SocialUser> s = new HashSet<SocialUser>();
         
-        User authenticated = client.user();
+        com.tumblr.jumblr.types.User authenticated = client.user();
         
         System.out.printf("User %s has these blogs: %n", authenticated.getName());
         for (Blog b : authenticated.getBlogs()) {
@@ -191,7 +196,6 @@ public class TumblrClient {
             } else {
                 pg.run();
             }
-            
         }
         
         try {
@@ -204,6 +208,26 @@ public class TumblrClient {
         }
         
         return ps;
+    }
+    
+    private List<SocialUser> getFollowers(Blog blog, Map<String, Object> options, int num) {
+        List<SocialUser> followers = new ArrayList<SocialUser>();
+        
+        int lim = 20;
+        lim = num > lim ? lim : num;
+        
+        int initialOffset = 0;
+        for (int i = initialOffset; i < num; i += lim) {
+            options.put("limit", lim);
+            options.put("offset", i);
+            for (com.tumblr.jumblr.types.User u : blog.followers(options)) {
+                Blog b = client.blogInfo(u.getName());
+                SocialUser su = new TumblrUser(b);
+                followers.add(su);
+            }
+        }
+        
+        return followers;
     }
     
     private class PostGetter implements Runnable {
@@ -281,40 +305,6 @@ public class TumblrClient {
         
         public PostSet getPosts(Map<String, Object> options, int num) {
             return TumblrClient.this.getPosts(blog, options, num);
-            /*PostSet ps = new PostSet();
-            
-            int lim = 20;
-            //lim = num > lim ? lim : num;
-            
-            List<Thread> threads = new ArrayList<Thread>();
-            int initialOffset = 0;
-            for (int i = initialOffset; i < num; i += lim) {
-                int diff = num - i;
-                diff = diff > lim ? lim : diff;
-                options.put("limit", lim);
-                options.put("offset", i);
-                
-                PostGetter pg = new PostGetter(blog, options, ps);
-                
-                if (THREADING){
-                    Thread t = new Thread(pg);
-                    t.start();
-                    threads.add(t);
-                } else {
-                    pg.run();
-                }
-            }
-            
-            try {
-                for (Thread t : threads) {
-                    t.join();
-                }
-            } catch (InterruptedException e) {
-                System.err.println("Interrupted while waiting for worker threads of getPosts to finish.");
-                e.printStackTrace();
-            }
-            
-            return ps;*/
         }
         
         public List<SocialUser> getFollowers() {
@@ -329,23 +319,7 @@ public class TumblrClient {
          * @see com.tumblr.jumblr.types.Blog#followers(java.util.Map)
          */
         public List<SocialUser> getFollowers(Map<String, Object> options, int num) {
-            List<SocialUser> followers = new ArrayList<SocialUser>();
-            
-            int lim = 20;
-            lim = num > lim ? lim : num;
-            
-            int initialOffset = 0;
-            for (int i = initialOffset; i < num; i += lim) {
-                options.put("limit", lim);
-                options.put("offset", i);
-                for (User u : blog.followers(options)) {
-                    Blog b = client.blogInfo(u.getName());
-                    SocialUser su = new TumblrUser(b);
-                    followers.add(su);
-                }
-            }
-            
-            return followers;
+            return TumblrClient.this.getFollowers(blog, options, num);
         }
         
         @Override
