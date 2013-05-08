@@ -7,7 +7,6 @@ import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,8 +75,12 @@ public class TwitterClient implements SocialClient {
         
     }
 
-    public SocialUser getAuthenticatedUser() {
-        User u = twitter.verifyCredentials();
+    public SocialUser getAuthenticatedUser(){
+        try {
+            User u = twitter.verifyCredentials();
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
         // TODO Auto-generated method stub
         return null;
     }
@@ -108,6 +111,7 @@ public class TwitterClient implements SocialClient {
         }
 
         public PostSet getPosts(int num) {
+            
             // TODO Auto-generated method stub
             return null;
         }
