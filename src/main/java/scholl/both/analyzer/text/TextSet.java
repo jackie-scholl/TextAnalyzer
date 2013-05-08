@@ -4,8 +4,6 @@ import scholl.both.analyzer.social.PostSet;
 import scholl.both.analyzer.social.SocialPost;
 import scholl.both.analyzer.text.Text;
 
-import java.util.*;
-
 import org.apache.commons.math3.stat.correlation.*;
 
 public class TextSet {
