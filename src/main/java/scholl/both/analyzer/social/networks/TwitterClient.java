@@ -73,6 +73,15 @@ public class TwitterClient implements SocialClient {
         }
     }
     
+    public SocialUser getUser(String name) {
+        try {
+            return new TwitterUser(twitter.showUser(name));
+        } catch (TwitterException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     private class TwitterUser implements SocialUser {
         private User user;
         private String name;
