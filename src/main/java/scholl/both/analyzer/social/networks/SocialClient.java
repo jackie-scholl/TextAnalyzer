@@ -16,4 +16,6 @@ public interface SocialClient {
     
     public abstract List<SocialUser> getFollowing(int num);
     
+    public abstract SocialUser getUser(String name);
+    
 }
