@@ -10,12 +10,15 @@ import java.io.IOException;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.Assert;
 
 public class TwitterClientTest {
 
+    private SocialClient tc;
+
     @Test
     public void simpleTest() {
-        SocialClient tc = null;
+        tc = null;
         try {
             tc = new TwitterClient("tumblr_credentials.json");
         } catch (IOException e) {
@@ -39,5 +42,14 @@ public class TwitterClientTest {
             }
             
         }
+    }
+    
+    @Test
+    public void benPostTest() {
+        SocialUser ben = tc.getUser("bkinderTARDIS42");
+        PostSet ps = ben.getPosts(20);
+        assertEquals(3, ps.size()); // Ben has 3 posts
+        
+        //SocialUser me = 
     }
 }
