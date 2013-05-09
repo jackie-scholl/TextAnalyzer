@@ -7,8 +7,6 @@ import scholl.both.analyzer.social.SocialUser;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
