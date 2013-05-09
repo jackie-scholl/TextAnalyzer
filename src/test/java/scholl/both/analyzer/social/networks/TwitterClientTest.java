@@ -28,7 +28,7 @@ public class TwitterClientTest {
         }
         
         SocialUser u = tc.getAuthenticatedUser();
-        assertEquals("raptortech97", u.getName());
+        assertEquals("raptortech97", u.getTitle());
         
         for (SocialUser su : tc.getInterestingUsers()) {
             PostSet ps = su.getPosts(20);

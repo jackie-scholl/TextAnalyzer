@@ -19,19 +19,20 @@ public class TwitterClient implements SocialClient {
     private Twitter twitter;
     
     public TwitterClient(String fileName) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
-        String consumerKey = br.readLine();
-        String consumerSecret = br.readLine();
-        String accessToken = br.readLine();
-        String tokenSecret = br.readLine();
-        br.close();
+        //BufferedReader br = new BufferedReader(new FileReader(fileName));
+        //String consumerKey = br.readLine();
+        //String consumerSecret = br.readLine();
+        //String accessToken = br.readLine();
+        //String tokenSecret = br.readLine();
+        //br.close();
         
         ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-                .setOAuthConsumerKey(consumerKey)
-                .setOAuthConsumerSecret(consumerSecret)
-                .setOAuthAccessToken(accessToken)
-                .setOAuthAccessTokenSecret(tokenSecret);
+        
+        cb.setDebugEnabled(true);
+                //.setOAuthConsumerKey(consumerKey)
+                //.setOAuthConsumerSecret(consumerSecret)
+                //.setOAuthAccessToken(accessToken)
+                //.setOAuthAccessTokenSecret(tokenSecret);
         TwitterFactory tf = new TwitterFactory(cb.build());
         twitter = tf.getInstance();
     }
