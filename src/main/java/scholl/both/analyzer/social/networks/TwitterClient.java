@@ -18,9 +18,11 @@ import java.util.Set;
 public class TwitterClient implements SocialClient {
     private Twitter twitter;
     
+
     public TwitterClient(String fileName) throws IOException {        
         ConfigurationBuilder cb = new ConfigurationBuilder();        
         cb.setDebugEnabled(true);
+
         TwitterFactory tf = new TwitterFactory(cb.build());
         twitter = tf.getInstance();
     }
@@ -61,6 +63,7 @@ public class TwitterClient implements SocialClient {
         }
     }
     
+
     public SocialUser getUser(String name) {
         try {
             return new TwitterUser(twitter.showUser(name));
@@ -69,7 +72,7 @@ public class TwitterClient implements SocialClient {
             return null;
         }
     }
-    
+
     private class TwitterUser implements SocialUser {
         private User user;
         private String name;
@@ -163,7 +166,9 @@ public class TwitterClient implements SocialClient {
 
         private TwitterClient getOuterType() {
             return TwitterClient.this;
+
         }        
+
     }
     
     private SocialPost getSocial(Status s) {
