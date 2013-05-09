@@ -27,10 +27,6 @@ public class JumblrException extends RuntimeException {
      */
     public JumblrException(Response response) {
         this.responseCode = response.getCode();
-        // ----- BAD CODE HERE -----
-        //System.err.println(response);
-        // ----- BAD CODE HERE -----
-        
         String body = response.getBody();
 
         JsonParser parser = new JsonParser();

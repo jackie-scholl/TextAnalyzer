@@ -11,35 +11,23 @@ import scholl.both.analyzer.util.Counter;
  */
 public class Text {
 	
-	//Sets up variables for later use.
-    private String original;
-    private List<String> words;
-    private List<String> sentences;
+    protected final String original;
+    protected final String clean;
+    protected final List<String> words;
+    protected final List<String> sentences;
     
     /**
-     * Method that creates a text given a String. 
+     * Constructor that creates a text given a String. 
+     * 
      * @param original the string that you want to analyze. 
      */
     public Text(String original) {
-        TextMaker(original);
-    }
-    /**
-     * Takes in an array of strings, mashes them together. 
-     * @param original the strings that you want to analyze. 
-     */
-    public Text(String[] originArr){
-        String o = "";
-        for (String s : originArr) {
-            o.concat(s);
-        }
-        TextMaker(o);
-    }
-    
-    private void TextMaker(String original){
+        this.original = original;
+        
         //Strips out links
         original = original.replaceAll("(\\w+://)?(\\w+\\.)+(\\w+)([\\w\\+\\?/\\\\=-]+)*", "");
         
-        this.original = original;
+        this.clean = original;
 
         words = new ArrayList<String>();
         String[] wordsArr = original.split("\\s");
@@ -61,35 +49,35 @@ public class Text {
         int lastSentenceEnd = -1;
         //The minimum length of a sentence is four characters(I am, 
         //so periods before and after can safely be excluded.)
-        for(int i=3; i < this.original.length()-4; i++)
+        for(int i=3; i < this.clean.length()-4; i++)
         {
-        	if (original.charAt(i)=='.'){
-        		//Covers titles
-        		if (original.substring(i-3,  i).matches("(.Dr)|(.Mr)|(Mrs)|(.Ms)|(Esq)|")) continue;
-        		//Cover ellipses and acronyms
-        		else if (original.substring(i-3,  i).matches("(\\p{Upper}\\.\\p{Upper})|(.\\.\\.)")) continue;
-        		else if (original.substring(i+1,i+3).matches("(\\p{Upper}\\.)|(\\.\\.)")) continue;
-        		else if (original.substring(i-1,i+2).matches("\\.{3}")) continue;
-        		//If nothing else has forced the for loop to skip past this area, it will add everything from
-        		//the last sentence ending up to this one. 
-        		sentences.add(original.substring(lastSentenceEnd+1,i));
-        		lastSentenceEnd = i;
-        	}
-        	if (original.charAt(i)=='?'){
-        		sentences.add(original.substring(lastSentenceEnd+1,i));
-        		lastSentenceEnd = i;
-        	}
+            if (clean.charAt(i)=='.'){
+                //Covers titles
+                if (clean.substring(i-3,  i).matches("(.Dr)|(.Mr)|(Mrs)|(.Ms)|(Esq)|")) continue;
+                //Cover ellipses and acronyms
+                else if (clean.substring(i-3,  i).matches("(\\p{Upper}\\.\\p{Upper})|(.\\.\\.)")) continue;
+                else if (clean.substring(i+1,i+3).matches("(\\p{Upper}\\.)|(\\.\\.)")) continue;
+                else if (clean.substring(i-1,i+2).matches("\\.{3}")) continue;
+                //If nothing else has forced the for loop to skip past this area, it will add everything from
+                //the last sentence ending up to this one. 
+                sentences.add(clean.substring(lastSentenceEnd+1,i));
+                lastSentenceEnd = i;
+            }
+            if (clean.charAt(i)=='?'){
+                sentences.add(clean.substring(lastSentenceEnd+1,i));
+                lastSentenceEnd = i;
+            }
         }
         //Ensures that a sentence is always ended. 
-        sentences.add(original.substring(lastSentenceEnd+1));
+        sentences.add(clean.substring(lastSentenceEnd+1));
     }
     
     public int getCharacterCount() {
-    	return original.length();
+    	return clean.length();
     }
 
     public String getOriginal() {
-        return original;
+        return clean;
     }
 
     public List<String> getWords() {
@@ -120,14 +108,16 @@ public class Text {
     //Needs to force getWordCount to be a double because otherwise integer division
     //causes problems.
     public double averageSentenceLength() {
-        return getSentenceCount()/(double)getWordCount();
+        return getSentenceCount()/(double) getWordCount();
     }
+    
     public long getCharCount(char desired){
         return getLetterCount2().get(desired);
     }
+    
     public Counter<Character> getLetterCount2() {
         Counter<Character> count = new Counter<Character>();
-        for (char cha : original.toCharArray()) {
+        for (char cha : clean.toCharArray()) {
             count.add(cha);
         }
         return count;
@@ -159,27 +149,31 @@ public class Text {
 
     @Override
 	public String toString() {
-        return original;
+        return clean;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.clean == null) ? 0 : this.clean.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Text other = (Text) obj;
+        if (this.clean == null) {
+            if (other.clean != null)
+                return false;
+        } else if (!this.clean.equals(other.clean))
+            return false;
+        return true;
     }
 }
-
-
-//Map<String, Integer> m = new HashMap<>();
-//w = w.replaceAll("[\\.\"']", "").toLowerCase();
-/*w = w.toLowerCase();
-Integer count = m.get(w);
-if (count == null) {
-    count = 0;
-}
-count++;
-m.put(w, count);*/
-
-/*Set<String> toRemove = new HashSet<String>();
-for (String k : m.keySet()) {
-    if (k.charAt(k.length()-1) == ':') {
-        toRemove.add(k);
-    }
-}
-for (String k : toRemove) {
-    m.remove(k);
-}*/

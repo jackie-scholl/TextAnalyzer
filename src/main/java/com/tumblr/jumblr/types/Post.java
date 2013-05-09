@@ -1,13 +1,15 @@
 package com.tumblr.jumblr.types;
 
-import com.tumblr.jumblr.types.Note;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
-//import org.apache.commons.lang3.StringUtils;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class is the base of all post types on Tumblr
@@ -29,12 +31,8 @@ public class Post extends Resource {
     private String source_url, source_title;
     private Boolean liked;
     private String slug;
-    
     private Long reblogged_from_id;
     private String reblogged_from_name;
-    private Integer note_count;
-    private Note[] notes;
-    
 
     /**
      * Get whether or not this post is liked
@@ -156,30 +154,19 @@ public class Post extends Resource {
     }
     
     /**
-     * Get the id of the post that this post was reblogged from
+     * Get the ID of the post that this post reblogged
      * @return the ID
      */
-    public Long getRebloggedId() {
+    public Long getRebloggedFromId() {
         return reblogged_from_id;
     }
     
     /**
-     * Get the name of the blog from which this post was reblogged
-     * @return the blog name from which this was reblogged
+     * Get name of the blog that this post reblogged
+     * @return the blog name for the post that this post reblogged
      */
-    public String getRebloggedName() {
+    public String getRebloggedFromName() {
         return reblogged_from_name;
-    }
-    
-    /**
-     * @return the note count
-     */
-    public Integer getNoteCount() {
-        return this.note_count;
-    }
-
-    public Note[] getNotes() {
-        return notes;
     }
 
     /**
@@ -231,16 +218,6 @@ public class Post extends Resource {
      */
     public void setId(long id) {
         this.id = id;
-    }
-    
-    /**
-     * Set the reblogged_from id for this post
-     * @param reblogged_from_id The id of the post
-     *
-     * Not allowed?
-     *
-    public void setReblogId(long reblogged_from_id) {
-        this.reblogged_from_id = reblogged_from_id;
     }
 
     /**
@@ -338,25 +315,8 @@ public class Post extends Resource {
      * @return a string of CSV tags
      */
     private String getTagString() {
-    	if (tags == null)
-    		return "";
-    	String str = "";
-    	for(String tag : tags.toArray(new String[0]))
-    		str += tag+",";
-    	str = str.substring(0, str.length()-1);
-    	return str;
-        //return tags == null ? "" : StringUtils.join(tags.toArray(new String[0]), ",");
+        return tags == null ? "" : StringUtils.join(tags.toArray(new String[0]), ",");
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    /*@Override
-    public String toString() {
-        return "Post [id=" + this.id + ", reblog_key=" + this.reblog_key + ", blog_name=" + this.blog_name
-                + ", post_url=" + this.post_url + ", type=" + this.type + ", timestamp=" + this.timestamp + ", format="
-                + this.format + ", tags=" + this.tags + ", notes=" + Arrays.toString(this.notes) + "]";
-    }*/
 
     /**
      * Post toString
@@ -366,7 +326,5 @@ public class Post extends Resource {
     public String toString() {
         return "[" + this.getClass().getName() + " (" + blog_name + ":" + id + ")]";
     }
-    
-    
 
 }

@@ -176,7 +176,7 @@ public class JumblrClient {
     /**
      * Get an individual post by id
      * @param blogName the name of the blog
-     * @param id the id of the post to get
+     * @param postId the id of the post to get
      * @return the Post or null
      */
     public Post blogPost(String blogName, Long postId) {
@@ -382,15 +382,12 @@ public class JumblrClient {
         this.requestBuilder = builder;
     }
 
-    public static Map<String, Object> safeOptionMap(Map<String, ?> map) {
+    private static Map<String, Object> safeOptionMap(Map<String, ?> map) {
         Map<String, Object> mod = new HashMap<String, Object>();
         for (String key : map.keySet()) {
             mod.put(key, map.get(key));
         }
         return mod;
     }
-    
-    public RequestBuilder getRequestBuilder() {
-        return requestBuilder;
-    }
+
 }
