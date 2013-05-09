@@ -101,10 +101,11 @@ public class TwitterClient implements SocialClient {
                 for (Status s : l) {
                     ps.add(getSocial(s));
                 }
+                return ps;
             } catch (TwitterException e) {
                 e.printStackTrace();
+                return null;
             }
-            return null;
         }
 
         public int getPostCount() {
@@ -132,7 +133,7 @@ public class TwitterClient implements SocialClient {
 
         @Override
         public String toString() {
-            return "TwitterUser [name=" + this.name + "]";
+            return this.name;
         }
 
         @Override

@@ -83,8 +83,60 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
     public int compareTo(SocialPost other) {
         return new Long(this.timestamp).compareTo(other.timestamp);
     }
-    
+
     @Override
+    public String toString() {
+        final int maxLen = 10;
+        return String
+                .format("SocialPost [poster=%s, timestamp=%s, mention=%s, tags=%s]",
+                        this.poster,
+                        this.timestamp,
+                        this.mention,
+                        this.tags != null ? this.tags.subList(0, Math.min(this.tags.size(), maxLen))
+                                : null);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((this.mention == null) ? 0 : this.mention.hashCode());
+        result = prime * result + ((this.poster == null) ? 0 : this.poster.hashCode());
+        result = prime * result + ((this.tags == null) ? 0 : this.tags.hashCode());
+        result = prime * result + (int) (this.timestamp ^ (this.timestamp >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SocialPost other = (SocialPost) obj;
+        if (this.mention == null) {
+            if (other.mention != null)
+                return false;
+        } else if (!this.mention.equals(other.mention))
+            return false;
+        if (this.poster == null) {
+            if (other.poster != null)
+                return false;
+        } else if (!this.poster.equals(other.poster))
+            return false;
+        if (this.tags == null) {
+            if (other.tags != null)
+                return false;
+        } else if (!this.tags.equals(other.tags))
+            return false;
+        if (this.timestamp != other.timestamp)
+            return false;
+        return true;
+    }
+    
+    /*@Override
     public String toString() {
         return "Post [poster=" + this.poster
                 + ", timestamp=" + this.timestamp
@@ -92,5 +144,5 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
                 + ", mention=" + this.mention
                 + ", tags=" + this.tags
                 + "]";
-    }
+    }*/
 }
