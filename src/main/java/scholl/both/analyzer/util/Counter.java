@@ -187,7 +187,7 @@ public class Counter<K> {
             return false;
         }
         for (K key : keys) {
-            if (!(this.get(key)).equals(other.get(key))) {
+            if (this.get(key) != other.get(key)) {
                 return false;
             }
         }
