@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.experimental.theories.*;
 
 /**
  * Class to test the class {@link Counter}.
