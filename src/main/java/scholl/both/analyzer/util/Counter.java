@@ -107,7 +107,7 @@ public class Counter<K> {
      * @param key key to check for mapping
      * @return true if the key has a mapping; false otherwise
      */
-    public boolean contains(K key) {
+    public boolean contains(Object key) {
         return map.containsKey(key);
     }
     
