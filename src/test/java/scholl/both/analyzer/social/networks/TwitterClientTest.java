@@ -15,9 +15,9 @@ import org.junit.Assert;
 public class TwitterClientTest {
 
     private SocialClient tc;
-
-    @Test
-    public void simpleTest() {
+    
+    @BeforeClass
+    public void setup() {
         tc = null;
         try {
             tc = new TwitterClient("tumblr_credentials.json");
@@ -30,7 +30,10 @@ public class TwitterClientTest {
         } catch (IOException e) {
             org.junit.Assert.assertTrue("Failure on authenticating client - IO exception:\n", false);
         }
-        
+    }
+
+    @Test
+    public void simpleTest() {
         SocialUser u = tc.getAuthenticatedUser();
         assertEquals("raptortech97", u.getTitle());
         
