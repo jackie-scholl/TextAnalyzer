@@ -27,10 +27,8 @@ public class CounterTest {
     
     private Counter<Byte> counter;
     
-    
-    
     @Test
-    public static void simpleTest() {
+    public void simpleTest() {
         Counter<String> cntr = new Counter<String>();
         assertEquals(0, cntr.get("a"));
         cntr.add("a");
