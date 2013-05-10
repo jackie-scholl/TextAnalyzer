@@ -171,35 +171,31 @@ public class Counter<K> {
         return map2;
     }
     
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.map == null) ? 0 : this.map.hashCode());
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj.getClass() != this.getClass()) {
-            return false;
-        }
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        Counter<K> other = (Counter<K>) obj;
-        Set<K> keys = getKeys();
-        if (!keys.equals(other.getKeys())) {
+        if (obj == null)
             return false;
-        }
-        for (K key : keys) {
-            if (this.get(key) != other.get(key)) {
+        if (getClass() != obj.getClass())
+            return false;
+        Counter<?> other = (Counter<?>) obj;
+        if (this.map == null) {
+            if (other.map != null)
                 return false;
-            }
-        }
+        } else if (!this.map.equals(other.map))
+            return false;
         return true;
     }
-    
-    public int hashCode() {
-        int hash = 17;
-        hash = 31*hash + map.hashCode();
-        return hash;
-    }
-    
+
     /**
      * Returns a string representing the key/value pairs of this counter in the primary format,
      * largely applicable for a small number of pairs printed to the terminal. This method calls the
