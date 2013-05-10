@@ -8,10 +8,7 @@ import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TwitterClient implements SocialClient {
     private Twitter twitter;
@@ -32,6 +29,7 @@ public class TwitterClient implements SocialClient {
 
     public SocialUser getAuthenticatedUser(){
         try {
+            
             User u = twitter.verifyCredentials();
             return new TwitterUser(u);
         } catch (TwitterException e) {
@@ -65,6 +63,15 @@ public class TwitterClient implements SocialClient {
     public SocialUser getUser(String name) {
         try {
             return new TwitterUser(twitter.showUser(name));
+        } catch (TwitterException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public Map<String, RateLimitStatus> getRateLimit() {
+        try {
+            return twitter.getRateLimitStatus();
         } catch (TwitterException e) {
             e.printStackTrace();
             return null;

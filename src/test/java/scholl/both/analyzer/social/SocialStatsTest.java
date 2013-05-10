@@ -22,7 +22,7 @@ public class SocialStatsTest {
     @Ignore
     public void simpleTest() {
         try {
-            SocialStats.tumlbrThing(300);
+            SocialStats.tumblrThing(300);
         } catch (IOException e) {
             org.junit.Assert.assertTrue("Failure - IO exception:\n", false);
         }
