@@ -1,9 +1,6 @@
 package scholl.both.analyzer.social;
 
-import scholl.both.analyzer.social.networks.TwitterClient;
 import scholl.both.analyzer.text.Text;
-
-import twitter4j.TwitterException;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -26,6 +23,12 @@ public class MainClient {
             Text t = new Text(str);
             System.out.printf("%d words, %d characters: %s%n", t.getWordCount(),
                     t.getCharacterCount(), t.getOriginal());
+        }
+        
+        try {
+            SocialStats.tumblrThing(500);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     

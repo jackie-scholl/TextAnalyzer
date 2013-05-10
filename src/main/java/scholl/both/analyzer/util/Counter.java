@@ -15,14 +15,12 @@ import java.util.*;
  */
 public class Counter<K> {
     private Map<K, Long> map;
-    private long sum;
     
     /**
      * Sole constructor. Makes a new Counter object with no keys defined.
      */
     public Counter() {
         map = new HashMap<K, Long>();
-        sum = 0;
     }
     
     /**
@@ -43,10 +41,8 @@ public class Counter<K> {
      * @return the new count for key
      */
     public long add(K key, long amount) {
-        sum += amount;
-        long count = get(key);
-        count += amount;
-        map.put(key, count);
+        long count = amount + get(key);
+        set(key, count);
         return count;
     }
     
@@ -86,7 +82,6 @@ public class Counter<K> {
      */
     public long remove(K key) {
         long count = get(key);
-        sum -= count;
         map.remove(key);
         return count;
     }
@@ -97,12 +92,23 @@ public class Counter<K> {
      * @param key key to get count of
      * @return the count associated with the key
      */
-    public long get(K key) {
+    public long get(Object key) {
         Long x = map.get(key);
         if (x == null) {
             x = 0L;
         }
         return x;
+    }
+    
+    /**
+     * Returns true if the Counter object has amapping for the given key, false otherwise. This is
+     * the only way to tell between a mapped key with a value of 0 and an unmapped key.
+     * 
+     * @param key key to check for mapping
+     * @return true if the key has a mapping; false otherwise
+     */
+    public boolean contains(Object key) {
+        return map.containsKey(key);
     }
     
     public long getSum() {
@@ -165,6 +171,31 @@ public class Counter<K> {
         return map2;
     }
     
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.map == null) ? 0 : this.map.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Counter<?> other = (Counter<?>) obj;
+        if (this.map == null) {
+            if (other.map != null)
+                return false;
+        } else if (!this.map.equals(other.map))
+            return false;
+        return true;
+    }
+
     /**
      * Returns a string representing the key/value pairs of this counter in the primary format,
      * largely applicable for a small number of pairs printed to the terminal. This method calls the

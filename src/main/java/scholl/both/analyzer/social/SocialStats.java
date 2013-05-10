@@ -134,7 +134,7 @@ public class SocialStats implements Runnable {
     }
 
     
-    static void tumlbrThing(int COUNT) throws IOException {
+    static void tumblrThing(int COUNT) throws IOException {
         SocialClient tclient = new TumblrClient("tumblr_credentials.json");
         tclient.authenticate();
         
@@ -177,5 +177,13 @@ public class SocialStats implements Runnable {
         double timeTaken = (end - start) / 1000.0;
         
         System.out.printf("Finished - took %.3f seconds%n", timeTaken);
+    }
+    
+    public static void main(String... args) {
+        try {
+            tumblrThing(300);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

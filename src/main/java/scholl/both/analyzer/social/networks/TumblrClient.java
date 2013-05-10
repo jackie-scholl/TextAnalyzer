@@ -14,6 +14,7 @@ import org.scribe.oauth.OAuthService;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tumblr.jumblr.JumblrClient;
+import com.tumblr.jumblr.exceptions.JumblrException;
 import com.tumblr.jumblr.types.*;
 
 public class TumblrClient implements SocialClient {
@@ -238,6 +239,24 @@ public class TumblrClient implements SocialClient {
         return followers;
     }
     
+    private Blog blogInfo(String blogname) {
+        for (int i=0; i<5; i++) {
+            try {
+                return client.blogInfo(blogname);
+            } catch (JumblrException e) {
+                System.out.printf("Failed to retrieve blog info for %s at %tc - attempt %d%n",
+                        blogname, System.currentTimeMillis(), i);
+            }
+        }
+        
+        try {
+            return client.blogInfo(blogname);
+        } catch (JumblrException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     private class PostGetter implements Runnable {
         private final Map<String, Object> options;
         private volatile PostSet ps;
@@ -267,7 +286,7 @@ public class TumblrClient implements SocialClient {
         }
         
         public TumblrUser(String blogName) {
-            this(client.blogInfo(blogName));
+            this(blogInfo(blogName));
         }
         
         public String getName() {
