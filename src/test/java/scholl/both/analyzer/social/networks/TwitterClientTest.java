@@ -44,7 +44,6 @@ public class TwitterClientTest {
             for (SocialPost p : ps.toSet()) {
                 System.out.printf("\t%s%n", p);
             }
-            
         }
     }
     
