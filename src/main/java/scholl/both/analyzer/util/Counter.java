@@ -41,7 +41,7 @@ public class Counter<K> {
      * @return the new count for key
      */
     public long add(K key, long amount) {
-        int count = amount + get(key);
+        long count = amount + get(key);
         set(key, count);
         return count;
     }
