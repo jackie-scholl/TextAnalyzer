@@ -41,9 +41,8 @@ public class Counter<K> {
      * @return the new count for key
      */
     public long add(K key, long amount) {
-        long count = get(key);
-        count += amount;
-        map.put(key, count);
+        int count = amount + get(key);
+        set(key, count);
         return count;
     }
     
