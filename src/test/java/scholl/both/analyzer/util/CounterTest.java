@@ -9,6 +9,7 @@ import org.junit.runners.JUnit4;
 import org.junit.experimental.theories.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 /**
  * Class to test the class {@link Counter}.
@@ -47,13 +48,13 @@ public class CounterTest {
     
     @Theory
     public void equals(Counter<Byte> a, Counter<Byte> b) {
-        assumeThat(a != null && b != null);
+        assumeTrue(a != null && b != null);
         boolean equal = true;
         for (byte i = 0; i > -1; i++) {
             equal &= a.get(b) == b.get(a);
             equal &= a.contains(b) == a.contains(b);
         }
-        assertEqual(equal, a.equals(b));
-        assertEqual(equal, b.equals(a));
+        assertEquals(equal, a.equals(b));
+        assertEquals(equal, b.equals(a));
     }
 }
