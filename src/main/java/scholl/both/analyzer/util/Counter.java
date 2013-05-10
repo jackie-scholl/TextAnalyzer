@@ -105,6 +105,17 @@ public class Counter<K> {
         return x;
     }
     
+    /**
+     * Returns true if the Counter object has amapping for the given key, false otherwise. This is
+     * the only way to tell between a mapped key with a value of 0 and an unmapped key.
+     * 
+     * @param key key to check for mapping
+     * @return true if the key has a mapping; false otherwise
+     */
+    public boolean contains(K key) {
+        return map.containsKey(key);
+    }
+    
     public long getSum() {
         long sum = 0;
         for (K key : getKeys()) {
