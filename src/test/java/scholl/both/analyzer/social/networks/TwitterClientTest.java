@@ -15,10 +15,10 @@ import org.junit.BeforeClass;
 
 public class TwitterClientTest {
 
-    private SocialClient tc;
+    private static SocialClient tc;
     
     @BeforeClass
-    public void setup() {
+    public static void setup() {
         tc = null;
         try {
             tc = new TwitterClient("tumblr_credentials.json");
