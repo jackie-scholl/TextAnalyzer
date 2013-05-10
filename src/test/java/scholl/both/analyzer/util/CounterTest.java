@@ -16,7 +16,6 @@ import static org.junit.Assert.*;
  * @author Jackson
  * 
  */
-@RunWith(JUnit4.class)
 @RunWith(Theories.class)
 public class CounterTest {
     @DataPoint
