@@ -187,6 +187,7 @@ public class Counter<K> {
             return false;
         }
         for (K key : keys) {
+            // The line below is giving an error - "long cannot be dereferenced"
             if (this.get(key) != other.get(key)) {
                 return false;
             }
