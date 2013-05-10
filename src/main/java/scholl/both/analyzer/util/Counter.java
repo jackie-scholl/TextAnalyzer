@@ -15,14 +15,12 @@ import java.util.*;
  */
 public class Counter<K> {
     private Map<K, Long> map;
-    private long sum;
     
     /**
      * Sole constructor. Makes a new Counter object with no keys defined.
      */
     public Counter() {
         map = new HashMap<K, Long>();
-        sum = 0;
     }
     
     /**
@@ -43,7 +41,6 @@ public class Counter<K> {
      * @return the new count for key
      */
     public long add(K key, long amount) {
-        sum += amount;
         long count = get(key);
         count += amount;
         map.put(key, count);
@@ -86,7 +83,6 @@ public class Counter<K> {
      */
     public long remove(K key) {
         long count = get(key);
-        sum -= count;
         map.remove(key);
         return count;
     }
