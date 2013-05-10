@@ -20,10 +20,9 @@ import static org.junit.Assume.*;
 @RunWith(Theories.class)
 public class CounterTest {
     @DataPoint
-    public static Counter<Byte> blankCounter = new Counter();
+    public static Counter<Byte> blankCounter = new Counter<Byte>();
     @DataPoint
     public static Counter<Byte> nullCounter = null;
-    
     
     private Counter<Byte> counter;
     

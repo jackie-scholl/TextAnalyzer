@@ -181,7 +181,7 @@ public class Counter<K> {
         if (this == obj) {
             return true;
         }
-        Counter<K> other = (Counter) obj;
+        Counter<K> other = (Counter<K>) obj;
         Set<K> keys = getKeys();
         if (!keys.equals(other.getKeys())) {
             return false;
