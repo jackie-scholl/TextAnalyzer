@@ -176,6 +176,35 @@ public class Counter<K> {
         return map2;
     }
     
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        Counter<?> other = (Counter) obj;
+        Set<K> keys = getKeys();
+        if (!keys.equals(other.getKeys())) {
+            return false;
+        }
+        for (K key : keys) {
+            if (!(this.get(key)).equals(other.get(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public int hashCode() {
+        int hash = 17;
+        hash = 31*hash + map.hashCode();
+        return hash;
+    }
+    
     /**
      * Returns a string representing the key/value pairs of this counter in the primary format,
      * largely applicable for a small number of pairs printed to the terminal. This method calls the
