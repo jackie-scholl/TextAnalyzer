@@ -93,7 +93,7 @@ public class Counter<K> {
      * @param key key to get count of
      * @return the count associated with the key
      */
-    public long get(K key) {
+    public long get(Object key) {
         Long x = map.get(key);
         if (x == null) {
             x = 0L;
