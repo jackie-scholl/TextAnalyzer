@@ -2,11 +2,13 @@ package scholl.both.analyzer.util;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.experimental.theories.*;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
@@ -19,12 +21,22 @@ import static org.junit.Assume.*;
  */
 @RunWith(Theories.class)
 public class CounterTest {
-    @DataPoint
-    public static Counter<Byte> blankCounter = new Counter<Byte>();
-    @DataPoint
-    public static Counter<Byte> nullCounter = null;
+    @DataPoint    public static Counter<Byte> nullCounter;
+    @DataPoint    public static Counter<Byte> blankCounter;
+    @DataPoint    public static Counter<Byte> indexCounter;
     
-    private Counter<Byte> counter;
+    //private Counter<Byte> counter;
+    
+    @BeforeClass
+    public static void setup() {
+        nullCounter = null;
+        blankCounter = new Counter<Byte>();
+        indexCounter = new Counter<Byte>();
+        for (byte b=0; b >= 0; b++) {
+            indexCounter.set(b, b);
+        }
+        
+    }
     
     @Test
     public void simpleTest() {
@@ -43,15 +55,23 @@ public class CounterTest {
         assertEquals(2, cntr.get("a"));
     }
     
+    
+    
     @Theory
     public void equals(Counter<Byte> a, Counter<Byte> b) {
+        System.out.printf("Equals test: %s : %s%n", a, b);
         assumeTrue(a != null && b != null);
+        
         boolean equal = true;
         for (byte i = 0; i > -1; i++) {
-            equal &= a.get(b) == b.get(a);
-            equal &= a.contains(b) == a.contains(b);
+            equal &= a.get(i) == b.get(i);
+            equal &= a.contains(i) == b.contains(i);
         }
+        
         assertEquals(equal, a.equals(b));
         assertEquals(equal, b.equals(a));
+        if (equal) {
+            assertEquals(true, a.hashCode() == b.hashCode());
+        }
     }
 }
