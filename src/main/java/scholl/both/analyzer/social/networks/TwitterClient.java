@@ -9,6 +9,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.IOException;
 import java.util.*;
+import java.lang.Thread;
 
 public class TwitterClient implements SocialClient {
     private Twitter twitter;
@@ -28,14 +29,22 @@ public class TwitterClient implements SocialClient {
     }
 
     public SocialUser getAuthenticatedUser(){
-        try {
-            
-            User u = twitter.verifyCredentials();
-            return new TwitterUser(u);
-        } catch (TwitterException e) {
-            e.printStackTrace();
-            return null;
+        SocialUser u = null;
+        for (int i=0; i<5; i++) {
+            try {
+                u = new TwitterUser(twitter.verifyCredentials());
+                return u;
+            } catch (TwitterException e) {
+                System.out.println("Failed to get authenticated user; attempt %d%n", i);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    ;
+                }
+            }
         }
+        
+        return u;
     }
 
     public Set<SocialUser> getInterestingUsers() {
