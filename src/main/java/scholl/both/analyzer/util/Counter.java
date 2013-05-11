@@ -24,6 +24,91 @@ public class Counter<K> {
     }
     
     /**
+     * Returns the count associated with {@code key}.
+     * 
+     * @param key key to get count of
+     * @return the count associated with the key
+     */
+    public long get(Object key) {
+        Long x = map.get(key);
+        if (x == null) {
+            x = 0L;
+        }
+        return x;
+    }
+
+    /**
+     * Returns true if the Counter object has amapping for the given key, false otherwise. This is
+     * the only way to tell between a mapped key with a value of 0 and an unmapped key.
+     * 
+     * @param key key to check for mapping
+     * @return true if the key has a mapping; false otherwise
+     */
+    public boolean contains(Object key) {
+        return map.containsKey(key);
+    }
+
+    /**
+     * Get all the defined keys, sorted in decreasing order by count.
+     * 
+     * @return the sorted list of keys
+     */
+    public List<K> getSorted() {
+        List<K> list = new ArrayList<K>();
+        Comparator<Long> inverseComparator = new Comparator<Long>() {
+            public int compare(Long a, Long b) {
+                return new Long(b).compareTo(a);
+            }
+        };
+        SortedMap<Long, Set<K>> inverse = new TreeMap<Long, Set<K>>(inverseComparator);
+        for (K key : map.keySet()) {
+            long count = map.get(key);
+            Set<K> set = inverse.get(count);
+            if (set == null) {
+                set = new HashSet<K>();
+            }
+            set.add(key);
+            inverse.put(count, set);
+        }
+        
+        for (Set<K> set : inverse.values()) {
+            for (K key : set) {
+                list.add(key);
+            }
+        }
+        
+        return list;
+    }
+
+    /**
+     * Make a copy of the internal map.
+     * 
+     * @return the copied map
+     */
+    public Map<K, Long> getMap() {
+        Map<K, Long> map2 = new HashMap<K, Long>();
+        map2.putAll(map);
+        return map2;
+    }
+
+    /**
+     * Return the set of all the defined keys.
+     * 
+     * @return the set of defined keys
+     */
+    public Set<K> getKeys() {
+        return map.keySet();
+    }
+
+    public long getSum() {
+        long sum = 0;
+        for (K key : getKeys()) {
+            sum += get(key);
+        }
+        return sum;
+    }
+
+    /**
      * Add one to the key's count
      * 
      * @param key key to increment
@@ -84,91 +169,6 @@ public class Counter<K> {
         long count = get(key);
         map.remove(key);
         return count;
-    }
-    
-    /**
-     * Returns the count associated with {@code key}.
-     * 
-     * @param key key to get count of
-     * @return the count associated with the key
-     */
-    public long get(Object key) {
-        Long x = map.get(key);
-        if (x == null) {
-            x = 0L;
-        }
-        return x;
-    }
-    
-    /**
-     * Returns true if the Counter object has amapping for the given key, false otherwise. This is
-     * the only way to tell between a mapped key with a value of 0 and an unmapped key.
-     * 
-     * @param key key to check for mapping
-     * @return true if the key has a mapping; false otherwise
-     */
-    public boolean contains(Object key) {
-        return map.containsKey(key);
-    }
-    
-    public long getSum() {
-        long sum = 0;
-        for (K key : getKeys()) {
-            sum += get(key);
-        }
-        return sum;
-    }
-    
-    /**
-     * Get all the defined keys, sorted in decreasing order by count.
-     * 
-     * @return the sorted list of keys
-     */
-    public List<K> getSorted() {
-        List<K> list = new ArrayList<K>();
-        Comparator<Long> inverseComparator = new Comparator<Long>() {
-            public int compare(Long a, Long b) {
-                return new Long(b).compareTo(a);
-            }
-        };
-        SortedMap<Long, Set<K>> inverse = new TreeMap<Long, Set<K>>(inverseComparator);
-        for (K key : map.keySet()) {
-            long count = map.get(key);
-            Set<K> set = inverse.get(count);
-            if (set == null) {
-                set = new HashSet<K>();
-            }
-            set.add(key);
-            inverse.put(count, set);
-        }
-        
-        for (Set<K> set : inverse.values()) {
-            for (K key : set) {
-                list.add(key);
-            }
-        }
-        
-        return list;
-    }
-    
-    /**
-     * Return the set of all the defined keys.
-     * 
-     * @return the set of defined keys
-     */
-    public Set<K> getKeys() {
-        return map.keySet();
-    }
-    
-    /**
-     * Make a copy of the internal map.
-     * 
-     * @return the copied map
-     */
-    public Map<K, Long> getMap() {
-        Map<K, Long> map2 = new HashMap<K, Long>();
-        map2.putAll(map);
-        return map2;
     }
     
     @Override
