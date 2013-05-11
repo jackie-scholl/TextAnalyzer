@@ -38,7 +38,7 @@ public class TwitterClient implements SocialClient {
                 System.out.printf("Failed to get authenticated user; attempt %d%n", i);
                 try {
                     Thread.sleep(500);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException e2) {
                     ;
                 }
             }
