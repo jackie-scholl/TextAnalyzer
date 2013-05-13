@@ -52,4 +52,9 @@ public class SampleTest {
         assumeThat(s.getSize(), is(greaterThan(0)));
         assertThat(s.getMean(), is(closeTo(s.getSum()/s.getSize(), 0.001)));
     }
+    
+    @Theory
+    public void staysSame(Sample s) {
+        assertThat(s, is(new Sample(s.toArr())));
+    }
 }
