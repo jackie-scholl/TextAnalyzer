@@ -23,4 +23,33 @@ public class Sample {
     public int getSize() {
         return list.size();
     }
+    
+    public String toString() {
+        return list.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.list == null) ? 0 : this.list.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Sample))
+            return false;
+        Sample other = (Sample) obj;
+        if (this.list == null) {
+            if (other.list != null)
+                return false;
+        } else if (!this.list.equals(other.list))
+            return false;
+        return true;
+    }
 }
