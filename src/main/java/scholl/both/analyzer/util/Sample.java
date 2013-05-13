@@ -2,6 +2,7 @@ package scholl.both.analyzer.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.common.collect.*;
 
 /**
  * Stores a sample of floating-point numbers from a distribution and supports statistical operations.
@@ -10,10 +11,10 @@ import java.util.List;
  *
  */
 public class Sample {
-    private List<Double> list;
+    private SortedMultiset<Double> list;
     
     public Sample() {
-        this.list = new ArrayList<Double>();
+        this.list = TreeMultiset.create();
     }
     
     public void add(Double d) {
