@@ -70,6 +70,15 @@ public class Sample {
         return getSum()/getSize();
     }
     
+    public double[] toArr() {
+        double[] arr = new double[getSize()];
+        int i = 0;
+        for (double d : list) {
+            arr[i++] = d;
+        }
+        return arr;
+    }
+    
     public String toString() {
         return list.toString();
     }
