@@ -58,7 +58,7 @@ public class Sample {
         return list.size();
     }
     
-    public double getMean() {
+    public double getSum() {
         double sum = 0.0;
         for (double d : list) {
             sum += d;

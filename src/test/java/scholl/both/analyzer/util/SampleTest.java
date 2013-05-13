@@ -37,9 +37,9 @@ public class SampleTest {
     }
     
     @Test
-    public void meanTest() {
+    public void sumTest() {
         double[] arr = new double[]{3.0, 5.0, 7.0};
         Sample s = new Sample(arr);
-        assertThat(s.getMean(), is(closeTo(5.0, 0.001)));
+        assertThat(s.getSum(), is(closeTo(15.0, 0.001)));
     }
 }
