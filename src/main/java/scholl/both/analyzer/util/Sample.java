@@ -22,7 +22,7 @@ public class Sample {
         addAll(entries);
     }
     
-    public Sample(Double... entries) {
+    public Sample(Double[] entries) {
         this();
         addAll(entries);
     }
