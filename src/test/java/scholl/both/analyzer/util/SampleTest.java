@@ -23,7 +23,7 @@ import static org.junit.Assume.*;
 public class SampleTest {
     
     @Test
-    public void simpleTest() {
+    public void sizeTest() {
         Sample s = new Sample();
         assertEquals(0, s.getSize());
         s.add(3.4);
