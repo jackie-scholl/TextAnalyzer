@@ -39,16 +39,12 @@ public class SampleTest {
     
     @Test
     public void sumTest() {
-        double[] arr = new double[]{3.0, 5.0, 7.0};
-        Sample s = new Sample(arr);
-        assertThat(s.getSum(), is(closeTo(15.0, 0.001)));
+        assertThat(ex1.getSum(), is(closeTo(15.0, 0.001)));
     }
     
     @Test
     public void meanTest() {
-        double[] arr = new double[]{3.0, 5.0, 7.0};
-        Sample s = new Sample(arr);
-        assertThat(s.getMean(), is(closeTo(5.0, 0.001)));
+        assertThat(ex1.getMean(), is(closeTo(5.0, 0.001)));
     }
     
     @Theory
