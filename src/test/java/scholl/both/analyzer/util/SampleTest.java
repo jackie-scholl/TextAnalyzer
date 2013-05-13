@@ -20,8 +20,9 @@ import static org.junit.Assume.*;
  * @author Jackson
  * 
  */
-@RunWith(JUnit4.class)
+@RunWith(Theories.class)
 public class SampleTest {
+    @DataPoint public static Sample ex1 = new Sample(3.0, 5.0, 7.0);
     
     @Test
     public void sizeTest() {
@@ -48,5 +49,11 @@ public class SampleTest {
         double[] arr = new double[]{3.0, 5.0, 7.0};
         Sample s = new Sample(arr);
         assertThat(s.getMean(), is(closeTo(5.0, 0.001)));
+    }
+    
+    @Theory
+    public void meanTheory(Sample s) {
+        assumeThat(s.getSize(), is(greaterThan(0)));
+        assertThat(s.getMean(), is(closeTo(s.getSum()/s.getSize(), 0.001)));
     }
 }
