@@ -66,6 +66,10 @@ public class Sample {
         return sum;
     }
     
+    public double getMean() {
+        return getSum()/getSize();
+    }
+    
     public String toString() {
         return list.toString();
     }
