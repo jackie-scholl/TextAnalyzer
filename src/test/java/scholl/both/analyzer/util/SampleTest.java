@@ -9,7 +9,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.experimental.theories.*;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
@@ -35,4 +36,10 @@ public class SampleTest {
         }
     }
     
+    @Test
+    public void meanTest() {
+        double[] arr = new double[]{3.0, 5.0, 7.0};
+        Sample s = new Sample(arr);
+        assertThat(s.getMean(), is(closeTo(5.0, 0.001)));
+    }
 }

@@ -17,12 +17,53 @@ public class Sample {
         this.list = TreeMultiset.create();
     }
     
+    public Sample(double... entries) {
+        this();
+        addAll(entries);
+    }
+    
+    public Sample(Double... entries) {
+        this();
+        addAll(entries);
+    }
+    
+    public Sample(Iterable<Double> entries) {
+        this();
+        addAll(entries);
+    }
+    
     public void add(Double d) {
         list.add(d);
     }
     
+    public void addAll(double[] arr) {
+        for (double d : arr) {
+            add(d);
+        }
+    }
+    
+    public void addAll(Double[] arr) {
+        for (Double d : arr) {
+            add(d);
+        }
+    }
+    
+    public void addAll(Iterable<Double> iterable) {
+        for (Double d : iterable) {
+            add(d);
+        }
+    }
+    
     public int getSize() {
         return list.size();
+    }
+    
+    public double getMean() {
+        double sum = 0.0;
+        for (double d : list) {
+            sum += d;
+        }
+        return sum;
     }
     
     public String toString() {
