@@ -96,6 +96,41 @@ public class Sample {
         return sum / getSize();
     }
     
+    /**
+     * Get the estimated element at the p'th percentile.
+     *  
+     * Algoritm taken from Apache Commons Math library:
+     * {@link http://commons.apache.org/proper/commons-math/javadocs/api-3.2/org/apache/commons/math3/stat/descriptive/rank/Percentile.html}
+     *  
+     * @param p
+     * @return
+     */
+    public double getPercentile(double p) {
+        int n = getSize();
+        if (n == 1) {
+            assert getMax() == getMin();
+            return getMax();
+        }
+        
+        double pos = p * (n+1)/100.0 - 1;
+        int floor = (int) Math.floor(pos);
+        double d = pos - floor;
+        
+        if (pos < 1) {
+            return getMin();
+        }
+        if (pos >= n) {
+            return getMax();
+        }
+        
+        Double[] arr = list.toArray(new Double[0]);
+        
+        double lower = arr[floor];
+        double upper = arr[floor+1];
+        
+        return lower + d * (upper - lower);
+    }
+    
     public double[] toArr() {
         double[] arr = new double[getSize()];
         int i = 0;

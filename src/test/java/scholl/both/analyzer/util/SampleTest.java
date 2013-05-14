@@ -83,6 +83,11 @@ public class SampleTest extends EqualsHashCodeTestCase {
         assertThat(s.getPopulationVariance(), is(closeTo(35.0/12.0, delta)));
     }
     
+    @Test
+    public void percentileTest() {
+        assertThat(ex1.getPercentile(50), is(closeTo(5.0, delta)));
+    }
+    
 
     double[] arr1 = new double[] {3.2, 4.5, 6.7};
     double[] arr2 = new double[] {3.0, 4.7, 6.2};
