@@ -2,7 +2,10 @@ package scholl.both.analyzer.social.networks;
 
 import scholl.both.analyzer.social.*;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 import org.scribe.builder.ServiceBuilder;
@@ -22,7 +25,7 @@ public class TumblrClient implements SocialClient {
     public final static boolean THREADING = true;
     private JumblrClient client;
     private OAuthService service;
-
+    
     public TumblrClient(String credentialsFileName) throws IOException {
         this(new File(credentialsFileName));
     }
@@ -57,9 +60,6 @@ public class TumblrClient implements SocialClient {
         return obj;
     }
     
-    /* (non-Javadoc)
-     * @see scholl.both.analyzer.social.networks.SocialClient#authenticate()
-     */
     public void authenticate() throws IOException {
         assert service != null;
         
@@ -77,16 +77,10 @@ public class TumblrClient implements SocialClient {
         client.setToken(access.getToken(), access.getSecret());
     }
     
-    /* (non-Javadoc)
-     * @see scholl.both.analyzer.social.networks.SocialClient#getAuthenticatedUser()
-     */
     public SocialUser getAuthenticatedUser() {
         return new TumblrUser(client.blogInfo(client.user().getName()));
     }
     
-    /* (non-Javadoc)
-     * @see scholl.both.analyzer.social.networks.SocialClient#getInterestingUsers()
-     */
     public Set<SocialUser> getInterestingUsers() {
         Set<SocialUser> s = new HashSet<SocialUser>();
         
@@ -115,7 +109,7 @@ public class TumblrClient implements SocialClient {
             s.add(b);
         }
         
-        String[] otherBlogs = new String[] {"dataandphilosophy", "old-shoes-for-new-feet"};
+        String[] otherBlogs = new String[]{ "dataandphilosophy", "old-shoes-for-new-feet" };
         for (String str : otherBlogs) {
             s.add(new TumblrUser(str));
         }
@@ -133,13 +127,10 @@ public class TumblrClient implements SocialClient {
         return getUser(client.blogInfo(b));
     }
     
-    /* (non-Javadoc)
-     * @see scholl.both.analyzer.social.networks.SocialClient#getFollowing(int)
-     */
     public List<SocialUser> getFollowing(int num) {
         return getFollowing(new HashMap<String, Object>(), num);
     }
-
+    
     public List<SocialUser> getFollowing(Map<String, Object> options, int num) {
         List<Blog> blogs = new ArrayList<Blog>();
         List<SocialUser> following = new ArrayList<SocialUser>();
@@ -179,7 +170,7 @@ public class TumblrClient implements SocialClient {
             text = ((LinkPost) p).getDescription();
         }
         
-        return new SocialPost(u, p.getTimestamp()*1000L, text, null, p.getTags());
+        return new SocialPost(u, p.getTimestamp() * 1000L, text, null, p.getTags());
     }
     
     private PostSet getPosts(Blog blog, Map<String, Object> options, int num) {
@@ -198,7 +189,7 @@ public class TumblrClient implements SocialClient {
             
             PostGetter pg = new PostGetter(blog, options, ps);
             
-            if (THREADING){
+            if (THREADING) {
                 Thread t = new Thread(pg);
                 t.start();
                 threads.add(t);
@@ -212,7 +203,8 @@ public class TumblrClient implements SocialClient {
                 t.join();
             }
         } catch (InterruptedException e) {
-            System.err.println("Interrupted while waiting for worker threads of getPosts to finish.");
+            System.err
+                    .println("Interrupted while waiting for worker threads of getPosts to finish.");
             e.printStackTrace();
         }
         
@@ -240,7 +232,7 @@ public class TumblrClient implements SocialClient {
     }
     
     private Blog blogInfo(String blogname) {
-        for (int i=0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             try {
                 return client.blogInfo(blogname);
             } catch (JumblrException e) {
@@ -321,11 +313,11 @@ public class TumblrClient implements SocialClient {
         public long getLastUpdated() {
             return 1000L * blog.getUpdated();
         }
-
+        
         public int getPostCount() {
             return blog.getPostCount();
         }
-
+        
         public PostSet getPosts(int num) {
             return getPosts(new HashMap<String, Object>(), num);
         }

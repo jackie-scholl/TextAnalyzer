@@ -36,7 +36,7 @@ public class Counter<K> {
         }
         return x;
     }
-
+    
     /**
      * Returns true if the Counter object has amapping for the given key, false otherwise. This is
      * the only way to tell between a mapped key with a value of 0 and an unmapped key.
@@ -47,7 +47,7 @@ public class Counter<K> {
     public boolean contains(Object key) {
         return map.containsKey(key);
     }
-
+    
     /**
      * Get all the defined keys, sorted in decreasing order by count.
      * 
@@ -56,6 +56,7 @@ public class Counter<K> {
     public List<K> getSorted() {
         List<K> list = new ArrayList<K>();
         Comparator<Long> inverseComparator = new Comparator<Long>() {
+            @Override
             public int compare(Long a, Long b) {
                 return new Long(b).compareTo(a);
             }
@@ -79,7 +80,7 @@ public class Counter<K> {
         
         return list;
     }
-
+    
     /**
      * Make a copy of the internal map.
      * 
@@ -90,7 +91,7 @@ public class Counter<K> {
         map2.putAll(map);
         return map2;
     }
-
+    
     /**
      * Return the set of all the defined keys.
      * 
@@ -99,7 +100,7 @@ public class Counter<K> {
     public Set<K> getKeys() {
         return map.keySet();
     }
-
+    
     public long getSum() {
         long sum = 0;
         for (K key : getKeys()) {
@@ -107,7 +108,7 @@ public class Counter<K> {
         }
         return sum;
     }
-
+    
     /**
      * Add one to the key's count
      * 
@@ -178,7 +179,7 @@ public class Counter<K> {
         result = prime * result + ((this.map == null) ? 0 : this.map.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -195,7 +196,7 @@ public class Counter<K> {
             return false;
         return true;
     }
-
+    
     /**
      * Returns a string representing the key/value pairs of this counter in the primary format,
      * largely applicable for a small number of pairs printed to the terminal. This method calls the

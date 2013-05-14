@@ -65,5 +65,4 @@ public interface SocialUser {
     
     @Override
     public abstract boolean equals(Object obj);
-    
 }

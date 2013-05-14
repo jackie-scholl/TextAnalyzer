@@ -1,12 +1,14 @@
 package scholl.both.analyzer.util;
 
-import com.google.common.collect.*;
+import com.google.common.collect.SortedMultiset;
+import com.google.common.collect.TreeMultiset;
 
 /**
- * Stores a sample of floating-point numbers from a distribution and supports statistical operations.
+ * Stores a sample of floating-point numbers from a distribution and supports statistical
+ * operations.
  * 
  * @author Jackson
- *
+ * 
  */
 public class Sample {
     private SortedMultiset<Double> list;
@@ -65,7 +67,7 @@ public class Sample {
     }
     
     public double getMean() {
-        return getSum()/getSize();
+        return getSum() / getSize();
     }
     
     public double getMax() {
@@ -80,6 +82,20 @@ public class Sample {
         return getMax() - getMin();
     }
     
+    public double getPopulationVariance() {
+        if (getSize() == 0) {
+            return Double.NaN;
+        }
+        
+        double sum = 0.0;
+        double mean = getMean();
+        for (double d : list) {
+            sum += Math.pow(d - mean, 2);
+        }
+        
+        return sum / getSize();
+    }
+    
     public double[] toArr() {
         double[] arr = new double[getSize()];
         int i = 0;
@@ -92,7 +108,7 @@ public class Sample {
     public String toString() {
         return list.toString();
     }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -100,7 +116,7 @@ public class Sample {
         result = prime * result + ((this.list == null) ? 0 : this.list.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -116,19 +132,5 @@ public class Sample {
         } else if (!this.list.equals(other.list))
             return false;
         return true;
-    }
-
-    public double getPopulationVariance() {
-        if (getSize() == 0) {
-            return Double.NaN;
-        }
-        
-        double sum = 0.0;
-        double mean = getMean();
-        for (double d : list) {
-            sum += Math.pow(d-mean, 2);
-        }
-        
-        return sum / getSize();
     }
 }

@@ -3,7 +3,9 @@ package scholl.both.analyzer.social;
 import scholl.both.analyzer.social.networks.SocialClient;
 import scholl.both.analyzer.social.networks.TumblrClient;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.*;
 
 public class SocialStats implements Runnable {
@@ -14,13 +16,13 @@ public class SocialStats implements Runnable {
         outputFolder = new File("out");
         outputFolder.mkdir();
     }
-
+    
     private final SocialUser b;
     private final int count;
     private final File userFolder;
     
     private double postsPerHour = 0.0;
-
+    
     public SocialStats(SocialUser b, int count) {
         this.b = b;
         this.count = count;
@@ -43,7 +45,7 @@ public class SocialStats implements Runnable {
             System.err.printf("Something went wrong - file %s still exists%n", f);
         }
     }
-
+    
     public void run() {
         run(5);
     }
@@ -53,7 +55,7 @@ public class SocialStats implements Runnable {
             long start = System.currentTimeMillis();
             
             PostSet ps = b.getPosts(count);
-        
+            
             getWordFrequencies(ps);
             getGeneral(ps);
             
@@ -66,7 +68,7 @@ public class SocialStats implements Runnable {
             if (retriesLeft <= 0) {
                 e.printStackTrace();
             } else {
-                run(retriesLeft-1);
+                run(retriesLeft - 1);
             }
         }
     }
@@ -132,7 +134,6 @@ public class SocialStats implements Runnable {
         stream.printf("Letter frequencies: %n%s", ps.getLetterCount2().toString2());
         stream.close();
     }
-
     
     static void tumblrThing(int COUNT) throws IOException {
         SocialClient tclient = new TumblrClient("tumblr_credentials.json");

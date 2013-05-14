@@ -2,7 +2,9 @@ package scholl.both.analyzer.social;
 
 import scholl.both.analyzer.text.Text;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A social network-type post, with at least a poster, timestamp, and text. There can also be an
@@ -83,7 +85,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
     public int compareTo(SocialPost other) {
         return new Long(this.timestamp).compareTo(other.timestamp);
     }
-
+    
     @Override
     public String toString() {
         final int maxLen = 10;
@@ -95,7 +97,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
                         this.tags != null ? this.tags.subList(0, Math.min(this.tags.size(), maxLen))
                                 : null);
     }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -106,7 +108,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
         result = prime * result + (int) (this.timestamp ^ (this.timestamp >>> 32));
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -135,14 +137,4 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
             return false;
         return true;
     }
-    
-    /*@Override
-    public String toString() {
-        return "Post [poster=" + this.poster
-                + ", timestamp=" + this.timestamp
-                //+ ", post=\"" + this.text + "\""
-                + ", mention=" + this.mention
-                + ", tags=" + this.tags
-                + "]";
-    }*/
 }

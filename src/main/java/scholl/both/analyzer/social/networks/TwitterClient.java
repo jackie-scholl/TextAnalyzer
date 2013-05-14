@@ -9,28 +9,25 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.IOException;
 import java.util.*;
-import java.lang.Thread;
 
 public class TwitterClient implements SocialClient {
     private Twitter twitter;
     
-
-    public TwitterClient(String fileName) throws IOException {        
-        ConfigurationBuilder cb = new ConfigurationBuilder();        
+    public TwitterClient(String fileName) throws IOException {
+        ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true);
-
+        
         TwitterFactory tf = new TwitterFactory(cb.build());
         twitter = tf.getInstance();
     }
-
+    
     public void authenticate() throws IOException {
-        // TODO Auto-generated method stub
-        
+        ;
     }
-
-    public SocialUser getAuthenticatedUser(){
+    
+    public SocialUser getAuthenticatedUser() {
         SocialUser u = null;
-        for (int i=0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             try {
                 u = new TwitterUser(twitter.verifyCredentials());
                 return u;
@@ -46,13 +43,13 @@ public class TwitterClient implements SocialClient {
         
         return u;
     }
-
+    
     public Set<SocialUser> getInterestingUsers() {
         Set<SocialUser> s = new HashSet<SocialUser>();
         s.addAll(getFollowing(20));
         return s;
     }
-
+    
     public List<SocialUser> getFollowing(int num) {
         try {
             List<User> a;
@@ -68,7 +65,6 @@ public class TwitterClient implements SocialClient {
         }
     }
     
-
     public SocialUser getUser(String name) {
         try {
             return new TwitterUser(twitter.showUser(name));
@@ -86,7 +82,7 @@ public class TwitterClient implements SocialClient {
             return null;
         }
     }
-
+    
     private class TwitterUser implements SocialUser {
         private User user;
         private String name;
@@ -99,15 +95,15 @@ public class TwitterClient implements SocialClient {
         public String getName() {
             return user.getName();
         }
-
+        
         public String getTitle() {
             return user.getScreenName();
         }
-
+        
         public String getDescription() {
             return user.getDescription();
         }
-
+        
         public PostSet getPosts(int num) {
             try {
                 ResponseList<Status> l = twitter.getUserTimeline(user.getId());
@@ -121,12 +117,12 @@ public class TwitterClient implements SocialClient {
                 return null;
             }
         }
-
+        
         public int getPostCount() {
             // TODO Auto-generated method stub
             return 0;
         }
-
+        
         public List<SocialUser> getFollowers() {
             try {
                 List<User> l = twitter.getFollowersList(user.getId(), -1);
@@ -140,16 +136,16 @@ public class TwitterClient implements SocialClient {
                 return null;
             }
         }
-
+        
         public long getLastUpdated() {
             return getPosts(1).getMostRecent().getTimestamp();
         }
-
+        
         @Override
         public String toString() {
             return this.name;
         }
-
+        
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -158,7 +154,7 @@ public class TwitterClient implements SocialClient {
             result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj) {
             if (this == obj)
@@ -177,12 +173,12 @@ public class TwitterClient implements SocialClient {
                 return false;
             return true;
         }
-
+        
         private TwitterClient getOuterType() {
             return TwitterClient.this;
-
-        }        
-
+            
+        }
+        
     }
     
     private SocialPost getSocial(Status s) {
