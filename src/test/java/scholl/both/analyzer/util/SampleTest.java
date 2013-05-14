@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.experimental.theories.*;
 
+import com.pobox.cbarham.testhelpers.EqualsHashCodeTestCase;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -21,7 +23,7 @@ import static org.junit.Assume.*;
  * 
  */
 @RunWith(Theories.class)
-public class SampleTest {
+public class SampleTest extends EqualsHashCodeTestCase {
     @DataPoint public static Sample ex1 = new Sample(3.0, 5.0, 7.0);
     
     @Test
@@ -56,5 +58,19 @@ public class SampleTest {
     @Theory
     public void staysSame(Sample s) {
         assertThat(s, is(new Sample(s.toArr())));
+    }
+
+    double[] arr1 = new double[] {3.2, 4.5, 6.7};
+    double[] arr2 = new double[] {3.0, 4.7, 6.2};
+    
+    
+    @Override
+    protected Object createInstance() throws Exception {
+        return new Sample(arr1);
+    }
+
+    @Override
+    protected Object createNotEqualInstance() throws Exception {
+        return new Sample(arr2);
     }
 }
