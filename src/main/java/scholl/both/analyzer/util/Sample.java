@@ -89,7 +89,7 @@ public class Sample {
      * 
      * @return the size of the sample
      */
-    public int getSize() {
+    public int size() {
         return list.size();
     }
     
@@ -98,7 +98,7 @@ public class Sample {
      * 
      * @return the sum of the sample
      */
-    public double getSum() {
+    public double sum() {
         double sum = 0.0;
         for (double d : list) {
             sum += d;
@@ -111,8 +111,8 @@ public class Sample {
      * 
      * @return the mean of the sample
      */
-    public double getMean() {
-        return getSum() / getSize();
+    public double mean() {
+        return sum() / size();
     }
     
     /**
@@ -120,7 +120,7 @@ public class Sample {
      * 
      * @return the greatest element
      */
-    public double getMax() {
+    public double max() {
         return list.lastEntry().getElement();
     }
     
@@ -129,7 +129,7 @@ public class Sample {
      * 
      * @return the least element
      */
-    public double getMin() {
+    public double min() {
         return list.firstEntry().getElement();
     }
     
@@ -138,8 +138,8 @@ public class Sample {
      * 
      * @return the full range of the sample
      */
-    public double getRange() {
-        return getMax() - getMin();
+    public double range() {
+        return max() - min();
     }
     
     /**
@@ -147,18 +147,8 @@ public class Sample {
      * 
      * @return the population variance
      */
-    public double getPopulationVariance() {
-        if (getSize() == 0) {
-            return Double.NaN;
-        }
-        
-        double sum = 0.0;
-        double mean = getMean();
-        for (double d : list) {
-            sum += Math.pow(d - mean, 2);
-        }
-        
-        return sum / getSize();
+    public double populationVariance() {
+        return StatUtils.populationVariance(arr, mean());
     }
     
     /**
@@ -167,7 +157,7 @@ public class Sample {
      * @return the standard deviation
      */
     public double getStandardDeviation() {
-        return Math.sqrt(getPopulationVariance());
+        return Math.sqrt(populationVariance());
     }
     
     /**
@@ -176,7 +166,7 @@ public class Sample {
      * @param p percentile to estimate
      * @return the estimated p'th percentile
      */
-    public double getPercentile(double p) {
+    public double percentile(double p) {
         setArr();
         
         return StatUtils.percentile(arr, p);
@@ -191,7 +181,7 @@ public class Sample {
     }
     
     public double[] toArr() {
-        double[] arr = new double[getSize()];
+        double[] arr = new double[size()];
         int i = 0;
         for (double d : list) {
             arr[i++] = d;

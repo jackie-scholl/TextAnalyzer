@@ -30,30 +30,30 @@ public class SampleTest extends EqualsHashCodeTestCase {
     @Test
     public void sizeTest() {
         Sample s = new Sample();
-        assertEquals(0, s.getSize());
+        assertEquals(0, s.size());
         s.add(3.4);
-        assertEquals(1, s.getSize());
+        assertEquals(1, s.size());
         
         for (int i=0; i<20; i++) {
             s.add(5.2);
-            assertEquals(2+i, s.getSize());
+            assertEquals(2+i, s.size());
         }
     }
     
     @Test
     public void sumTest() {
-        assertThat(ex1.getSum(), is(closeTo(15.0, delta)));
+        assertThat(ex1.sum(), is(closeTo(15.0, delta)));
     }
     
     @Test
     public void meanTest() {
-        assertThat(ex1.getMean(), is(closeTo(5.0, delta)));
+        assertThat(ex1.mean(), is(closeTo(5.0, delta)));
     }
     
     @Theory
     public void meanTheory(Sample s) {
-        assumeThat(s.getSize(), is(greaterThan(0)));
-        assertThat(s.getMean(), is(closeTo(s.getSum()/s.getSize(), delta)));
+        assumeThat(s.size(), is(greaterThan(0)));
+        assertThat(s.mean(), is(closeTo(s.sum()/s.size(), delta)));
     }
     
     @Theory
@@ -63,28 +63,28 @@ public class SampleTest extends EqualsHashCodeTestCase {
     
     @Test
     public void maxTest() {
-        assertThat(ex1.getMax(), is(closeTo(7.0, delta)));
+        assertThat(ex1.max(), is(closeTo(7.0, delta)));
     }
     
     @Test
     public void minTest() {
-        assertThat(ex1.getMin(), is(closeTo(3.0, delta)));
+        assertThat(ex1.min(), is(closeTo(3.0, delta)));
     }
     
     @Test
     public void rangeTest() {
-        assertThat(ex1.getRange(), is(closeTo(4.0, delta)));
+        assertThat(ex1.range(), is(closeTo(4.0, delta)));
     }
     
     @Test
     public void varianceTest() {
         Sample s = new Sample(1, 2, 3, 4, 5, 6);
-        assertThat(s.getPopulationVariance(), is(closeTo(35.0/12.0, delta)));
+        assertThat(s.populationVariance(), is(closeTo(35.0/12.0, delta)));
     }
     
     @Test
     public void percentileTest() {
-        assertThat(ex1.getPercentile(50), is(closeTo(5.0, delta)));
+        assertThat(ex1.percentile(50), is(closeTo(5.0, delta)));
     }    
 
     double[] arr1 = new double[] {3.2, 4.5, 6.7};
