@@ -1,20 +1,19 @@
 package scholl.both.analyzer.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeThat;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Ignore;
+import org.junit.experimental.theories.DataPoint;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.junit.experimental.theories.*;
 
 import com.pobox.cbarham.testhelpers.EqualsHashCodeTestCase;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 
 /**
  * Class to test the class {@link Sample}.
@@ -86,8 +85,7 @@ public class SampleTest extends EqualsHashCodeTestCase {
     @Test
     public void percentileTest() {
         assertThat(ex1.getPercentile(50), is(closeTo(5.0, delta)));
-    }
-    
+    }    
 
     double[] arr1 = new double[] {3.2, 4.5, 6.7};
     double[] arr2 = new double[] {3.0, 4.7, 6.2};
