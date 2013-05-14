@@ -1,7 +1,5 @@
 package scholl.both.analyzer.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.common.collect.*;
 
 /**
