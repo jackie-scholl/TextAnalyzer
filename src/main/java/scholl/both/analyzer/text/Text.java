@@ -1,6 +1,7 @@
 package scholl.both.analyzer.text;
 
 import java.util.*;
+import org.apache.commons.math3.stat.StatUtils;
 
 import scholl.both.analyzer.util.Counter;
 
@@ -96,6 +97,10 @@ public class Text {
         }
         return sumLength / size;
     }
+    
+    //public double getWordStandardDeviation() {
+    //    return StatUtils.variance(word.size() for word in words);
+    //}
 
     public List<String> getSentences() {
     	return sentences;
