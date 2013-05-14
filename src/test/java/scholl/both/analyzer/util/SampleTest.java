@@ -77,15 +77,27 @@ public class SampleTest extends EqualsHashCodeTestCase {
     }
     
     @Test
-    public void varianceTest() {
+    public void populationVarianceTest() {
         Sample s = new Sample(1, 2, 3, 4, 5, 6);
         assertThat(s.populationVariance(), is(closeTo(35.0/12.0, delta)));
     }
     
     @Test
+    public void varianceTest() {
+        Sample s = new Sample(1, 2, 3, 4, 5, 6);
+        assertThat(s.variance(), is(closeTo(7.0/2.0, delta)));
+    }
+    
+    @Test
+    public void standardDeviationTest() {
+        Sample s = new Sample(1, 2, 3, 4, 5, 6);
+        assertThat(s.standardDeviation(), is(closeTo(Math.sqrt(7.0/2.0), delta)));
+    }
+    
+    @Test
     public void percentileTest() {
         assertThat(ex1.percentile(50), is(closeTo(5.0, delta)));
-    }    
+    }
 
     double[] arr1 = new double[] {3.2, 4.5, 6.7};
     double[] arr2 = new double[] {3.0, 4.7, 6.2};

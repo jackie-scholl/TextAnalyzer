@@ -1,10 +1,5 @@
 package scholl.both.analyzer.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.math3.stat.StatUtils;
 
 import com.google.common.collect.SortedMultiset;
@@ -151,12 +146,21 @@ public class Sample {
     }
     
     /**
+     * Get the variance of the sample.
+     * 
+     * @return the variance
+     */
+    public double variance() {
+        return StatUtils.variance(getArray(), mean());
+    }
+    
+    /**
      * Returns the standard deviation of the sample.
      * 
      * @return the standard deviation
      */
-    public double getStandardDeviation() {
-        return Math.sqrt(populationVariance());
+    public double standardDeviation() {
+        return Math.sqrt(variance());
     }
     
     /**
@@ -169,6 +173,11 @@ public class Sample {
         return StatUtils.percentile(getArray(), p);
     }
     
+    /**
+     * Get the list as an array.
+     * 
+     * @return the list as an array
+     */
     private double[] getArray() {
         if (arr == null) { // This means there have been additions since last caching
             arr = new double[list.size()];
