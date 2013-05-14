@@ -1,5 +1,12 @@
 package scholl.both.analyzer.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.math3.stat.StatUtils;
+
 import com.google.common.collect.SortedMultiset;
 import com.google.common.collect.TreeMultiset;
 
@@ -12,9 +19,11 @@ import com.google.common.collect.TreeMultiset;
  */
 public class Sample {
     private SortedMultiset<Double> list;
+    private double[] arr; // Caches the array returned by list.toArray
     
     public Sample() {
         this.list = TreeMultiset.create();
+        this.arr = null;
     }
     
     public Sample(double... entries) {
@@ -32,32 +41,63 @@ public class Sample {
         addAll(entries);
     }
     
-    public void add(Double d) {
-        list.add(d);
+    /**
+     * Add the given number to the sample.
+     * 
+     * @param x number to add
+     */
+    public void add(double x) {
+        list.add(x);
+        arr = null;
     }
     
-    public void addAll(double[] arr) {
-        for (double d : arr) {
+    /**
+     * Add all the given numbers to the sample.
+     * 
+     * @param x the array of numbers to add to the sample
+     */
+    public void addAll(double[] x) {
+        for (double d : x) {
             add(d);
         }
     }
     
-    public void addAll(Double[] arr) {
-        for (Double d : arr) {
+    /**
+     * Add all the given numbers to the sample.
+     * 
+     * @param x the array of numbers to add to the sample
+     */
+    public void addAll(Double[] x) {
+        for (Double d : x) {
             add(d);
         }
     }
     
+    /**
+     * Add all the given numbers to the sample.
+     * 
+     * @param iterable the array of numbers to add to the sample
+     */
     public void addAll(Iterable<Double> iterable) {
         for (Double d : iterable) {
             add(d);
         }
     }
     
+    /**
+     * Get the number of members of the sample.
+     * 
+     * @return the size of the sample
+     */
     public int getSize() {
         return list.size();
     }
     
+    /**
+     * Get the sum of all the members of the sample.
+     * 
+     * @return the sum of the sample
+     */
     public double getSum() {
         double sum = 0.0;
         for (double d : list) {
@@ -66,22 +106,47 @@ public class Sample {
         return sum;
     }
     
+    /**
+     * Get the mean of all the members of the sample.
+     * 
+     * @return the mean of the sample
+     */
     public double getMean() {
         return getSum() / getSize();
     }
     
+    /**
+     * Get the greatest element in the sample.
+     * 
+     * @return the greatest element
+     */
     public double getMax() {
         return list.lastEntry().getElement();
     }
     
+    /**
+     * Get the least element in the sample.
+     * 
+     * @return the least element
+     */
     public double getMin() {
         return list.firstEntry().getElement();
     }
     
+    /**
+     * Get the range of the sample, that is, the difference between the greatest and least elements.
+     * 
+     * @return the full range of the sample
+     */
     public double getRange() {
         return getMax() - getMin();
     }
     
+    /**
+     * Get the population variance of the sample.
+     * 
+     * @return the population variance
+     */
     public double getPopulationVariance() {
         if (getSize() == 0) {
             return Double.NaN;
@@ -95,8 +160,11 @@ public class Sample {
         
         return sum / getSize();
     }
+    
     /**
-     * @return Standard deviation of the sample
+     * Returns the standard deviation of the sample.
+     * 
+     * @return the standard deviation
      */
     public double getStandardDeviation() {
         return Math.sqrt(getPopulationVariance());
@@ -104,37 +172,22 @@ public class Sample {
     
     /**
      * Get the estimated element at the p'th percentile.
-     * 
-     * Algorithm taken from Apache Commons Math library: 
-     * 
-     * @see org.apache.commons.math3.stat.descriptive.rank.Percentile Apache Commons Math Library algorithm
+     *  
      * @param p percentile to estimate
      * @return the estimated p'th percentile
      */
     public double getPercentile(double p) {
-        int n = getSize();
-        if (n == 1) {
-            assert getMax() == getMin();
-            return getMax();
+        setArr();
+        
+        return StatUtils.percentile(arr, p);
+    }
+    
+    private void setArr() {
+        arr = new double[list.size()];
+        int i = 0;
+        for (double d : list) {
+            arr[i++] = d;
         }
-        
-        double pos = p * (n + 1) / 100.0 - 1;
-        int floor = (int) Math.floor(pos);
-        double d = pos - floor;
-        
-        if (pos < 1) {
-            return getMin();
-        }
-        if (pos >= n) {
-            return getMax();
-        }
-        
-        Double[] arr = list.toArray(new Double[0]);
-        
-        double lower = arr[floor];
-        double upper = arr[floor + 1];
-        
-        return lower + d * (upper - lower);
     }
     
     public double[] toArr() {
