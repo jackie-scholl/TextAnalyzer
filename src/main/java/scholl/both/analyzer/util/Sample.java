@@ -20,10 +20,12 @@ import com.google.common.collect.TreeMultiset;
 public class Sample {
     private SortedMultiset<Double> list;
     private double[] arr; // Caches the array returned by list.toArray
+    private double sum;
     
     public Sample() {
         this.list = TreeMultiset.create();
         this.arr = null;
+        sum = 0.0;
     }
     
     public Sample(double... entries) {
@@ -48,6 +50,7 @@ public class Sample {
      */
     public void add(double x) {
         list.add(x);
+        sum += x;
         arr = null;
     }
     
@@ -99,10 +102,6 @@ public class Sample {
      * @return the sum of the sample
      */
     public double sum() {
-        double sum = 0.0;
-        for (double d : list) {
-            sum += d;
-        }
         return sum;
     }
     
@@ -148,7 +147,7 @@ public class Sample {
      * @return the population variance
      */
     public double populationVariance() {
-        return StatUtils.populationVariance(arr, mean());
+        return StatUtils.populationVariance(getArray(), mean());
     }
     
     /**
@@ -167,17 +166,18 @@ public class Sample {
      * @return the estimated p'th percentile
      */
     public double percentile(double p) {
-        setArr();
-        
-        return StatUtils.percentile(arr, p);
+        return StatUtils.percentile(getArray(), p);
     }
     
-    private void setArr() {
-        arr = new double[list.size()];
-        int i = 0;
-        for (double d : list) {
-            arr[i++] = d;
-        }
+    private double[] getArray() {
+        if (arr == null) { // This means there have been additions since last caching
+            arr = new double[list.size()];
+            int i = 0;
+            for (double d : list) {
+                arr[i++] = d;
+            }
+        }        
+        return arr;
     }
     
     public double[] toArr() {
