@@ -95,7 +95,9 @@ public class Sample {
         
         return sum / getSize();
     }
-    
+    /**
+     * @return Standard deviation of the sample
+     */
     public double getStandardDeviation() {
         return Math.sqrt(getPopulationVariance());
     }
