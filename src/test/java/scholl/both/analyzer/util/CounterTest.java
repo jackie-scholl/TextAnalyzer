@@ -21,17 +21,16 @@ import static org.junit.Assume.*;
  */
 @RunWith(Theories.class)
 public class CounterTest {
-    @DataPoint    public static Counter<Byte> nullCounter;
-    @DataPoint    public static Counter<Byte> blankCounter;
-    @DataPoint    public static Counter<Byte> indexCounter;
-    
+    @DataPoint public static Counter<Byte> nullCounter;
+    @DataPoint public static Counter<Byte> blankCounter;
+    @DataPoint public static Counter<Byte> indexCounter;
     
     @BeforeClass
     public static void setup() {
         nullCounter = null;
         blankCounter = new Counter<Byte>();
         indexCounter = new Counter<Byte>();
-        for (byte b=0; b >= 0; b++) {
+        for (byte b = 0; b >= 0; b++) {
             indexCounter.set(b, b);
         }
         
@@ -53,8 +52,6 @@ public class CounterTest {
         cntr.add("a", -2);
         assertEquals(2, cntr.get("a"));
     }
-    
-    
     
     @Theory
     public void equals(Counter<Byte> a, Counter<Byte> b) {
