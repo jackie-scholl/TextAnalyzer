@@ -117,4 +117,18 @@ public class Sample {
             return false;
         return true;
     }
+
+    public double getPopulationVariance() {
+        if (getSize() == 0) {
+            return Double.NaN;
+        }
+        
+        double sum = 0.0;
+        double mean = getMean();
+        for (double d : list) {
+            sum += Math.pow(d-mean, 2);
+        }
+        
+        return sum / getSize();
+    }
 }

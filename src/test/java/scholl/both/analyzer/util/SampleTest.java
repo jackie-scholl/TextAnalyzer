@@ -76,6 +76,13 @@ public class SampleTest extends EqualsHashCodeTestCase {
     public void rangeTest() {
         assertThat(ex1.getRange(), is(closeTo(4.0, delta)));
     }
+    
+    @Test
+    public void varianceTest() {
+        Sample s = new Sample(1, 2, 3, 4, 5, 6);
+        assertThat(s.getPopulationVariance(), is(closeTo(35.0/12.0, delta)));
+    }
+    
 
     double[] arr1 = new double[] {3.2, 4.5, 6.7};
     double[] arr2 = new double[] {3.0, 4.7, 6.2};
