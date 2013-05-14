@@ -25,7 +25,6 @@ public class CounterTest {
     @DataPoint    public static Counter<Byte> blankCounter;
     @DataPoint    public static Counter<Byte> indexCounter;
     
-    //private Counter<Byte> counter;
     
     @BeforeClass
     public static void setup() {
