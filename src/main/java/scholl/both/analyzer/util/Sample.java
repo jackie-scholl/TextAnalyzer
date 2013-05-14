@@ -96,6 +96,10 @@ public class Sample {
         return sum / getSize();
     }
     
+    public double getStandardDeviation() {
+        return Math.sqrt(getPopulationVariance());
+    }
+    
     /**
      * Get the estimated element at the p'th percentile.
      *  
