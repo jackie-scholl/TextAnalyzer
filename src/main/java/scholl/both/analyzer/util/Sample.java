@@ -68,6 +68,18 @@ public class Sample {
         return getSum()/getSize();
     }
     
+    public double getMax() {
+        return list.lastEntry().getElement();
+    }
+    
+    public double getMin() {
+        return list.firstEntry().getElement();
+    }
+    
+    public double getRange() {
+        return getMax() - getMin();
+    }
+    
     public double[] toArr() {
         double[] arr = new double[getSize()];
         int i = 0;

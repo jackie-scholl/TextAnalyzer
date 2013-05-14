@@ -24,6 +24,8 @@ import static org.junit.Assume.*;
  */
 @RunWith(Theories.class)
 public class SampleTest extends EqualsHashCodeTestCase {
+    private static final double delta = 0.0001;
+    
     @DataPoint public static Sample ex1 = new Sample(3.0, 5.0, 7.0);
     
     @Test
@@ -41,29 +43,43 @@ public class SampleTest extends EqualsHashCodeTestCase {
     
     @Test
     public void sumTest() {
-        assertThat(ex1.getSum(), is(closeTo(15.0, 0.001)));
+        assertThat(ex1.getSum(), is(closeTo(15.0, delta)));
     }
     
     @Test
     public void meanTest() {
-        assertThat(ex1.getMean(), is(closeTo(5.0, 0.001)));
+        assertThat(ex1.getMean(), is(closeTo(5.0, delta)));
     }
     
     @Theory
     public void meanTheory(Sample s) {
         assumeThat(s.getSize(), is(greaterThan(0)));
-        assertThat(s.getMean(), is(closeTo(s.getSum()/s.getSize(), 0.001)));
+        assertThat(s.getMean(), is(closeTo(s.getSum()/s.getSize(), delta)));
     }
     
     @Theory
     public void staysSame(Sample s) {
         assertThat(s, is(new Sample(s.toArr())));
     }
+    
+    @Test
+    public void maxTest() {
+        assertThat(ex1.getMax(), is(closeTo(7.0, delta)));
+    }
+    
+    @Test
+    public void minTest() {
+        assertThat(ex1.getMin(), is(closeTo(3.0, delta)));
+    }
+    
+    @Test
+    public void rangeTest() {
+        assertThat(ex1.getRange(), is(closeTo(4.0, delta)));
+    }
 
     double[] arr1 = new double[] {3.2, 4.5, 6.7};
     double[] arr2 = new double[] {3.0, 4.7, 6.2};
-    
-    
+        
     @Override
     protected Object createInstance() throws Exception {
         return new Sample(arr1);
