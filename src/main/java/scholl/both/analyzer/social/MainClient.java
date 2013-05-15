@@ -2,10 +2,7 @@ package scholl.both.analyzer.social;
 
 import scholl.both.analyzer.text.Text;
 
-import java.awt.Desktop;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,20 +23,8 @@ public class MainClient {
         }
         
         try {
-            SocialStats.tumblrThing(500);
+            SocialStats.tumblrThing(100);
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public static void openBrowser(String url) throws IOException {
-        System.out.println(Desktop.isDesktopSupported());
-        Desktop d = Desktop.getDesktop();
-        URI uri;
-        try {
-            uri = new URI(url);
-            d.browse(uri);
-        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }

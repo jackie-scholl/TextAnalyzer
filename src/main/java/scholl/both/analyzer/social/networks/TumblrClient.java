@@ -10,8 +10,8 @@ import java.util.*;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TumblrApi;
+import org.scribe.exceptions.OAuthConnectionException;
 import org.scribe.model.Token;
-import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
 import com.google.gson.JsonObject;
@@ -61,20 +61,7 @@ public class TumblrClient implements SocialClient {
     }
     
     public void authenticate() throws IOException {
-        assert service != null;
-        
-        Token request = service.getRequestToken();
-        System.out.println(request);
-        
-        String url = service.getAuthorizationUrl(request);
-        MainClient.openBrowser(url);
-        
-        OAuthCallbackServer s = new OAuthCallbackServer(8004);
-        String response = s.getVerifier();
-        
-        Token access = service.getAccessToken(request, new Verifier(response));
-        System.out.printf("Access token: %s%n", access);
-        client.setToken(access.getToken(), access.getSecret());
+        AuthenticatorServer.tumblrAuthenticate(client, service);
     }
     
     public SocialUser getAuthenticatedUser() {
@@ -236,8 +223,15 @@ public class TumblrClient implements SocialClient {
             try {
                 return client.blogInfo(blogname);
             } catch (JumblrException e) {
-                System.out.printf("Failed to retrieve blog info for %s at %tc - attempt %d%n",
+                if (i >= 1) {
+                    System.out.printf("Failed to retrieve blog info for %s at %tc - attempt %d%n",
                         blogname, System.currentTimeMillis(), i);
+                }
+            } catch (OAuthConnectionException e) {
+                if (i >= 1) {
+                    System.out.printf("Failed to retrieve blog info for %s at %tc - attempt %d%n",
+                        blogname, System.currentTimeMillis(), i);
+                }
             }
         }
         
@@ -261,7 +255,20 @@ public class TumblrClient implements SocialClient {
         }
         
         public void run() {
-            List<Post> posts = blog.posts(options);
+            List<Post> posts = null;
+            for (int i=0; i<5; i++) {
+                try {
+                    posts = blog.posts(options);
+                } catch (OAuthConnectionException e) {
+                    System.out.printf("Error on try %d of %d to get posts%n", i+1, 5);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                
+            }
             for (Post p : posts) {
                 synchronized (ps) {
                     ps.add(getSocialPost(p));

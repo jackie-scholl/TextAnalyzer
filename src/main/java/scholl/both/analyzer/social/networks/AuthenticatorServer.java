@@ -1,10 +1,18 @@
-package scholl.both.analyzer.social;
+package scholl.both.analyzer.social.networks;
 
+
+import java.awt.Desktop;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.scribe.model.Token;
+import org.scribe.model.Verifier;
+import org.scribe.oauth.OAuthService;
 
 import com.sun.net.httpserver.*;
+import com.tumblr.jumblr.JumblrClient;
 
 /**
  * An HTTP server.
@@ -14,16 +22,31 @@ import com.sun.net.httpserver.*;
  * @author Jackson
  */
 @SuppressWarnings("restriction")
-public class OAuthCallbackServer {
+public class AuthenticatorServer {
     private URI request;
     private HttpServer server;
+    private static final int PORT = 8004; // This port is set in the app settings in Tumblr and can't easily be changed
+    
+    public static Token tumblrAuthenticate(JumblrClient client, OAuthService service) throws IOException {
+        Token request = service.getRequestToken();
+        openBrowser(service.getAuthorizationUrl(request));
+        
+        AuthenticatorServer s = new AuthenticatorServer(PORT);
+        String response = s.getQuery().replaceAll("oauth_token=\\w+&oauth_verifier=(\\w+)", "$1");
+        
+        Token access = service.getAccessToken(request, new Verifier(response));
+        System.out.printf("Access token: %s%n", access);
+        client.setToken(access.getToken(), access.getSecret());
+        
+        return access;
+    }
     
     /**
      * Sole constructor.
      * 
      * @param listenPort port to bind to (default 80)
      */
-    public OAuthCallbackServer(int listenPort) {
+    public AuthenticatorServer(int listenPort) {
         request = null;
         
         try {
@@ -37,9 +60,9 @@ public class OAuthCallbackServer {
     }
     
     static class MyHandler implements HttpHandler {
-        private final OAuthCallbackServer s;
+        private final AuthenticatorServer s;
         
-        public MyHandler(OAuthCallbackServer s) {
+        public MyHandler(AuthenticatorServer s) {
             this.s = s;
         }
         
@@ -63,10 +86,12 @@ public class OAuthCallbackServer {
     }
     
     private void setRequest(URI uri) {
+        assert request == null;
+        
         request = uri;
     }
     
-    public String getVerifier() {
+    private void waitForQuery() {
         while (request == null) {
             try {
                 Thread.sleep(100);
@@ -75,11 +100,22 @@ public class OAuthCallbackServer {
             }
         }
         server.stop(1);
-        
-        String verifier = request.getQuery().replaceAll("oauth_token=\\w+&oauth_verifier=(\\w+)",
-                "$1");
-        System.out.printf("Verifier: %s%n", verifier);
-        
-        return verifier;
+    }
+    
+    public String getQuery() {
+        waitForQuery();
+        return request.getQuery();
+    }
+
+    public static void openBrowser(String url) throws IOException {
+        System.out.println(Desktop.isDesktopSupported());
+        Desktop d = Desktop.getDesktop();
+        URI uri;
+        try {
+            uri = new URI(url);
+            d.browse(uri);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 }
