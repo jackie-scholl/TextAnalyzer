@@ -1,12 +1,14 @@
 package scholl.both.analyzer.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeThat;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
@@ -26,6 +28,35 @@ public class SampleTest extends EqualsHashCodeTestCase {
     private static final double delta = 0.0001;
     
     @DataPoint public static Sample ex1 = new Sample(3.0, 5.0, 7.0);
+    
+    static double[] bx = new double[]{1.0, 2.0, 1.0};
+    static Double[] cx = new Double[]{1.0, 2.0, 1.0};
+    static List<Double> dx = new ArrayList<Double>();
+    static {
+        dx.add(1.0);
+        dx.add(2.0);
+        dx.add(1.0);
+    }
+    
+    @Test
+    public void constructorsTest() {
+        Sample a = new Sample(1.0, 2.0, 1.0);
+        Sample b = new Sample(bx);
+        Sample c = new Sample(cx);
+        Sample d = new Sample(dx);
+        
+        assertEquals(a, b);
+        assertEquals(a, c);
+        assertEquals(a, d);
+    }
+    
+    @Theory
+    public void constructorEqualsTest(Sample a) {
+        assumeThat(a, is(notNullValue()));
+        Sample b = new Sample(a);
+        assertThat(a, is(equalTo(b)));
+        assertThat(a, is(not(sameInstance(b))));
+    }
     
     @Test
     public void sizeTest() {
