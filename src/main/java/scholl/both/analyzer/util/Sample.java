@@ -1,5 +1,7 @@
 package scholl.both.analyzer.util;
 
+import java.util.Iterator;
+
 import org.apache.commons.math3.stat.StatUtils;
 
 import com.google.common.collect.SortedMultiset;
@@ -12,7 +14,7 @@ import com.google.common.collect.TreeMultiset;
  * @author Jackson
  * 
  */
-public class Sample {
+public class Sample implements Iterable<Double> {
     private SortedMultiset<Double> list;
     private double[] arr; // Caches the array returned by list.toArray
     private double sum;
@@ -196,6 +198,10 @@ public class Sample {
             arr[i++] = d;
         }
         return arr;
+    }
+    
+    public Iterator<Double> iterator() {
+        return list.iterator();
     }
     
     public String toString() {
