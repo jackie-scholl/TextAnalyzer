@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hamcrest.Matchers;
@@ -38,16 +39,16 @@ public class SampleTest extends EqualsHashCodeTestCase {
         dx.add(1.0);
     }
     
+    @DataPoint public static Sample ex2 = new Sample(1.0, 2.0, 1.0);
+    @DataPoint public static Sample ex3 = new Sample(bx);
+    @DataPoint public static Sample ex4 = new Sample(cx);
+    @DataPoint public static Sample ex5 = new Sample(dx);
+    
     @Test
     public void constructorsTest() {
-        Sample a = new Sample(1.0, 2.0, 1.0);
-        Sample b = new Sample(bx);
-        Sample c = new Sample(cx);
-        Sample d = new Sample(dx);
-        
-        assertEquals(a, b);
-        assertEquals(a, c);
-        assertEquals(a, d);
+        assertEquals(ex2, ex3);
+        assertEquals(ex2, ex4);
+        assertEquals(ex2, ex5);
     }
     
     @Theory
@@ -56,6 +57,29 @@ public class SampleTest extends EqualsHashCodeTestCase {
         Sample b = new Sample(a);
         assertThat(a, is(equalTo(b)));
         assertThat(a, is(not(sameInstance(b))));
+    }
+    
+    @Theory
+    public void shuffleMaintainsEqualityTest(Sample a) {
+        assumeThat(a, is(notNullValue()));
+        
+        
+    }
+    
+    @Theory
+    public void addEqualsTest(Sample a, Sample b) {
+        assumeThat(a, is(notNullValue()));
+        assumeThat(b, is(notNullValue()));
+        assumeThat(a, is(equalTo(b)));
+        
+        double[] x = new double[10];
+        for (int i=0; i<x.length; i++) {
+            x[i] = Math.random();
+        }
+        
+        a.addAll(x);
+        b.addAll(x);
+        assertThat(a, is(equalTo(b)));
     }
     
     @Test
