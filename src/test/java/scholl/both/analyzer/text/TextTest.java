@@ -56,4 +56,26 @@ public class TextTest{
         assertThat(ex1.getCharCount('h'), is(4L));
         assertThat(ex1.getCharCount('x'), is(0L));
     }
+    @Test
+    public void getSentencesTest() {
+        assertThat(ex1.getWords(), is(Arrays.asList(new String[]{
+                "What a to do to die today at a minute or two to two.", 
+                "A thing distinctly hard to say but harder still to do."})));
+    }
+    @Test
+    public void getSentenceCount() {
+        assertThat(ex1.getSentenceCount(), is(2));
+    }
+    @Test
+    public void averageSentenceLengthTest() {
+        assertThat(ex1.averageSentenceLength(), is(closeTo(5d, delta)));
+    }
+    @Test
+    public void getPunctuationDiversityIndexTest() {
+        assertThat(ex1.getPunctuationDiversityIndex(), is(closeTo(1d, delta)));
+    }
+    @Test
+    public void toStringTest() {
+        assertThat(ex1.toString(), is("What a to do to die today at a minute or two to two. A thing distinctly hard to say but harder still to do."));
+    }
 }
