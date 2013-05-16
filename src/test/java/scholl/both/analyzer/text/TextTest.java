@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import scholl.both.analyzer.util.Sample;
 
+import java.util.Comparator;
+import java.util.Arrays;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Ignore;
@@ -24,5 +27,33 @@ public class TextTest{
     @Test
     public void getSentenceCountTest() {
         assertThat(ex1.getSentenceCount(), is(2));
+    }
+    @Test
+    public void getCharacterCountTest() {
+        assertThat(ex1.getCharacterCount(), is(157));
+    }
+    @Test
+    public void getOriginalTest() {
+        assertThat(ex1.getOriginal(), is("What a to do to die today at a minute or two to two. A thing distinctly hard to say but harder still to do."));
+    }
+    @Test
+    public void getWordsTest() {
+        assertThat(ex1.getWords(), is(Arrays.asList(new String[]{"what", "a", "to", "do", "to", 
+                "die", "today", "at", "a", "minute", "or", "two", "to", "two", "A", "thing", 
+                "distinctly", "hard", "to", "say", "but", "harder", "still", "to", "do"})));
+    }
+    @Test
+    public void getWordCount(){
+        assertThat(ex1.getWordCount(), is(25));
+    }
+    @Test
+    public void averageWordLengthTest() {
+        assertThat(ex1.averageWordLength(), is(closeTo(5.0, delta)));
+    }
+    @Test
+    public void getCharCountTest() {
+        //Adding l after the end makes something a long.
+        assertThat(ex1.getCharCount('h'), is(4L));
+        assertThat(ex1.getCharCount('x'), is(0L));
     }
 }

@@ -109,10 +109,10 @@ public class Text {
     public int getSentenceCount() {
     	return sentences.size();
     }
-
-    //Needs to force getWordCount to be a double because otherwise integer division
-    //causes problems.
+    
     public double averageSentenceLength() {
+        //Needs to force getWordCount to be a double because otherwise integer division
+        //causes problems.
         return getSentenceCount()/(double) getWordCount();
     }
     
