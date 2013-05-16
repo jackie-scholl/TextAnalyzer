@@ -12,29 +12,46 @@ import com.google.common.collect.TreeMultiset;
  * operations.
  * 
  * @author Jackson
- * 
  */
 public class Sample implements Iterable<Double> {
     private SortedMultiset<Double> list;
     private double[] arr; // Caches the array returned by list.toArray
     private double sum;
     
+    /**
+     * Create an empty sample.
+     */
     public Sample() {
         this.list = TreeMultiset.create();
         this.arr = null;
         sum = 0.0;
     }
     
+    /**
+     * Create a sample with the given entries.
+     * 
+     * @param entries initial entries
+     */
     public Sample(double... entries) {
         this();
         addAll(entries);
     }
     
+    /**
+     * Create a sample with the given entries.
+     * 
+     * @param entries initial entries
+     */
     public Sample(Double[] entries) {
         this();
         addAll(entries);
     }
     
+    /**
+     * Create a sample with the given entries.
+     * 
+     * @param entries initial entries
+     */
     public Sample(Iterable<Double> entries) {
         this();
         addAll(entries);
