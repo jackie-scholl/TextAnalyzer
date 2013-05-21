@@ -67,7 +67,7 @@ public class TextTest{
     }
     @Test
     public void averageSentenceLengthTest() {
-        assertThat(ex1.averageSentenceLength(), is(closeTo(5d, delta)));
+        assertThat(ex1.averageSentenceLength(), is(closeTo(25.0/2.0, delta)));
     }
     @Test
     public void getPunctuationDiversityIndexTest() {
