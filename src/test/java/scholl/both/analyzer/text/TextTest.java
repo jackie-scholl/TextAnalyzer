@@ -57,7 +57,7 @@ public class TextTest{
     }
     @Test
     public void getSentencesTest() {
-        assertThat(ex1.getWords(), is(Arrays.asList(new String[]{
+        assertThat(ex1.getSentences(), is(Arrays.asList(new String[]{
                 "What a to do to die today at a minute or two to two.", 
                 "A thing distinctly hard to say but harder still to do."})));
     }
