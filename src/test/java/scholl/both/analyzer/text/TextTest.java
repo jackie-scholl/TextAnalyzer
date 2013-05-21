@@ -14,12 +14,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.experimental.theories.*;
 
-import com.pobox.cbarham.testhelpers.EqualsHashCodeTestCase;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
+
 @RunWith(Theories.class)
 public class TextTest{
     private static final double delta = 0.0001;
@@ -30,7 +29,7 @@ public class TextTest{
     }
     @Test
     public void getCharacterCountTest() {
-        assertThat(ex1.getCharacterCount(), is(157));
+        assertThat(ex1.getCharacterCount(), is(107));
     }
     @Test
     public void getOriginalTest() {
@@ -38,7 +37,7 @@ public class TextTest{
     }
     @Test
     public void getWordsTest() {
-        assertThat(ex1.getWords(), is(Arrays.asList(new String[]{"what", "a", "to", "do", "to", 
+        assertThat(ex1.getWords(), is(Arrays.asList(new String[]{"What", "a", "to", "do", "to", 
                 "die", "today", "at", "a", "minute", "or", "two", "to", "two", "A", "thing", 
                 "distinctly", "hard", "to", "say", "but", "harder", "still", "to", "do"})));
     }
@@ -48,7 +47,7 @@ public class TextTest{
     }
     @Test
     public void averageWordLengthTest() {
-        assertThat(ex1.averageWordLength(), is(closeTo(5.0, delta)));
+        assertThat(ex1.averageWordLength(), is(closeTo(3.24, delta)));
     }
     @Test
     public void getCharCountTest() {
