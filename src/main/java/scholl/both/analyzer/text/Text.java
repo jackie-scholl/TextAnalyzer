@@ -113,7 +113,7 @@ public class Text {
     public double averageSentenceLength() {
         //Needs to force getWordCount to be a double because otherwise integer division
         //causes problems.
-        return getSentenceCount()/(double) getWordCount();
+        return getWordCount()/(double) getSentenceCount();
     }
     
     public long getCharCount(char desired){
