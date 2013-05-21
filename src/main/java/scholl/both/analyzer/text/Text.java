@@ -47,7 +47,9 @@ public class Text {
         //that mark and the last mark to the list of sentences.
         
         sentences = new ArrayList<String>();
-        int lastSentenceEnd = -1;
+        sentences.addAll(Arrays.asList(original.split(". ")));
+        
+        /*int lastSentenceEnd = -1;
         //The minimum length of a sentence is four characters(I am, 
         //so periods before and after can safely be excluded.)
         for(int i=3; i < this.clean.length()-4; i++)
@@ -70,7 +72,7 @@ public class Text {
             }
         }
         //Ensures that a sentence is always ended. 
-        sentences.add(clean.substring(lastSentenceEnd+1));
+        sentences.add(clean.substring(lastSentenceEnd+1));*/
     }
     
     public int getCharacterCount() {
