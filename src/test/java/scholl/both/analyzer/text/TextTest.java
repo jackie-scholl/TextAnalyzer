@@ -22,7 +22,8 @@ import static org.junit.Assume.*;
 @RunWith(Theories.class)
 public class TextTest{
     private static final double delta = 0.0001;
-    @DataPoint public static Text ex1 = new Text("What a to do to die today at a minute or two to two. A thing distinctly hard to say but harder still to do.");
+    @DataPoint public static Text ex1 = new Text("What a to do to die today at a minute or two to" +
+    		" two. A thing distinctly hard to say but harder still to do.");
     @Test
     public void getSentenceCountTest() {
         assertThat(ex1.getSentenceCount(), is(2));
@@ -59,7 +60,7 @@ public class TextTest{
     public void getSentencesTest() {
         assertThat(ex1.getSentences(), is(Arrays.asList(new String[]{
                 "What a to do to die today at a minute or two to two", 
-                "A thing distinctly hard to say but harder still to do"})));
+                " A thing distinctly hard to say but harder still to do."})));
     }
     @Test
     public void getSentenceCount() {
