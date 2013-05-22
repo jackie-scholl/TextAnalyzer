@@ -44,4 +44,14 @@ public class SocialPostTest {
         SocialPost b = new SocialPost(poster, millis, str, null, new ArrayList<String>());
         assertThat(a, is(equalTo(b)));
     }
+    
+    @Theory
+    public void getPosterTest(String str, long millis, SocialUser poster) {
+        assumeThat(str, is(notNullValue()));
+        assumeThat(poster, is(notNullValue()));
+        SocialPost a = new SocialPost(str, poster, millis);
+        assertThat(a.getPoster(), is(equalTo(poster)));
+    }
+    
+    
 }
