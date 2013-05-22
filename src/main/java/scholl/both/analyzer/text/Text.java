@@ -22,7 +22,11 @@ public class Text {
      * 
      * @param original the string that you want to analyze. 
      */
-    public Text(String original) {
+    public Text(String original) throws NullPointerException {
+        if (original == null) {
+            throw new NullPointerException("Input string is not allowed to be null.");
+        }
+        
         this.original = original;
         
         //Strips out links

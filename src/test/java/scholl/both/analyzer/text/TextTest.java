@@ -24,6 +24,10 @@ public class TextTest{
     private static final double delta = 0.0001;
     @DataPoint public static Text ex1 = new Text("What a to do to die today at a minute or two to" +
     		" two. A thing distinctly hard to say but harder still to do.");
+    @Test(expected = NullPointerException.class)
+    public void constructorNullStringTest() {
+        new Text(null);
+    }
     @Test
     public void getSentenceCountTest() {
         assertThat(ex1.getSentenceCount(), is(2));
