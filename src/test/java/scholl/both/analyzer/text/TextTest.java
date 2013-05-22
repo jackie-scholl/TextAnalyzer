@@ -72,6 +72,14 @@ public class TextTest{
         })));
     }
     @Test
+    public void getSentencesTest3() {
+        String test = "I met Dr. Smith's wife, Mrs. Smith, through Mr. John, the stock broker for" +
+        		"Ms. Count, who's lawyer was Artemis Bag, Esq., A.K.A Arty, ..., an esteemed " +
+        		"fellow in high society....";
+        assertThat(new Text(test).getSentenceCount(), is(1));
+        System.out.println(new Text(test).getSentences());
+    }
+    @Test
     public void getSentenceCount() {
         assertThat(ex1.getSentenceCount(), is(2));
     }
