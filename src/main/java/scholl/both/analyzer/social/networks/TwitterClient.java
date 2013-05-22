@@ -182,6 +182,6 @@ public class TwitterClient implements SocialClient {
     }
     
     private SocialPost getSocial(Status s) {
-        return new SocialPost(s.getText(), new TwitterUser(s.getUser()), s.getCreatedAt().getTime());
+        return new SocialPost(s.getText(), s.getCreatedAt().getTime(), new TwitterUser(s.getUser()));
     }
 }

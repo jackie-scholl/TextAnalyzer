@@ -157,7 +157,7 @@ public class TumblrClient implements SocialClient {
             text = ((LinkPost) p).getDescription();
         }
         
-        return new SocialPost(u, p.getTimestamp() * 1000L, text, null, p.getTags());
+        return new SocialPost(text, p.getTimestamp() * 1000L, u, null, p.getTags());
     }
     
     private PostSet getPosts(Blog blog, Map<String, Object> options, int num) {
