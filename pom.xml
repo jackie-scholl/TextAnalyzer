@@ -80,4 +80,18 @@
       	</plugin>
     </plugins> 
   </build> 
+  <scm>
+  	<url>https://github.com/raptortech-js/TextAnalyzer</url>
+  	<connection>scm:git:git://github.com/raptortech-js/TextAnalyzer.git</connection>
+  	<developerConnection>scm:git:git@github.com:raptortech-js/TextAnalyzer.git</developerConnection>
+  	<tag>master</tag>
+  </scm>
+  <issueManagement>
+  	<system>Github Issues</system>
+  	<url>https://github.com/raptortech-js/TextAnalyzer/issues</url>
+  </issueManagement>
+  <ciManagement>
+  	<system>Travis CI</system>
+  	<url>https://travis-ci.org/raptortech-js/TextAnalyzer</url>
+  </ciManagement>
 </project>
