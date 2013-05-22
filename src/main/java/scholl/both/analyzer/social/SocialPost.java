@@ -7,14 +7,15 @@ import java.util.*;
 /**
  * A social network-type post, with at least a poster, timestamp, and text. There can also be an
  * arbitrary list of string "tags" and a user that is "mentioned". The last one, especially, is very
- * vague; see the {@link #getMention() getMention} method for more.
+ * vague; see the {@link #getMention() getMention} method for more. This type is immutable. It is
+ * sorted chronologically.
  * 
  * @author Jackson
  * 
  */
 public class SocialPost extends Text implements Comparable<SocialPost> {
-    private final SocialUser poster;
     private final long timestamp; // milliseconds since epoch
+    private final SocialUser poster;
     private final SocialUser mention;
     private final List<String> tags;
     
@@ -65,6 +66,11 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
         this(text, System.currentTimeMillis(), null);
     }
     
+    public SocialPost(SocialPost other) {
+        this(other.getOriginal(), other.getTimestamp(), other.getPoster(), other.getMention(), 
+                other.getTags());
+    }
+    
     /**
      * Returns the user who published this post.
      * 
@@ -88,41 +94,38 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
      * 
      * @return the post time
      */
-    public Calendar getTime() {
-        return getTime(Locale.getDefault(), TimeZone.getDefault());
+    public Calendar getCalendar() {
+        return getCalendar(TimeZone.getDefault());
     }
-
+    
     /**
      * Returns the time at which this post was published, as a Calendar.
      * 
-     * @param locale the locale to set the Calendar in
+     * @param tz the timezone to set the Calendar in
      * @return the post time
      */
-    public Calendar getTime(Locale locale) {
-        return getTime(locale, TimeZone.getDefault());
+    public Calendar getCalendar(TimeZone tz) {
+        return getCalendar(tz, Locale.getDefault());
     }
-
+    
     /**
      * Returns the time at which this post was published, as a Calendar.
      * 
-     * @param locale the locale to set the Calendar in
      * @param timezone the timezone to the the Calendar in
+     * @param locale the locale to set the Calendar in
+     * 
      * @return the post time
      */
-    public Calendar getTime(Locale locale, TimeZone timezone) {
-        Calendar c = new GregorianCalendar(timezone, locale);
-        c.set(1970, 0, 0, 0, 0, 0);
-        c.add(Calendar.SECOND, (int) (getTimestamp()/1000));
+    public Calendar getCalendar(TimeZone timezone, Locale locale) {
+        Calendar c = Calendar.getInstance(timezone, locale);
+        c.setTimeInMillis(getTimestamp());
         return c;
     }
-    
-    
     
     /**
      * Return the "mentioned" user. As described above, this can have many different meanings. On
      * tumblr, it is the person that the post was reblogged from, if any. On Facebook, it is the
-     * "wall" on which it was posted. On Twitter, it may have no meaning. This type is immutable and
-     * is sorted chronologically.
+     * "wall" on which it was posted. On Twitter, it may have no meaning.
      * 
      * @return the mentioned user
      */
