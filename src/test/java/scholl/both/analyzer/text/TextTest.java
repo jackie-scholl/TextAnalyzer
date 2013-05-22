@@ -60,7 +60,16 @@ public class TextTest{
     public void getSentencesTest() {
         assertThat(ex1.getSentences(), is(Arrays.asList(new String[]{
                 "What a to do to die today at a minute or two to two", 
-                " A thing distinctly hard to say but harder still to do."})));
+                "A thing distinctly hard to say but harder still to do"})));
+    }
+    @Test
+    public void getSentencesTest2() {
+        String test = "I ate an apple. I met Dr. Smith's wife Mrs. Smith through Mr. John the " +
+        		"stock broker for Ms. Count.";
+        assertThat(new Text(test).getSentences(), is(Arrays.asList(new String[]{
+                "I ate an apple",
+                "I met Dr. Smith's wife Mrs. Smith through Mr. John the stock broker for Ms. Count"
+        })));
     }
     @Test
     public void getSentenceCount() {
