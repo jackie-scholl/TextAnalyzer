@@ -4,10 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assume.assumeThat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -109,9 +106,31 @@ public class SocialPostTest {
     
     @Test
     public void calendarTest() {
+        TimeZone tz = TimeZone.getDefault();
+        
         SocialPost p = new SocialPost("hello world!");
-        Calendar c = p.getTime();
-        System.out.println(c);
-        System.out.printf("%tc%n", c.getTime());
+        Calendar a = p.getCalendar(tz);
+        
+        Calendar b = Calendar.getInstance(tz);
+        a.set(Calendar.MILLISECOND, 0);
+        b.set(Calendar.MILLISECOND, 0);
+        
+        assertThat((double) a.getTimeInMillis(), is(closeTo((double) b.getTimeInMillis(), 100)));
+        System.out.printf("%tc%n", a.getTime());
+        System.out.printf("%tc%n", Calendar.getInstance().getTime());
+    }
+    
+    @Theory
+    public void calendarTheory(String str, long millis, SocialUser poster) {
+        assumeThat(str, is(notNullValue()));
+        assumeThat(poster, is(notNullValue()));
+        
+        Calendar a = Calendar.getInstance();
+        a.setTimeInMillis(millis);
+        
+        SocialPost p = new SocialPost(str, millis, poster);
+        Calendar b = p.getCalendar();
+        
+        assertThat(a, is(equalTo(b)));
     }
 }
