@@ -15,6 +15,12 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
+/**
+ * Class to test the class {@link SocialPost}.
+ * 
+ * @author Jackson
+ * 
+ */
 @RunWith(Theories.class)
 public class SocialPostTest {
     @DataPoint public static String helloWorld = "Hello World!";
@@ -98,5 +104,13 @@ public class SocialPostTest {
         }
         
         assertThat(ex, is(notNullValue()));
+    }
+    
+    @Test
+    public void calendarTest() {
+        SocialPost p = new SocialPost("hello world!");
+        Calendar c = p.getTime();
+        System.out.println(c);
+        System.out.printf("%tc%n", c.getTime());
     }
 }

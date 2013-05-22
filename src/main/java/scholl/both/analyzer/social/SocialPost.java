@@ -2,9 +2,7 @@ package scholl.both.analyzer.social;
 
 import scholl.both.analyzer.text.Text;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * A social network-type post, with at least a poster, timestamp, and text. There can also be an
@@ -84,6 +82,41 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
     public long getTimestamp() {
         return this.timestamp;
     }
+    
+    /**
+     * Returns the time at which this post was published, as a Calendar.
+     * 
+     * @return the post time
+     */
+    public Calendar getTime() {
+        return getTime(Locale.getDefault(), TimeZone.getDefault());
+    }
+
+    /**
+     * Returns the time at which this post was published, as a Calendar.
+     * 
+     * @param locale the locale to set the Calendar in
+     * @return the post time
+     */
+    public Calendar getTime(Locale locale) {
+        return getTime(locale, TimeZone.getDefault());
+    }
+
+    /**
+     * Returns the time at which this post was published, as a Calendar.
+     * 
+     * @param locale the locale to set the Calendar in
+     * @param timezone the timezone to the the Calendar in
+     * @return the post time
+     */
+    public Calendar getTime(Locale locale, TimeZone timezone) {
+        Calendar c = new GregorianCalendar(timezone, locale);
+        c.set(1970, 0, 0, 0, 0, 0);
+        c.add(Calendar.SECOND, (int) (getTimestamp()/1000));
+        return c;
+    }
+    
+    
     
     /**
      * Return the "mentioned" user. As described above, this can have many different meanings. On
