@@ -20,21 +20,51 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
     private final SocialUser mention;
     private final List<String> tags;
     
-    public SocialPost(SocialUser poster, long timestamp, String text, SocialUser mention,
-            List<String> tags) {
+    /**
+     * Makes a new SocialPost.
+     * 
+     * @param text the text of the post
+     * @param timestamp the time at which this was posted, in milliseconds; defaults to current time
+     * @param poster the user who posted this; defaults to {@code null}
+     * @param mention the user mentioned in this post; defaults to {@code null}
+     * @param tags any tags associated with this post; defaults to empty
+     * 
+     * @throws NullPointerException if tags or text is null
+     */
+    public SocialPost(String text, long timestamp, SocialUser poster, SocialUser mention,
+            List<String> tags) throws NullPointerException {
         super(text);
+        
+        if (tags == null) {
+            throw new NullPointerException("The list of tags is not allowed to be null.");
+        }
+        
         this.poster = poster;
         this.timestamp = timestamp;
         this.mention = mention;
         this.tags = Collections.unmodifiableList(tags);
     }
     
-    public SocialPost(String text, SocialUser poster, long timestamp) {
-        this(poster, timestamp, text, null, new ArrayList<String>());
+    /**
+     * Makes a new SocialPost. The mentioned user is defaulted to null, and tags defaults to an
+     * empty list.
+     * 
+     * @param text the text of the post
+     * @param timestamp the time at which this was posted, in milliseconds
+     * @param poster the user who posted this
+     */
+    public SocialPost(String text, long timestamp, SocialUser poster) {
+        this(text, timestamp, poster, null, new ArrayList<String>());
     }
     
+    /**
+     * Makes a new SocialPost. The mentioned user is defaulted to null, the posting user defaults to
+     * null, the timestamp defaults to the current time, and tags defaults to an empty list.
+     * 
+     * @param text the text of the post
+     */
     public SocialPost(String text) {
-        this(text, null, System.currentTimeMillis());
+        this(text, System.currentTimeMillis(), null);
     }
     
     /**
@@ -72,8 +102,8 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
      * 
      * @return the tags
      */
-    public String[] getTags() {
-        return tags.toArray(new String[]{});
+    public List<String> getTags() {
+        return new ArrayList<String>(tags);
     }
     
     /**
