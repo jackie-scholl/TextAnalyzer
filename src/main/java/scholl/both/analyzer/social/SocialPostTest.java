@@ -5,6 +5,10 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assume.assumeThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.BeforeClass;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
@@ -21,6 +25,15 @@ public class SocialPostTest {
     
     @DataPoint public static SocialUser nullUser = null;
     @DataPoint public static SocialUser mockUserJackson = new MockSocialUser("Jackson");
+    
+    @DataPoint public static List<String> nullStrList = null;
+    @DataPoint public static List<String> emptryStrList = new ArrayList<String>();
+    @DataPoint public static List<String> sampleStrList = Arrays.asList(new String[]{"a", "b", "c", "d"});
+    
+    @BeforeClass
+    public static void setupClass() {
+        ;
+    }
     
     @Theory
     public void currentTimeTest(String str) {
@@ -52,6 +65,4 @@ public class SocialPostTest {
         SocialPost a = new SocialPost(str, poster, millis);
         assertThat(a.getPoster(), is(equalTo(poster)));
     }
-    
-    
 }
