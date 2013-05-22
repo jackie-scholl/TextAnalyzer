@@ -39,6 +39,11 @@ public class MockSocialUser implements SocialUser {
     }
 
     @Override
+    public String toString() {
+        return String.format("MockSocialUser [name=%s]", this.name);
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
