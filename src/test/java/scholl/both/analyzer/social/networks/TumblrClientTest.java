@@ -1,15 +1,9 @@
 package scholl.both.analyzer.social.networks;
 
-import static org.junit.Assert.assertEquals;
-
-import scholl.both.analyzer.social.SocialStats;
-
 import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.Ignore;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * Class to test the class {@link TumblrClient}.

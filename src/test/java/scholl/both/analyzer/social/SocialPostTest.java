@@ -16,8 +16,7 @@ import org.junit.runner.RunWith;
 /**
  * Class to test the class {@link Post}.
  * 
- * @author Jackson
- * 
+ * @author Jackson * 
  */
 @RunWith(Theories.class)
 public class SocialPostTest {
@@ -34,8 +33,10 @@ public class SocialPostTest {
     
     @DataPoint public static List<String> nullStrList = null;
     @DataPoint public static List<String> emptryStrList = new ArrayList<String>();
-    @DataPoint public static List<String> sampleStrList = Arrays.asList(new String[]{"a", "b", "b", "d"});
-    @DataPoint public static List<String> sampleStrList2 = Arrays.asList(new String[]{"e", "c", "g", "h"});
+    @DataPoint public static List<String> sampleStrList = Arrays.asList(new String[]{ "a", "b",
+            "b", "d" });
+    @DataPoint public static List<String> sampleStrList2 = Arrays.asList(new String[]{ "e", "c",
+            "g", "h" });
     
     @BeforeClass
     public static void setupClass() {
@@ -72,9 +73,9 @@ public class SocialPostTest {
         Post b = new Post(str, millis, poster, null, new ArrayList<String>());
         assertThat(a, is(equalTo(b)));
     }
-        
+    
     @Theory
-    public void simpleConstructorTheory(String str, long millis, User poster, 
+    public void simpleConstructorTheory(String str, long millis, User poster,
             User mention, List<String> tags) {
         assumeThat(str, is(notNullValue()));
         assumeThat(poster, is(notNullValue()));
