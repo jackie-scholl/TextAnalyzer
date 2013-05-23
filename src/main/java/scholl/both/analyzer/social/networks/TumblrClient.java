@@ -1,6 +1,7 @@
 package scholl.both.analyzer.social.networks;
 
 import scholl.both.analyzer.social.*;
+import scholl.both.analyzer.social.User;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,8 +20,9 @@ import com.google.gson.JsonParser;
 import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.exceptions.JumblrException;
 import com.tumblr.jumblr.types.*;
+import com.tumblr.jumblr.types.Post;
 
-public class TumblrClient implements SocialClient {
+public class TumblrClient implements Client {
     
     public final static boolean THREADING = true;
     private JumblrClient client;
@@ -64,34 +66,34 @@ public class TumblrClient implements SocialClient {
         AuthenticatorServer.tumblrAuthenticate(client, service);
     }
     
-    public SocialUser getAuthenticatedUser() {
+    public User getAuthenticatedUser() {
         return new TumblrUser(client.blogInfo(client.user().getName()));
     }
     
-    public Set<SocialUser> getInterestingUsers() {
-        Set<SocialUser> s = new HashSet<SocialUser>();
+    public Set<User> getInterestingUsers() {
+        Set<User> s = new HashSet<User>();
         
         com.tumblr.jumblr.types.User authenticated = client.user();
         
         System.out.printf("User %s has these blogs: %n", authenticated.getName());
         for (Blog b : authenticated.getBlogs()) {
-            SocialUser blog = new TumblrUser(b);
+            User blog = new TumblrUser(b);
             s.add(blog);
             
-            List<SocialUser> followers = blog.getFollowers();
+            List<User> followers = blog.getFollowers();
             System.out.printf("\t%s (%s) has these %d followers:%n", b.getName(), b.getTitle(),
                     followers.size());
             
-            for (SocialUser follower : followers) {
+            for (User follower : followers) {
                 System.out.printf("\t\t%s%n", follower.getName());
                 s.add(follower);
             }
         }
         
-        List<SocialUser> following = getFollowing(100);
+        List<User> following = getFollowing(100);
         System.out.printf("User %s is following these %d blogs: %n", authenticated.getName(),
                 following.size());
-        for (SocialUser b : following) {
+        for (User b : following) {
             System.out.printf("\t%s (%s)%n", b.getName(), b.getTitle());
             s.add(b);
         }
@@ -106,21 +108,21 @@ public class TumblrClient implements SocialClient {
         return s;
     }
     
-    private SocialUser getUser(Blog b) {
+    private User getUser(Blog b) {
         return new TumblrUser(b);
     }
     
-    public SocialUser getUser(String b) {
+    public User getUser(String b) {
         return getUser(client.blogInfo(b));
     }
     
-    public List<SocialUser> getFollowing(int num) {
+    public List<User> getFollowing(int num) {
         return getFollowing(new HashMap<String, Object>(), num);
     }
     
-    public List<SocialUser> getFollowing(Map<String, Object> options, int num) {
+    public List<User> getFollowing(Map<String, Object> options, int num) {
         List<Blog> blogs = new ArrayList<Blog>();
-        List<SocialUser> following = new ArrayList<SocialUser>();
+        List<User> following = new ArrayList<User>();
         
         int lim = 20;
         lim = num > lim ? lim : num;
@@ -138,8 +140,8 @@ public class TumblrClient implements SocialClient {
         return following;
     }
     
-    private SocialPost getSocialPost(Post p) {
-        SocialUser u = new TumblrUser(p.getBlogName());
+    private scholl.both.analyzer.social.Post getSocialPost(Post p) {
+        User u = new TumblrUser(p.getBlogName());
         
         String type = p.getType();
         String text = "unknown";
@@ -157,7 +159,8 @@ public class TumblrClient implements SocialClient {
             text = ((LinkPost) p).getDescription();
         }
         
-        return new SocialPost(text, p.getTimestamp() * 1000L, u, null, p.getTags());
+        return new scholl.both.analyzer.social.Post(text, p.getTimestamp() * 1000L, u, null,
+                p.getTags());
     }
     
     private PostSet getPosts(Blog blog, Map<String, Object> options, int num) {
@@ -198,8 +201,8 @@ public class TumblrClient implements SocialClient {
         return ps;
     }
     
-    private List<SocialUser> getFollowers(Blog blog, Map<String, Object> options, int num) {
-        List<SocialUser> followers = new ArrayList<SocialUser>();
+    private List<User> getFollowers(Blog blog, Map<String, Object> options, int num) {
+        List<User> followers = new ArrayList<User>();
         
         int lim = 20;
         lim = num > lim ? lim : num;
@@ -210,7 +213,7 @@ public class TumblrClient implements SocialClient {
             options.put("offset", i);
             for (com.tumblr.jumblr.types.User u : blog.followers(options)) {
                 Blog b = client.blogInfo(u.getName());
-                SocialUser su = new TumblrUser(b);
+                User su = new TumblrUser(b);
                 followers.add(su);
             }
         }
@@ -225,12 +228,12 @@ public class TumblrClient implements SocialClient {
             } catch (JumblrException e) {
                 if (i >= 1) {
                     System.out.printf("Failed to retrieve blog info for %s at %tc - attempt %d%n",
-                        blogname, System.currentTimeMillis(), i);
+                            blogname, System.currentTimeMillis(), i);
                 }
             } catch (OAuthConnectionException e) {
                 if (i >= 1) {
                     System.out.printf("Failed to retrieve blog info for %s at %tc - attempt %d%n",
-                        blogname, System.currentTimeMillis(), i);
+                            blogname, System.currentTimeMillis(), i);
                 }
             }
         }
@@ -256,11 +259,11 @@ public class TumblrClient implements SocialClient {
         
         public void run() {
             List<Post> posts = null;
-            for (int i=0; i<5; i++) {
+            for (int i = 0; i < 5; i++) {
                 try {
                     posts = blog.posts(options);
                 } catch (OAuthConnectionException e) {
-                    System.out.printf("Error on try %d of %d to get posts%n", i+1, 5);
+                    System.out.printf("Error on try %d of %d to get posts%n", i + 1, 5);
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e1) {
@@ -277,7 +280,7 @@ public class TumblrClient implements SocialClient {
         }
     }
     
-    class TumblrUser implements SocialUser {
+    class TumblrUser implements User {
         private final Blog blog;
         
         public TumblrUser(Blog blog) {
@@ -333,7 +336,7 @@ public class TumblrClient implements SocialClient {
             return TumblrClient.this.getPosts(blog, options, num);
         }
         
-        public List<SocialUser> getFollowers() {
+        public List<User> getFollowers() {
             return getFollowers(new HashMap<String, Object>(), 100);
         }
         
@@ -344,7 +347,7 @@ public class TumblrClient implements SocialClient {
          * @return the followers of this blog
          * @see com.tumblr.jumblr.types.Blog#followers(java.util.Map)
          */
-        public List<SocialUser> getFollowers(Map<String, Object> options, int num) {
+        public List<User> getFollowers(Map<String, Object> options, int num) {
             return TumblrClient.this.getFollowers(blog, options, num);
         }
         
@@ -353,7 +356,7 @@ public class TumblrClient implements SocialClient {
             return blog.toString();
         }
         
-        public int compareTo(SocialUser other) {
+        public int compareTo(User other) {
             return this.getName().compareTo(other.getName());
         }
         

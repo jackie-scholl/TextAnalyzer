@@ -14,7 +14,7 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
 /**
- * Class to test the class {@link SocialPost}.
+ * Class to test the class {@link Post}.
  * 
  * @author Jackson
  * 
@@ -28,9 +28,9 @@ public class SocialPostTest {
     @DataPoint public static long initTime = System.currentTimeMillis();
     @DataPoint public static long zeroTime = 0L;
     
-    @DataPoint public static SocialUser nullUser = null;
-    @DataPoint public static SocialUser mockUserJackson = new MockSocialUser("Jackson");
-    @DataPoint public static SocialUser mockUserKeller = new MockSocialUser("Keller");
+    @DataPoint public static User nullUser = null;
+    @DataPoint public static User mockUserJackson = new MockSocialUser("Jackson");
+    @DataPoint public static User mockUserKeller = new MockSocialUser("Keller");
     
     @DataPoint public static List<String> nullStrList = null;
     @DataPoint public static List<String> emptryStrList = new ArrayList<String>();
@@ -46,7 +46,7 @@ public class SocialPostTest {
     public void currentTimeTest(String str) {
         assumeThat(str, is(notNullValue()));
         double millis = System.currentTimeMillis();
-        SocialPost p = new SocialPost(str);
+        Post p = new Post(str);
         double newTime = p.getTimestamp();
         assertThat(newTime, is(closeTo(millis, 100)));
     }
@@ -60,28 +60,28 @@ public class SocialPostTest {
     @Theory
     public void constructorTest(String str) {
         assumeThat(str, is(notNullValue()));
-        SocialPost a = new SocialPost(str);
-        SocialPost b = new SocialPost(str, a.getTimestamp(), null);
+        Post a = new Post(str);
+        Post b = new Post(str, a.getTimestamp(), null);
         assertThat(a, is(equalTo(b)));
     }
     
     @Theory
-    public void constructorTest2(String str, long millis, SocialUser poster) {
+    public void constructorTest2(String str, long millis, User poster) {
         assumeThat(str, is(notNullValue()));
-        SocialPost a = new SocialPost(str, millis, poster);
-        SocialPost b = new SocialPost(str, millis, poster, null, new ArrayList<String>());
+        Post a = new Post(str, millis, poster);
+        Post b = new Post(str, millis, poster, null, new ArrayList<String>());
         assertThat(a, is(equalTo(b)));
     }
         
     @Theory
-    public void simpleConstructorTheory(String str, long millis, SocialUser poster, 
-            SocialUser mention, List<String> tags) {
+    public void simpleConstructorTheory(String str, long millis, User poster, 
+            User mention, List<String> tags) {
         assumeThat(str, is(notNullValue()));
         assumeThat(poster, is(notNullValue()));
         assumeThat(mention, is(notNullValue()));
         assumeThat(tags, is(notNullValue()));
         
-        SocialPost a = new SocialPost(str, millis, poster, mention, tags);
+        Post a = new Post(str, millis, poster, mention, tags);
         assertThat(a.getOriginal(), is(equalTo(str)));
         assertThat(a.getTimestamp(), is(equalTo(millis)));
         assertThat(a.getPoster(), is(equalTo(poster)));
@@ -90,13 +90,13 @@ public class SocialPostTest {
     }
     
     @Theory
-    public void nullTagsTheory(String str, long millis, SocialUser poster, SocialUser mention) {
+    public void nullTagsTheory(String str, long millis, User poster, User mention) {
         assumeThat(str, is(notNullValue()));
         
         Exception ex = null;
         
         try {
-            new SocialPost(str, millis, poster, mention, null);
+            new Post(str, millis, poster, mention, null);
         } catch (NullPointerException e) {
             ex = e;
         }
@@ -108,7 +108,7 @@ public class SocialPostTest {
     public void calendarTest() {
         TimeZone tz = TimeZone.getDefault();
         
-        SocialPost p = new SocialPost("hello world!");
+        Post p = new Post("hello world!");
         Calendar a = p.getCalendar(tz);
         
         Calendar b = Calendar.getInstance(tz);
@@ -121,14 +121,14 @@ public class SocialPostTest {
     }
     
     @Theory
-    public void calendarTheory(String str, long millis, SocialUser poster) {
+    public void calendarTheory(String str, long millis, User poster) {
         assumeThat(str, is(notNullValue()));
         assumeThat(poster, is(notNullValue()));
         
         Calendar a = Calendar.getInstance();
         a.setTimeInMillis(millis);
         
-        SocialPost p = new SocialPost(str, millis, poster);
+        Post p = new Post(str, millis, poster);
         Calendar b = p.getCalendar();
         
         assertThat(a, is(equalTo(b)));

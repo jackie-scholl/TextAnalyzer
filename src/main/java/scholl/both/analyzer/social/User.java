@@ -7,7 +7,7 @@ import java.util.List;
  * 
  * @author Jackson
  */
-public interface SocialUser {
+public interface User {
     
     /**
      * Get the name of the user/blog.
@@ -50,7 +50,7 @@ public interface SocialUser {
      * 
      * @return the user's followers
      */
-    public abstract List<SocialUser> getFollowers();
+    public abstract List<User> getFollowers();
     
     /**
      * Returns the number of milliseconds since the epoch at the time of the more recent post to

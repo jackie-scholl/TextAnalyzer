@@ -3,7 +3,7 @@ package scholl.both.analyzer.social;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockSocialUser implements SocialUser {
+public class MockSocialUser implements User {
     private final String name;
     
     public MockSocialUser(String name) {
@@ -30,8 +30,8 @@ public class MockSocialUser implements SocialUser {
         return 0;
     }
 
-    public List<SocialUser> getFollowers() {
-        return new ArrayList<SocialUser>();
+    public List<User> getFollowers() {
+        return new ArrayList<User>();
     }
 
     public long getLastUpdated() {

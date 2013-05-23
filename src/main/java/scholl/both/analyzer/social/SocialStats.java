@@ -1,6 +1,6 @@
 package scholl.both.analyzer.social;
 
-import scholl.both.analyzer.social.networks.SocialClient;
+import scholl.both.analyzer.social.networks.Client;
 import scholl.both.analyzer.social.networks.TumblrClient;
 
 import java.io.File;
@@ -17,13 +17,13 @@ public class SocialStats implements Runnable {
         outputFolder.mkdir();
     }
     
-    private final SocialUser b;
+    private final User b;
     private final int count;
     private final File userFolder;
     
     private double postsPerHour = 0.0;
     
-    public SocialStats(SocialUser b, int count) {
+    public SocialStats(User b, int count) {
         this.b = b;
         this.count = count;
         userFolder = new File(outputFolder, b.getName());
@@ -73,7 +73,7 @@ public class SocialStats implements Runnable {
         }
     }
     
-    public static void doStats(SocialUser b, int count) {
+    public static void doStats(User b, int count) {
         SocialStats ss = new SocialStats(b, count);
         ss.run();
     }
@@ -136,13 +136,13 @@ public class SocialStats implements Runnable {
     }
     
     static void tumblrThing(int COUNT) throws IOException {
-        SocialClient tclient = new TumblrClient("tumblr_credentials.json");
+        Client tclient = new TumblrClient("tumblr_credentials.json");
         tclient.authenticate();
         
         long start = System.currentTimeMillis();
         System.out.println(tclient.getAuthenticatedUser().getName());
         
-        Set<SocialUser> blogs = tclient.getInterestingUsers();
+        Set<User> blogs = tclient.getInterestingUsers();
         
         Map<String, Object> options = new HashMap<String, Object>();
         //options.put("reblog_info", "true");
@@ -152,7 +152,7 @@ public class SocialStats implements Runnable {
         
         List<Thread> threads = new ArrayList<Thread>();
         int i = 0;
-        for (SocialUser b : blogs) {
+        for (User b : blogs) {
             if (MainClient.THREADING) {
                 Thread t = new Thread(new SocialStats(b, COUNT));
                 t.start();

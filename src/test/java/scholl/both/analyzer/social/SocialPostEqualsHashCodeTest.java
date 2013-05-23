@@ -7,17 +7,17 @@ import org.junit.Test;
 import com.pobox.cbarham.testhelpers.EqualsHashCodeTestCase;
 
 public class SocialPostEqualsHashCodeTest extends EqualsHashCodeTestCase {
-    private static SocialPost a = new SocialPost("hello");
-    private static SocialPost b = new SocialPost("world");
+    private static Post a = new Post("hello");
+    private static Post b = new Post("world");
     
     @Override
     protected Object createInstance() throws Exception {
-        return new SocialPost(a);
+        return new Post(a);
     }
 
     @Override
     protected Object createNotEqualInstance() throws Exception {
-        return new SocialPost(b);
+        return new Post(b);
     }
     
 }

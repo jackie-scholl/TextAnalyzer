@@ -1,8 +1,8 @@
 package scholl.both.analyzer.social.networks;
 
 import scholl.both.analyzer.social.PostSet;
-import scholl.both.analyzer.social.SocialPost;
-import scholl.both.analyzer.social.SocialUser;
+import scholl.both.analyzer.social.Post;
+import scholl.both.analyzer.social.User;
 
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
@@ -10,7 +10,7 @@ import twitter4j.conf.ConfigurationBuilder;
 import java.io.IOException;
 import java.util.*;
 
-public class TwitterClient implements SocialClient {
+public class TwitterClient implements Client {
     private Twitter twitter;
     
     public TwitterClient(String fileName) throws IOException {
@@ -25,8 +25,8 @@ public class TwitterClient implements SocialClient {
         ;
     }
     
-    public SocialUser getAuthenticatedUser() {
-        SocialUser u = null;
+    public User getAuthenticatedUser() {
+        User u = null;
         for (int i = 0; i < 5; i++) {
             try {
                 u = new TwitterUser(twitter.verifyCredentials());
@@ -44,18 +44,16 @@ public class TwitterClient implements SocialClient {
         return u;
     }
     
-    public Set<SocialUser> getInterestingUsers() {
-        Set<SocialUser> s = new HashSet<SocialUser>();
+    public Set<User> getInterestingUsers() {
+        Set<User> s = new HashSet<User>();
         s.addAll(getFollowing(20));
         return s;
     }
     
-    public List<SocialUser> getFollowing(int num) {
+    public List<User> getFollowing(int num) {
         try {
-            List<User> a;
-            a = twitter.getFriendsList(twitter.verifyCredentials().getId(), -1);
-            List<SocialUser> b = new ArrayList<SocialUser>();
-            for (User u : a) {
+            List<User> b = new ArrayList<User>();
+            for (twitter4j.User u : twitter.getFriendsList(twitter.verifyCredentials().getId(), -1)) {
                 b.add(new TwitterUser(u));
             }
             return b;
@@ -65,7 +63,7 @@ public class TwitterClient implements SocialClient {
         }
     }
     
-    public SocialUser getUser(String name) {
+    public User getUser(String name) {
         try {
             return new TwitterUser(twitter.showUser(name));
         } catch (TwitterException e) {
@@ -83,13 +81,11 @@ public class TwitterClient implements SocialClient {
         }
     }
     
-    private class TwitterUser implements SocialUser {
-        private User user;
-        private String name;
+    private class TwitterUser implements User {
+        private twitter4j.User user;
         
-        public TwitterUser(User u) {
+        public TwitterUser(twitter4j.User u) {
             this.user = u;
-            this.name = u.getName();
         }
         
         public String getName() {
@@ -123,13 +119,14 @@ public class TwitterClient implements SocialClient {
             return 0;
         }
         
-        public List<SocialUser> getFollowers() {
+        public List<User> getFollowers() {
             try {
-                List<User> l = twitter.getFollowersList(user.getId(), -1);
-                List<SocialUser> ls = new ArrayList<SocialUser>();
-                for (User u : l) {
+                List<User> ls = new ArrayList<User>();
+                
+                for (twitter4j.User u : twitter.getFollowersList(user.getId(), -1)) {
                     ls.add(new TwitterUser(u));
                 }
+                
                 return ls;
             } catch (TwitterException e) {
                 e.printStackTrace();
@@ -143,7 +140,7 @@ public class TwitterClient implements SocialClient {
         
         @Override
         public String toString() {
-            return this.name;
+            return getName();
         }
         
         @Override
@@ -151,7 +148,7 @@ public class TwitterClient implements SocialClient {
             final int prime = 31;
             int result = 1;
             result = prime * result + getOuterType().hashCode();
-            result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+            result = prime * result + this.getName().hashCode();
             return result;
         }
         
@@ -166,10 +163,7 @@ public class TwitterClient implements SocialClient {
             TwitterUser other = (TwitterUser) obj;
             if (!getOuterType().equals(other.getOuterType()))
                 return false;
-            if (this.name == null) {
-                if (other.name != null)
-                    return false;
-            } else if (!this.name.equals(other.name))
+            if (!this.getName().equals(other.getName()))
                 return false;
             return true;
         }
@@ -181,7 +175,8 @@ public class TwitterClient implements SocialClient {
         
     }
     
-    private SocialPost getSocial(Status s) {
-        return new SocialPost(s.getText(), s.getCreatedAt().getTime(), new TwitterUser(s.getUser()));
+    private scholl.both.analyzer.social.Post getSocial(Status s) {
+        return new scholl.both.analyzer.social.Post(s.getText(), s.getCreatedAt().getTime(),
+                new TwitterUser(s.getUser()));
     }
 }

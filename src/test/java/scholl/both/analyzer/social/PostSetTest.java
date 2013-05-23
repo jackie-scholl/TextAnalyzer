@@ -30,10 +30,18 @@ public class PostSetTest {
     @BeforeClass
     public static void setupClass() {
         ps1 = new PostSet();
-        SocialPost[] posts = new SocialPost[]{};
         String[] texts = new String[]{"a", "b", "c", "d", "e", "f"};
         for (String str : texts) {
-            ps1.add(new SocialPost(str));
+            ps1.add(new Post(str));
+            sleepShort();
+        }
+    }
+    
+    private static void sleepShort() {
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
     
@@ -41,8 +49,8 @@ public class PostSetTest {
     public void testGetPostArray(PostSet ps) {
         assumeThat(ps, is(notNullValue()));
         
-        SocialPost[] posts1 = ps.getPostArray();
-        SocialPost[] posts2 = ps.toSet().toArray(new SocialPost[0]);
+        Post[] posts1 = ps.toArray();
+        Post[] posts2 = ps.toSet().toArray(new Post[0]);
         assertThat(posts1, is(equalTo(posts2)));
     }
     
@@ -50,7 +58,7 @@ public class PostSetTest {
     public void testGetPostList(PostSet ps) {
         assumeThat(ps, is(notNullValue()));
         
-        assertThat(ps.getPostList(), is(equalTo(Arrays.asList(ps.getPostArray()))));
+        assertThat(ps.toList(), is(equalTo(Arrays.asList(ps.toArray()))));
     }
     
     @Theory
@@ -60,19 +68,19 @@ public class PostSetTest {
         
         PostSet withTag = ps.getAllWithTag(tag);
         
-        for (SocialPost post : ps) {
+        for (Post post : ps) {
             assertThat(post.getTags().contains(tag), is(equalTo(withTag.contains(post))));
         }
     }
     
     @Test
     public void testGetMostRecent() {
-        //fail("Not yet implemented");
+        assertThat(ps1.getMostRecent().getOriginal(), is(equalTo("f")));
     }
     
     @Test
     public void testGetOldest() {
-        //fail("Not yet implemented");
+        assertThat(ps1.getOldest().getOriginal(), is(equalTo("a")));
     }
     
     @Test
@@ -80,14 +88,25 @@ public class PostSetTest {
         //fail("Not yet implemented");
     }
     
-    @Test
-    public void testGetAllTags() {
-        //fail("Not yet implemented");
+    @Theory
+    public void testGetAllTags(PostSet ps) {
+        assumeThat(ps, is(notNullValue()));
+        
+        Set<String> tags = new HashSet<String>();
+        for (Post p : ps) {
+           tags.addAll(p.getTags()); 
+        }
+        assertThat(ps.getAllTags(), is(equalTo(tags)));
     }
     
-    @Test
-    public void testSize() {
-        //fail("Not yet implemented");
+    @Theory
+    public void testSize(PostSet ps) {
+        assumeThat(ps, is(notNullValue()));
+        
+        int size = ps.size();
+        assertThat(size, is(equalTo(ps.toSet().size())));
+        assertThat(size, is(equalTo(ps.toArray().length)));
+        assertThat(size, is(equalTo(ps.toList().size())));
     }
     
 }

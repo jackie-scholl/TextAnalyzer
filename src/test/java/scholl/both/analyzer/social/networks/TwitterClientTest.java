@@ -3,8 +3,8 @@ package scholl.both.analyzer.social.networks;
 import static org.junit.Assert.assertEquals;
 
 import scholl.both.analyzer.social.PostSet;
-import scholl.both.analyzer.social.SocialPost;
-import scholl.both.analyzer.social.SocialUser;
+import scholl.both.analyzer.social.Post;
+import scholl.both.analyzer.social.User;
 
 import java.io.IOException;
 
@@ -36,13 +36,13 @@ public class TwitterClientTest {
     @Test
     @Ignore("Too finicky")
     public void simpleTest() {
-        SocialUser u = tc.getAuthenticatedUser();
+        User u = tc.getAuthenticatedUser();
         assertEquals("raptortech97", u.getTitle());
         
-        for (SocialUser su : tc.getInterestingUsers()) {
+        for (User su : tc.getInterestingUsers()) {
             PostSet ps = su.getPosts(20);
             System.out.printf("%s: %n", su.getName());
-            for (SocialPost p : ps.toSet()) {
+            for (Post p : ps.toSet()) {
                 System.out.printf("\t%s%n", p);
             }
         }
@@ -52,7 +52,7 @@ public class TwitterClientTest {
     @Test
     public void benPostTest() {
         System.out.println(tc.getRateLimit());
-        SocialUser ben = tc.getUser("bkinderTARDIS42");
+        User ben = tc.getUser("bkinderTARDIS42");
         PostSet ps = ben.getPosts(20);
         assertEquals(3, ps.size()); // Ben has 3 posts
     }

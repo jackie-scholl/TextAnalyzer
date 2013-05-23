@@ -13,10 +13,10 @@ import java.util.*;
  * @author Jackson
  * 
  */
-public class SocialPost extends Text implements Comparable<SocialPost> {
+public class Post extends Text implements Comparable<Post> {
     private final long timestamp; // milliseconds since epoch
-    private final SocialUser poster;
-    private final SocialUser mention;
+    private final User poster;
+    private final User mention;
     private final List<String> tags;
     
     /**
@@ -30,7 +30,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
      * 
      * @throws NullPointerException if tags or text is null
      */
-    public SocialPost(String text, long timestamp, SocialUser poster, SocialUser mention,
+    public Post(String text, long timestamp, User poster, User mention,
             List<String> tags) throws NullPointerException {
         super(text);
         
@@ -52,7 +52,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
      * @param timestamp the time at which this was posted, in milliseconds
      * @param poster the user who posted this
      */
-    public SocialPost(String text, long timestamp, SocialUser poster) {
+    public Post(String text, long timestamp, User poster) {
         this(text, timestamp, poster, null, new ArrayList<String>());
     }
     
@@ -62,11 +62,11 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
      * 
      * @param text the text of the post
      */
-    public SocialPost(String text) {
+    public Post(String text) {
         this(text, System.currentTimeMillis(), null);
     }
     
-    public SocialPost(SocialPost other) {
+    public Post(Post other) {
         this(other.getOriginal(), other.getTimestamp(), other.getPoster(), other.getMention(), 
                 other.getTags());
     }
@@ -76,7 +76,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
      * 
      * @return the poster
      */
-    public SocialUser getPoster() {
+    public User getPoster() {
         return this.poster;
     }
     
@@ -129,7 +129,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
      * 
      * @return the mentioned user
      */
-    public SocialUser getMention() {
+    public User getMention() {
         return this.mention;
     }
     
@@ -148,7 +148,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
      * Compares by timestamp; the result is positive if this post is more recent, zero if they were
      * published at the same time, and negative if the other post was published first.
      */
-    public int compareTo(SocialPost other) {
+    public int compareTo(Post other) {
         return new Long(this.timestamp).compareTo(other.timestamp);
     }
     
@@ -183,7 +183,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        SocialPost other = (SocialPost) obj;
+        Post other = (Post) obj;
         if (this.mention == null) {
             if (other.mention != null)
                 return false;

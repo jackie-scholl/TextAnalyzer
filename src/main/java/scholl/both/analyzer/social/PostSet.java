@@ -7,57 +7,49 @@ import java.util.regex.Pattern;
 
 // TODO: Add Javadocs
 
-public class PostSet implements Iterable<SocialPost> {
-    private SortedSet<SocialPost> posts;
-    private Map<String, SortedSet<SocialPost>> tagIndex;
+public class PostSet implements Iterable<Post> {
+    private SortedSet<Post> posts;
+    private Map<String, SortedSet<Post>> tagIndex;
     
     public PostSet() {
-        posts = new TreeSet<SocialPost>();
-        this.tagIndex = new HashMap<String, SortedSet<SocialPost>>();
+        posts = new TreeSet<Post>();
+        this.tagIndex = new HashMap<String, SortedSet<Post>>();
     }
     
-    public PostSet(Iterable<SocialPost> posts) {
+    public PostSet(Iterable<Post> posts) {
         this();
         addAll(posts);
     }  
         
-    public void add(SocialPost p) {
+    public void add(Post p) {
         posts.add(p);
         for (String tag : p.getTags()) {
-            SortedSet<SocialPost> postsForTag = tagIndex.get(tag);
+            SortedSet<Post> postsForTag = tagIndex.get(tag);
             if (postsForTag == null) {
-                postsForTag = new TreeSet<SocialPost>();
+                postsForTag = new TreeSet<Post>();
             }
             postsForTag.add(p);
             tagIndex.put(tag, postsForTag);
         }
     }
 
-    public void addAll(Iterable<SocialPost> other) {
+    public void addAll(Iterable<Post> other) {
         if (other == null) {
             return;
         }
         
-        for (SocialPost p : other) {
+        for (Post p : other) {
             add(p);
         }
     }
 
-    public SocialPost[] getPostArray() {
-        return posts.toArray(new SocialPost[0]);
-    }
-    
-    public List<SocialPost> getPostList() {
-        return new ArrayList<SocialPost>(posts);
-    }
-    
     public PostSet getAllWithTag(String tag) {
         return new PostSet(tagIndex.get(tag));
     }
     
     public PostSet getAllTextsMatchingRegex(Pattern pattern) {
         PostSet ps = new PostSet();
-        for (SocialPost p : posts) {
+        for (Post p : posts) {
             if (pattern.matcher(p.getOriginal()).find()) {
                 ps.add(p);
             }
@@ -65,23 +57,23 @@ public class PostSet implements Iterable<SocialPost> {
         return ps;
     }
     
-    public SocialPost getMostRecent() {
+    public Post getMostRecent() {
         if (posts.isEmpty()) {
             return null;
         }
         return posts.last();
     }
     
-    public SocialPost getOldest() {
+    public Post getOldest() {
         if (posts.isEmpty()) {
             return null;
         }
         return posts.first();
     }
     
-    public PostSet getAllByUser(SocialUser u) {
+    public PostSet getAllByUser(User u) {
         PostSet ps = new PostSet();
-        for (SocialPost p : posts) {
+        for (Post p : posts) {
             if (u.equals(p.getPoster())) {
                 ps.add(p);
             }
@@ -93,13 +85,13 @@ public class PostSet implements Iterable<SocialPost> {
         return tagIndex.keySet();
     }
     
-    public boolean contains(SocialPost p) {
+    public boolean contains(Post p) {
         return posts.contains(p);
     }
 
     public Counter<Character> getLetterCount() {
         Counter<Character> c = new Counter<Character>();
-        for (SocialPost p : posts) {
+        for (Post p : posts) {
             c.addAll(p.getLetterCount2());
         }
         return c;
@@ -107,7 +99,7 @@ public class PostSet implements Iterable<SocialPost> {
     
     public Counter<String> getWordCount() {
         Counter<String> c = new Counter<String>();
-        for (SocialPost p : posts) {
+        for (Post p : posts) {
             c.addAll(p.getWordCount2());
         }
         return c;
@@ -117,19 +109,27 @@ public class PostSet implements Iterable<SocialPost> {
         return posts.size();
     }
 
-    public SortedSet<SocialPost> toSet() {
-        return new TreeSet<SocialPost>(posts);
+    public SortedSet<Post> toSet() {
+        return new TreeSet<Post>(posts);
     }
     
-    public Iterator<SocialPost> iterator() {
+    public Post[] toArray() {
+        return posts.toArray(new Post[0]);
+    }
+
+    public List<Post> toList() {
+        return new ArrayList<Post>(posts);
+    }
+
+    public Iterator<Post> iterator() {
         return posts.iterator();
     }
     
     @Override
     public PostSet clone() throws CloneNotSupportedException {
         PostSet other = (PostSet) super.clone();
-        other.posts = new TreeSet<SocialPost>(posts);
-        other.tagIndex = new HashMap<String, SortedSet<SocialPost>>(tagIndex);
+        other.posts = new TreeSet<Post>(posts);
+        other.tagIndex = new HashMap<String, SortedSet<Post>>(tagIndex);
         return other;
     }
     

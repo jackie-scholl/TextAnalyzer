@@ -1,7 +1,7 @@
 package scholl.both.analyzer.text;
 
 import scholl.both.analyzer.social.PostSet;
-import scholl.both.analyzer.social.SocialPost;
+import scholl.both.analyzer.social.Post;
 import scholl.both.analyzer.text.Text;
 
 import org.apache.commons.math3.stat.correlation.*;
@@ -37,7 +37,7 @@ public class TextSet {
     }
     
     public void add(String t) {
-        texts.add(new SocialPost(t));
+        texts.add(new Post(t));
     }
     
     
