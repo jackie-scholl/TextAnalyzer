@@ -7,6 +7,26 @@ public class TimeSample extends Sample<Calendar> {
         super();
     }
     
+    public DoubleSample getDayOfWeek() {
+        DoubleSample sample = new DoubleSample();
+        
+        for (Calendar c : this) {
+            sample.add(getHours(c));
+        }
+        
+        return sample;
+    }
+    
+    public DoubleSample getMillisecondsSinceEpoch() {
+        DoubleSample sample = new DoubleSample();
+        
+        for (Calendar c : this) {
+            sample.add(c.getTimeInMillis());
+        }
+        
+        return sample;
+    }
+    
     public DoubleSample getHourOfDay() {
         DoubleSample sample = new DoubleSample();
         
@@ -35,5 +55,9 @@ public class TimeSample extends Sample<Calendar> {
     
     public static double getDaysOfWeek(Calendar c) {
         return c.get(Calendar.DAY_OF_WEEK) + getHours(c)/24;
+    }
+    
+    public static double getDaysOfYear(Calendar c) {
+        return c.get(Calendar.DAY_OF_YEAR) + getHours(c)/24;
     }
 }
