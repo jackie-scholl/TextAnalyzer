@@ -1,6 +1,12 @@
 package scholl.both.analyzer.text;
 
-import java.util.*;
+//import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Scanner;
 import org.apache.commons.math3.stat.StatUtils;
 
 import scholl.both.analyzer.util.Counter;
@@ -80,6 +86,23 @@ public class Text {
     
     public int getCharacterCount() {
     	return clean.length();
+    }
+    private double getValence(String word){
+        Map<String, Double> AFINN = new HashMap<String, Double>();
+        Scanner n = new Scanner("AFINN-111.txt");
+        String nextWord = "";
+        double nextDub = 0;
+        while (n.hasNext()){
+            nextWord = n.next();
+            nextDub = Double.parseDouble(n.next());
+        }
+        //AFINN.
+        return 5;
+        
+       // In Python the file may be read into a dictionary with:
+//
+  //          >>> afinn = dict(map(lambda (k,v): (k,int(v)), 
+    //                             [ line.split('\t') for line in open("AFINN-111.txt") ]))
     }
 
     public String getOriginal() {
