@@ -50,8 +50,6 @@ public class DoubleSampleTest extends EqualsHashCodeTestCase {
         assertEquals(ex2, ex3);
         assertEquals(ex2, ex4);
         assertEquals(ex2, ex5);
-        
-        ex2.plot();
     }
     
     @Theory
