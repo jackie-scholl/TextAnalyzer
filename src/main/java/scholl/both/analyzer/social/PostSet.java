@@ -1,6 +1,7 @@
 package scholl.both.analyzer.social;
 
 import scholl.both.analyzer.util.Counter;
+import scholl.both.analyzer.util.TimeSample;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -103,6 +104,14 @@ public class PostSet implements Iterable<Post> {
             c.addAll(p.getWordCount2());
         }
         return c;
+    }
+    
+    public TimeSample getTimeSample() {
+        TimeSample sample = new TimeSample();
+        for (Post p : posts) {
+           sample.add(p.getCalendar());
+        }
+        return sample;
     }
     
     public int size() {

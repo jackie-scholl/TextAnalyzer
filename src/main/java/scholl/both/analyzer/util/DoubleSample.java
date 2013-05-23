@@ -1,7 +1,5 @@
 package scholl.both.analyzer.util;
 
-import java.util.Iterator;
-
 import org.apache.commons.math3.stat.StatUtils;
 
 import alg4lib.StdDraw;

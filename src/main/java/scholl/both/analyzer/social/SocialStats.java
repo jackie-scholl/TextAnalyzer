@@ -32,7 +32,6 @@ public class SocialStats implements Runnable {
     }
     
     private static void delete(File f) {
-        
         if (f == null)
             return;
         if (f.isDirectory()) {
@@ -58,6 +57,7 @@ public class SocialStats implements Runnable {
             
             getWordFrequencies(ps);
             getGeneral(ps);
+            plotHours(ps);
             
             long end = System.currentTimeMillis();
             System.out.printf("Finished blog %-40s with %3d posts (%-9.5g posts per hour) " +
@@ -135,14 +135,19 @@ public class SocialStats implements Runnable {
         stream.close();
     }
     
-    static void tumblrThing(int COUNT) throws IOException {
+    private void plotHours(PostSet ps) {
+        
+    }
+        
+    private static Client getAuthenticatedClient() throws IOException {
         Client tclient = new TumblrClient("tumblr_credentials.json");
         tclient.authenticate();
+        return tclient;
         
-        long start = System.currentTimeMillis();
+    }
+    
+    public static void tumblrThing(Client tclient, Set<User> blogs, int count) {
         System.out.println(tclient.getAuthenticatedUser().getName());
-        
-        Set<User> blogs = tclient.getInterestingUsers();
         
         Map<String, Object> options = new HashMap<String, Object>();
         //options.put("reblog_info", "true");
@@ -154,7 +159,7 @@ public class SocialStats implements Runnable {
         int i = 0;
         for (User b : blogs) {
             if (MainClient.THREADING) {
-                Thread t = new Thread(new SocialStats(b, COUNT));
+                Thread t = new Thread(new SocialStats(b, count));
                 t.start();
                 threads.add(t);
             } else {
@@ -173,18 +178,24 @@ public class SocialStats implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
-        long end = System.currentTimeMillis();
-        double timeTaken = (end - start) / 1000.0;
-        
-        System.out.printf("Finished - took %.3f seconds%n", timeTaken);
     }
     
-    public static void main(String... args) {
-        try {
-            tumblrThing(300);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void tumblrThing(Set<String> interesting, int count) throws IOException {
+        Client tclient = getAuthenticatedClient();
+        
+        Set<User> blogs = new HashSet<User>();
+        for (String blogName : interesting) {
+            blogs.add(tclient.getUser(blogName));
         }
+        
+        tumblrThing(tclient, blogs, count);
+    }
+    
+    public static void tumblrThing(int count) throws IOException {
+        Client tclient = getAuthenticatedClient();
+        
+        Set<User> blogs = tclient.getInterestingUsers();
+        
+        tumblrThing(tclient, blogs, count);
     }
 }

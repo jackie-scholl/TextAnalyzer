@@ -4,7 +4,9 @@ import scholl.both.analyzer.text.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainClient {
     public static final boolean THREADING = true;
@@ -22,8 +24,24 @@ public class MainClient {
                     t.getCharacterCount(), t.getOriginal());
         }
         
+        tumblrThing();
+    }
+    
+    private static void tumblrThing() {
+        int count = 100;
+        Set<String> users = new HashSet<String>();
+        users.add("dataandphilosophy");
+        
         try {
-            SocialStats.tumblrThing(100);
+            long start = System.currentTimeMillis();
+            
+            
+            SocialStats.tumblrThing(count);
+            
+            long end = System.currentTimeMillis();
+            double timeTaken = (end - start) / 1000.0;            
+            System.out.printf("Finished - took %.3f seconds%n", timeTaken);
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
