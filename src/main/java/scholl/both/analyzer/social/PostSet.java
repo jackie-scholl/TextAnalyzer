@@ -3,14 +3,13 @@ package scholl.both.analyzer.social;
 import scholl.both.analyzer.util.Counter;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 // TODO: Add Javadocs
 
-public class PostSet {
-    
-    private volatile SortedSet<SocialPost> posts;
-    private volatile Map<String, SortedSet<SocialPost>> tagIndex;
-
+public class PostSet implements Iterable<SocialPost> {
+    private SortedSet<SocialPost> posts;
+    private Map<String, SortedSet<SocialPost>> tagIndex;
     
     public PostSet() {
         posts = new TreeSet<SocialPost>();
@@ -19,17 +18,51 @@ public class PostSet {
     
     public PostSet(Iterable<SocialPost> posts) {
         this();
-        for (SocialPost p : posts) {
+        addAll(posts);
+    }  
+        
+    public void add(SocialPost p) {
+        posts.add(p);
+        for (String tag : p.getTags()) {
+            SortedSet<SocialPost> postsForTag = tagIndex.get(tag);
+            if (postsForTag == null) {
+                postsForTag = new TreeSet<SocialPost>();
+            }
+            postsForTag.add(p);
+            tagIndex.put(tag, postsForTag);
+        }
+    }
+
+    public void addAll(Iterable<SocialPost> other) {
+        if (other == null) {
+            return;
+        }
+        
+        for (SocialPost p : other) {
             add(p);
         }
     }
-    
-    public SocialPost[] getPosts() {
+
+    public SocialPost[] getPostArray() {
         return posts.toArray(new SocialPost[0]);
+    }
+    
+    public List<SocialPost> getPostList() {
+        return new ArrayList<SocialPost>(posts);
     }
     
     public PostSet getAllWithTag(String tag) {
         return new PostSet(tagIndex.get(tag));
+    }
+    
+    public PostSet getAllTextsMatchingRegex(Pattern pattern) {
+        PostSet ps = new PostSet();
+        for (SocialPost p : posts) {
+            if (pattern.matcher(p.getOriginal()).find()) {
+                ps.add(p);
+            }
+        }
+        return ps;
     }
     
     public SocialPost getMostRecent() {
@@ -55,12 +88,16 @@ public class PostSet {
         }
         return ps;
     }
-
-    public int size() {
-        return posts.size();
+    
+    public Set<String> getAllTags() {
+        return tagIndex.keySet();
     }
     
-    public Counter<Character> getLetterCount2() {
+    public boolean contains(SocialPost p) {
+        return posts.contains(p);
+    }
+
+    public Counter<Character> getLetterCount() {
         Counter<Character> c = new Counter<Character>();
         for (SocialPost p : posts) {
             c.addAll(p.getLetterCount2());
@@ -68,7 +105,7 @@ public class PostSet {
         return c;
     }
     
-    public Counter<String> getWordCount2() {
+    public Counter<String> getWordCount() {
         Counter<String> c = new Counter<String>();
         for (SocialPost p : posts) {
             c.addAll(p.getWordCount2());
@@ -76,33 +113,17 @@ public class PostSet {
         return c;
     }
     
-    public void add(SocialPost p) {
-        posts.add(p);
-        for (String tag : p.getTags()) {
-            SortedSet<SocialPost> postsForTag = tagIndex.get(tag);
-            if (postsForTag == null) {
-                postsForTag = new TreeSet<SocialPost>();
-            }
-            postsForTag.add(p);
-            tagIndex.put(tag, postsForTag);
-        }
+    public int size() {
+        return posts.size();
+    }
+
+    public SortedSet<SocialPost> toSet() {
+        return new TreeSet<SocialPost>(posts);
     }
     
-    public void addAll(PostSet other) {
-        posts.addAll(other.posts);
-        tagIndex.putAll(other.tagIndex);
+    public Iterator<SocialPost> iterator() {
+        return posts.iterator();
     }
-    
-    public void addAll(Iterable<SocialPost> other) {
-        addAll(new PostSet(other));
-    }
-    
-    public Set<SocialPost> toSet() {
-        Set<SocialPost> s = new HashSet<SocialPost>();
-        s.addAll(posts);
-        return s;
-    }
-    
     
     @Override
     public PostSet clone() throws CloneNotSupportedException {

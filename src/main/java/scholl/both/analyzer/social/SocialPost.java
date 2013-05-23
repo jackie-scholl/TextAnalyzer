@@ -141,7 +141,7 @@ public class SocialPost extends Text implements Comparable<SocialPost> {
     public List<String> getTags() {
         return new ArrayList<String>(tags);
     }
-    
+        
     /**
      * {@inheritDoc}
      * 

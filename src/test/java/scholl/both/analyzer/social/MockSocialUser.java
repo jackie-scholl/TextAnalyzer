@@ -66,6 +66,5 @@ public class MockSocialUser implements SocialUser {
         } else if (!this.name.equals(other.name))
             return false;
         return true;
-    }
-    
+    }    
 }

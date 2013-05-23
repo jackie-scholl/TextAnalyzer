@@ -86,7 +86,7 @@ public class SocialStats implements Runnable {
             wordFrequencies.createNewFile();
             fileStream = new PrintStream(wordFrequencies);
             
-            fileStream.println(ps.getWordCount2().toString2());
+            fileStream.println(ps.getWordCount().toString2());
             fileStream.close();
         } finally {
             if (fileStream != null) {
@@ -131,7 +131,7 @@ public class SocialStats implements Runnable {
             stream.printf("Cannot get time data, there were no posts%n");
         }
         
-        stream.printf("Letter frequencies: %n%s", ps.getLetterCount2().toString2());
+        stream.printf("Letter frequencies: %n%s", ps.getLetterCount().toString2());
         stream.close();
     }
     
