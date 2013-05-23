@@ -55,7 +55,6 @@ public class CounterTest {
     
     @Theory
     public void equals(Counter<Byte> a, Counter<Byte> b) {
-        System.out.printf("Equals test: %s : %s%n", a, b);
         assumeTrue(a != null && b != null);
         
         boolean equal = true;

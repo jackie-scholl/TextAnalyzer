@@ -81,7 +81,6 @@ public class TextTest{
         		"Ms. Count, who's lawyer was Artemis Bag, Esq., A.K.A Arty, ..., an esteemed " +
         		"fellow in high society....";
         assertThat(new Text(test).getSentenceCount(), is(1));
-        System.out.println(new Text(test).getSentences());
     }
     @Test
     public void getSentenceCount() {

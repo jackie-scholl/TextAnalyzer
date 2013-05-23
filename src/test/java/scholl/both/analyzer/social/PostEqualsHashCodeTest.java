@@ -1,12 +1,8 @@
 package scholl.both.analyzer.social;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.pobox.cbarham.testhelpers.EqualsHashCodeTestCase;
 
-public class SocialPostEqualsHashCodeTest extends EqualsHashCodeTestCase {
+public class PostEqualsHashCodeTest extends EqualsHashCodeTestCase {
     private static Post a = new Post("hello");
     private static Post b = new Post("world");
     

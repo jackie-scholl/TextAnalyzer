@@ -116,8 +116,6 @@ public class SocialPostTest {
         b.set(Calendar.MILLISECOND, 0);
         
         assertThat((double) a.getTimeInMillis(), is(closeTo((double) b.getTimeInMillis(), 100)));
-        System.out.printf("%tc%n", a.getTime());
-        System.out.printf("%tc%n", Calendar.getInstance().getTime());
     }
     
     @Theory
