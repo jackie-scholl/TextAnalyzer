@@ -2,8 +2,6 @@ package scholl.both.analyzer.util;
 
 import java.util.Iterator;
 
-import org.apache.commons.math3.stat.StatUtils;
-
 import com.google.common.collect.SortedMultiset;
 import com.google.common.collect.TreeMultiset;
 
@@ -83,6 +81,7 @@ public class Sample<E extends Comparable<E>> implements Iterable<E> {
     }
     
     public E[] toArr() {
+        @SuppressWarnings("unchecked")
         E[] arr = (E[]) new Object[list.size()];
         int i = 0;
         for (E x : list) {
