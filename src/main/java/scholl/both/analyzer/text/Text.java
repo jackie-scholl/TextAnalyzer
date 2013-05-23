@@ -18,10 +18,14 @@ import scholl.both.analyzer.util.Counter;
  */
 public class Text {
 	
-    protected final String original;
-    protected final String clean;
-    protected final List<String> words;
-    protected final List<String> sentences;
+    private final String original;
+    private final String clean;
+    private final List<String> words;
+    private final List<String> sentences;
+    /**
+     * valenceMapping goes between some words and an
+     */
+    private final Map<String, Integer> valenceMapping;
     
     /**
      * Constructor that creates a text given a String. 
@@ -51,61 +55,50 @@ public class Text {
             str = str.replaceAll("[\\p{Punct}\u2018\u2019\u201C\u201D]", ""); // Remove punctuation and quote marks
             if (str.equals("")) { continue; }
             words.add(str);
-        }
-
-        //Want to go through the text until I find a sentence ending mark, and then add everything between
-        //that mark and the last mark to the list of sentences.
-        
+        }        
         sentences = new ArrayList<String>();
         sentences.addAll(Arrays.asList(clean.split("(?<!(Dr)|(Mr)|(Mrs)|(Ms)|(Esq)|([^\\.]\\.\\.))\\.($| )")));
-        /*int lastSentenceEnd = -1;
-        //The minimum length of a sentence is four characters(I am, 
-        //so periods before and after can safely be excluded.)
-        for(int i=3; i < this.clean.length()-4; i++)
-        {
-            if (clean.charAt(i)=='.'){
-                //Covers titles
-                if (clean.substring(i-3,  i).matches("(.Dr)|(.Mr)|(Mrs)|(.Ms)|(Esq)|")) continue;
-                //Cover ellipses and acronyms
-                else if (clean.substring(i-3,  i).matches("(\\p{Upper}\\.\\p{Upper})|(.\\.\\.)")) continue;
-                else if (clean.substring(i+1,i+3).matches("(\\p{Upper}\\.)|(\\.\\.)")) continue;
-                else if (clean.substring(i-1,i+2).matches("\\.{3}")) continue;
-                //If nothing else has forced the for loop to skip past this area, it will add everything from
-                //the last sentence ending up to this one. 
-                sentences.add(clean.substring(lastSentenceEnd+1,i));
-                lastSentenceEnd = i;
-            }
-            if (clean.charAt(i)=='?'){
-                sentences.add(clean.substring(lastSentenceEnd+1,i));
-                lastSentenceEnd = i;
-            }
+        
+        Map<String, Integer> AFINN = new HashMap<String, Integer>();
+        Scanner n = new Scanner("AFINN-111.txt");
+        String nextWord;
+        int nextInt;
+        while (n.hasNext()){
+            nextWord = n.next();
+            nextInt = Integer.parseInt(n.next());
+            AFINN.put(nextWord, nextInt);
         }
-        //Ensures that a sentence is always ended. 
-        sentences.add(clean.substring(lastSentenceEnd+1));*/
+        valenceMapping = AFINN;
     }
     
     public int getCharacterCount() {
     	return clean.length();
     }
-    private double getValence(String word){
-        Map<String, Double> AFINN = new HashMap<String, Double>();
-        Scanner n = new Scanner("AFINN-111.txt");
-        String nextWord = "";
-        double nextDub = 0;
-        while (n.hasNext()){
-            nextWord = n.next();
-            nextDub = Double.parseDouble(n.next());
-        }
-        //AFINN.
-        return 5;
-        
-       // In Python the file may be read into a dictionary with:
-//
-  //          >>> afinn = dict(map(lambda (k,v): (k,int(v)), 
-    //                             [ line.split('\t') for line in open("AFINN-111.txt") ]))
+    private int getValence(String word){
+        if (valenceMapping.get(word) == null) return 0;
+        return valenceMapping.get(word);
+    }
+    public double getAverageValence(){
+        double sum = 0;
+        for (String word : words)
+            sum+=getValence(word);
+        return sum/getWordCount();
+    }
+    public List<Integer> getValenceList(){
+        List<Integer> k = new ArrayList<Integer>();
+        for (String word : words)
+            k.add(getValence(word));      
+        return k;
     }
 
     public String getOriginal() {
+        return original;
+    }
+    /**
+     * 
+     * @return The original text, with the links stripped out. 
+     */
+    public String getClean() {
         return clean;
     }
 
