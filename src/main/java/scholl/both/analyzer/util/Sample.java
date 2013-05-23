@@ -8,23 +8,18 @@ import com.google.common.collect.SortedMultiset;
 import com.google.common.collect.TreeMultiset;
 
 /**
- * Stores a sample of floating-point numbers from a distribution and supports statistical
- * operations.
+ * Stores a sorted sample of entries.
  * 
  * @author Jackson
  */
-public class Sample implements Iterable<Double> {
-    private SortedMultiset<Double> list;
-    private double[] arr; // Caches the array returned by list.toArray
-    private double sum;
+public class Sample<E extends Comparable<E>> implements Iterable<E> {
+    protected SortedMultiset<E> list;
     
     /**
      * Create an empty sample.
      */
     public Sample() {
         this.list = TreeMultiset.create();
-        this.arr = null;
-        sum = 0.0;
     }
     
     /**
@@ -32,7 +27,7 @@ public class Sample implements Iterable<Double> {
      * 
      * @param entries initial entries
      */
-    public Sample(double... entries) {
+    public Sample(E... entries) {
         this();
         addAll(entries);
     }
@@ -42,67 +37,44 @@ public class Sample implements Iterable<Double> {
      * 
      * @param entries initial entries
      */
-    public Sample(Double[] entries) {
+    public Sample(Iterable<E> entries) {
         this();
         addAll(entries);
     }
     
     /**
-     * Create a sample with the given entries.
+     * Add the given entry to the sample.
      * 
-     * @param entries initial entries
+     * @param x entry to add
      */
-    public Sample(Iterable<Double> entries) {
-        this();
-        addAll(entries);
-    }
-    
-    /**
-     * Add the given number to the sample.
-     * 
-     * @param x number to add
-     */
-    public void add(double x) {
+    public void add(E x) {
         list.add(x);
-        sum += x;
-        arr = null;
     }
     
     /**
-     * Add all the given numbers to the sample.
+     * Add all the given entries to the sample.
      * 
-     * @param x the array of numbers to add to the sample
+     * @param arr the array of entries to add to the sample
      */
-    public void addAll(double[] x) {
-        for (double d : x) {
-            add(d);
+    public void addAll(E[] arr) {
+        for (E x : arr) {
+            add(x);
         }
     }
     
     /**
-     * Add all the given numbers to the sample.
+     * Add all the given entries to the sample.
      * 
-     * @param x the array of numbers to add to the sample
+     * @param iterable the array of entries to add to the sample
      */
-    public void addAll(Double[] x) {
-        for (Double d : x) {
-            add(d);
+    public void addAll(Iterable<E> iterable) {
+        for (E x : iterable) {
+            add(x);
         }
     }
     
     /**
-     * Add all the given numbers to the sample.
-     * 
-     * @param iterable the array of numbers to add to the sample
-     */
-    public void addAll(Iterable<Double> iterable) {
-        for (Double d : iterable) {
-            add(d);
-        }
-    }
-    
-    /**
-     * Get the number of members of the sample.
+     * Get the entry of members of the sample.
      * 
      * @return the size of the sample
      */
@@ -110,114 +82,17 @@ public class Sample implements Iterable<Double> {
         return list.size();
     }
     
-    /**
-     * Get the sum of all the members of the sample.
-     * 
-     * @return the sum of the sample
-     */
-    public double sum() {
-        return sum;
-    }
-    
-    /**
-     * Get the mean of all the members of the sample.
-     * 
-     * @return the mean of the sample
-     */
-    public double mean() {
-        return sum() / size();
-    }
-    
-    /**
-     * Get the greatest element in the sample.
-     * 
-     * @return the greatest element
-     */
-    public double max() {
-        return list.lastEntry().getElement();
-    }
-    
-    /**
-     * Get the least element in the sample.
-     * 
-     * @return the least element
-     */
-    public double min() {
-        return list.firstEntry().getElement();
-    }
-    
-    /**
-     * Get the range of the sample, that is, the difference between the greatest and least elements.
-     * 
-     * @return the full range of the sample
-     */
-    public double range() {
-        return max() - min();
-    }
-    
-    /**
-     * Get the population variance of the sample.
-     * 
-     * @return the population variance
-     */
-    public double populationVariance() {
-        return StatUtils.populationVariance(getArray(), mean());
-    }
-    
-    /**
-     * Get the variance of the sample.
-     * 
-     * @return the variance
-     */
-    public double variance() {
-        return StatUtils.variance(getArray(), mean());
-    }
-    
-    /**
-     * Returns the standard deviation of the sample.
-     * 
-     * @return the standard deviation
-     */
-    public double standardDeviation() {
-        return Math.sqrt(variance());
-    }
-    
-    /**
-     * Get the estimated element at the p'th percentile.
-     *  
-     * @param p percentile to estimate
-     * @return the estimated p'th percentile
-     */
-    public double percentile(double p) {
-        return StatUtils.percentile(getArray(), p);
-    }
-    
-    /**
-     * Get the list as an array.
-     * 
-     * @return the list as an array
-     */
-    private double[] getArray() {
-        if (arr == null) { // This means there have been additions since last caching
-            arr = new double[list.size()];
-            int i = 0;
-            for (double d : list) {
-                arr[i++] = d;
-            }
-        }        
-        return arr;
-    }
-    
-    public double[] toArr() {
-        double[] arr = new double[size()];
+    public E[] toArr() {
+        E[] arr = (E[]) new Object[list.size()];
         int i = 0;
-        for (double d : list) {
-            arr[i++] = d;
+        for (E x : list) {
+            arr[i++] = x;
         }
+        
         return arr;
     }
     
-    public Iterator<Double> iterator() {
+    public Iterator<E> iterator() {
         return list.iterator();
     }
     
@@ -241,7 +116,7 @@ public class Sample implements Iterable<Double> {
             return false;
         if (!(obj instanceof Sample))
             return false;
-        Sample other = (Sample) obj;
+        Sample<?> other = (Sample<?>) obj;
         if (this.list == null) {
             if (other.list != null)
                 return false;

@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
  * @author Jackson * 
  */
 @RunWith(Theories.class)
-public class SocialPostTest {
+public class PostTest {
     @DataPoint public static String helloWorld = "Hello World!";
     @DataPoint public static String nullString = null;
     @DataPoint public static String emptyString = "";

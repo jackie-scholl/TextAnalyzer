@@ -2,7 +2,7 @@ package scholl.both.analyzer.text;
 
 import static org.junit.Assert.assertEquals;
 
-import scholl.both.analyzer.util.Sample;
+import scholl.both.analyzer.util.DoubleSample;
 
 import java.util.Comparator;
 import java.util.Arrays;
