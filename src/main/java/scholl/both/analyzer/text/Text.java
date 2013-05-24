@@ -12,8 +12,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.math3.stat.StatUtils;
-
 import scholl.both.analyzer.util.Counter;
 
 /**
