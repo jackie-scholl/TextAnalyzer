@@ -1,23 +1,28 @@
 package scholl.both.analyzer.text;
 
 //import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.math3.stat.StatUtils;
 
 import scholl.both.analyzer.util.Counter;
 
 /**
- * @author      Keller Scholl <Keller.scholl@gmail.com>
- * @version     0.3
- * @since       2013-04-30
+ * @author Keller Scholl <Keller.scholl@gmail.com>
+ * @version 0.3
+ * @since 2013-04-30
  */
 public class Text {
-	
+    
     private final String original;
     private final String clean;
     private final List<String> words;
@@ -28,9 +33,9 @@ public class Text {
     private final Map<String, Integer> valenceMapping;
     
     /**
-     * Constructor that creates a text given a String. 
+     * Constructor that creates a text given a String.
      * 
-     * @param original the string that you want to analyze. 
+     * @param original the string that you want to analyze.
      */
     public Text(String original) throws NullPointerException {
         if (original == null) {
@@ -43,69 +48,89 @@ public class Text {
         original = original.replaceAll("(\\w+://)?(\\w+\\.)+(\\w+)([\\w\\+\\?/\\\\=-]+)*", "");
         
         this.clean = original;
-
+        
         words = new ArrayList<String>();
         String[] wordsArr = original.split("\\s");
         for (String str : wordsArr) {
             if (str.length() == 0 /* This is an empty string */
-                    || str.charAt(str.length()-1) == ':' /* This is a tumblr username followed by a colon to show a quote */
+                    || str.charAt(str.length() - 1) == ':' /* This is a tumblr username followed by a colon to show a quote */
                     || str.matches("(\\w+://)?(\\w+\\.)+(\\w+)([\\w/-=\\?\\\\]*)") /* This is a URL */) {
                 continue;
             }
             str = str.replaceAll("[\\p{Punct}\u2018\u2019\u201C\u201D]", ""); // Remove punctuation and quote marks
-            if (str.equals("")) { continue; }
+            if (str.equals("")) {
+                continue;
+            }
             words.add(str);
-        }        
+        }
         sentences = new ArrayList<String>();
-        sentences.addAll(Arrays.asList(clean.split("(?<!(Dr)|(Mr)|(Mrs)|(Ms)|(Esq)|([^\\.]\\.\\.))\\.($| )")));
+        sentences.addAll(Arrays.asList(clean
+                .split("(?<!(Dr)|(Mr)|(Mrs)|(Ms)|(Esq)|([^\\.]\\.\\.))\\.($| )")));
         
         Map<String, Integer> AFINN = new HashMap<String, Integer>();
-        Scanner n = new Scanner("AFINN-111.txt");
-        String nextWord;
-        int nextInt;
-        while (n.hasNext()){
-            nextWord = n.next();
-            nextInt = Integer.parseInt(n.next());
-            AFINN.put(nextWord, nextInt);
+        File afinnFile = new File("AFINN-111.txt");
+        Scanner n = null;
+        try {
+            n = new Scanner(afinnFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        while (n.hasNext()) {
+            String nextLine = n.nextLine();
+            
+            Pattern p = Pattern.compile("(?<phrase>[\\w\\.'\", -]+)\\p{Space}+(?<score>-?\\d)\\p{Space}?");
+            Matcher m = p.matcher(nextLine);
+            
+            if (m.matches()) {
+                String phrase = m.group("phrase");
+                int score = Integer.parseInt(m.group("score"));
+                
+                AFINN.put(phrase, score);
+            }
         }
         valenceMapping = AFINN;
     }
     
     public int getCharacterCount() {
-    	return clean.length();
+        return clean.length();
     }
-    private int getValence(String word){
-        if (valenceMapping.get(word) == null) return 0;
+    
+    private int getValence(String word) {
+        if (valenceMapping.get(word) == null)
+            return 0;
         return valenceMapping.get(word);
     }
-    public double getAverageValence(){
+    
+    public double getAverageValence() {
         double sum = 0;
         for (String word : words)
-            sum+=getValence(word);
-        return sum/getWordCount();
+            sum += getValence(word);
+        return sum / getWordCount();
     }
-    public List<Integer> getValenceList(){
+    
+    public List<Integer> getValenceList() {
         List<Integer> k = new ArrayList<Integer>();
         for (String word : words)
-            k.add(getValence(word));      
+            k.add(getValence(word));
         return k;
     }
-
+    
     public String getOriginal() {
         return original;
     }
+    
     /**
      * 
-     * @return The original text, with the links stripped out. 
+     * @return The original text, with the links stripped out.
      */
     public String getClean() {
         return clean;
     }
-
+    
     public List<String> getWords() {
         return words;
     }
-
+    
     public int getWordCount() {
         return words.size();
     }
@@ -122,22 +147,22 @@ public class Text {
     //public double getWordStandardDeviation() {
     //    return StatUtils.variance(word.size() for word in words);
     //}
-
+    
     public List<String> getSentences() {
-    	return sentences;
+        return sentences;
     }
     
     public int getSentenceCount() {
-    	return sentences.size();
+        return sentences.size();
     }
     
     public double averageSentenceLength() {
         //Needs to force getWordCount to be a double because otherwise integer division
         //causes problems.
-        return getWordCount()/(double) getSentenceCount();
+        return getWordCount() / (double) getSentenceCount();
     }
     
-    public long getCharCount(char desired){
+    public long getCharCount(char desired) {
         return getLetterCount2().get(desired);
     }
     
@@ -148,7 +173,7 @@ public class Text {
         }
         return count;
     }
-
+    
     public Counter<String> getWordCount2() {
         Counter<String> counter = new Counter<String>();
         for (String w : words) {
@@ -158,26 +183,26 @@ public class Text {
         return counter;
     }
     
-    public double getPunctuationDiversityIndex(){
+    public double getPunctuationDiversityIndex() {
         Counter<Character> count = getLetterCount2();
-        char[] chars = {'.', ',', ';', ':', '?'};
+        char[] chars = { '.', ',', ';', ':', '?' };
         List<Double> counts = new ArrayList<Double>();
         for (char c : chars)
             counts.add((double) count.get(c));
         double totalCount = 0;
         double bottomSum = 0;
-        for (Double d : counts){
-            totalCount+=d;
-            bottomSum+=Math.pow(d, 2);
+        for (Double d : counts) {
+            totalCount += d;
+            bottomSum += Math.pow(d, 2);
         }
-        return Math.pow(totalCount,2)/bottomSum;
+        return Math.pow(totalCount, 2) / bottomSum;
     }
-
+    
     @Override
-	public String toString() {
+    public String toString() {
         return clean;
     }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -185,7 +210,7 @@ public class Text {
         result = prime * result + ((this.clean == null) ? 0 : this.clean.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
