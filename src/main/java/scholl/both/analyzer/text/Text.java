@@ -78,12 +78,12 @@ public class Text {
         while (n.hasNext()) {
             String nextLine = n.nextLine();
             
-            Pattern p = Pattern.compile("(?<phrase>[\\w\\.'\", -]+)\\p{Space}+(?<score>-?\\d)\\p{Space}?");
+            Pattern p = Pattern.compile("([\\w\\.'\", -]+)\\p{Space}+(-?\\d)\\p{Space}?");
             Matcher m = p.matcher(nextLine);
             
             if (m.matches()) {
-                String phrase = m.group("phrase");
-                int score = Integer.parseInt(m.group("score"));
+                String phrase = m.group(1);
+                int score = Integer.parseInt(m.group(2));
                 
                 AFINN.put(phrase, score);
             }
