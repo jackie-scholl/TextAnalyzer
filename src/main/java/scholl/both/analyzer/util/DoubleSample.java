@@ -2,11 +2,6 @@ package scholl.both.analyzer.util;
 
 import org.apache.commons.math3.stat.StatUtils;
 
-import alg4lib.StdDraw;
-import alg4lib.StdStats;
-
-//import StdStats;
-
 /**
  * Stores a sample of floating-point numbers from a distribution and supports statistical
  * operations.
@@ -155,11 +150,6 @@ public class DoubleSample extends Sample<Double> {
      */
     public double percentile(double p) {
         return StatUtils.percentile(getArray(), p);
-    }
-    
-    public void plot() {
-        StdStats.plotPoints(getArray());
-        StdDraw.show(5000);
     }
     
     /**
