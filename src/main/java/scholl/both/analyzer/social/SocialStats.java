@@ -49,15 +49,15 @@ public class SocialStats implements Runnable {
         run(5);
     }
     
-    public void run(int retriesLeft) {
+    private void run(int retriesLeft) {
         try {
             long start = System.currentTimeMillis();
             
             PostSet ps = b.getPosts(count);
             
-            getWordFrequencies(ps);
             getGeneral(ps);
-            plotHours(ps);
+            getWordFrequencies(ps);
+            getLetterFrequencies(ps);
             
             long end = System.currentTimeMillis();
             System.out.printf("Finished blog %-40s with %3d posts (%-9.5g posts per hour) " +
@@ -78,7 +78,7 @@ public class SocialStats implements Runnable {
         ss.run();
     }
     
-    public void getGeneral(PostSet ps) throws IOException {
+    private void getGeneral(PostSet ps) throws IOException {
         postsPerHour = 0.0;
         File general = new File(userFolder, "general.txt");
         
@@ -118,7 +118,7 @@ public class SocialStats implements Runnable {
         stream.close();
     }
 
-    public void getWordFrequencies(PostSet ps) throws IOException {
+    private void getWordFrequencies(PostSet ps) throws IOException {
         File wordFrequencies = new File(userFolder, "wordFrequencies.txt");
         
         PrintStream fileStream = null;
@@ -135,7 +135,7 @@ public class SocialStats implements Runnable {
         }
     }
     
-    public void getLetterFrequencies(PostSet ps) throws IOException {
+    private void getLetterFrequencies(PostSet ps) throws IOException {
         File wordFrequencies = new File(userFolder, "letterFrequencies.txt");
         
         PrintStream fileStream = null;
@@ -150,10 +150,6 @@ public class SocialStats implements Runnable {
                 fileStream.close();
             }
         }
-    }
-    
-    private void plotHours(PostSet ps) {
-        //ps.
     }
         
     private static Client getAuthenticatedClient() throws IOException {
