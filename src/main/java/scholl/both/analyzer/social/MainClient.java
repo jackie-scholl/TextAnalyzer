@@ -31,13 +31,12 @@ public class MainClient {
         int count = 100;
         Set<String> users = new HashSet<String>();
         users.add("dataandphilosophy");
+        users.add("florescam");
+        users.add("b41779690b83f182acc67d6388c7bac9");
         
         try {
             long start = System.currentTimeMillis();
-            
-            
-            SocialStats.tumblrThing(count);
-            
+            SocialStats.tumblrThing(users, count);
             long end = System.currentTimeMillis();
             double timeTaken = (end - start) / 1000.0;            
             System.out.printf("Finished - took %.3f seconds%n", timeTaken);
