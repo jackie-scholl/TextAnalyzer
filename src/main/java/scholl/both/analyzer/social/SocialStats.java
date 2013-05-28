@@ -136,7 +136,7 @@ public class SocialStats implements Runnable {
     }
     
     private void plotHours(PostSet ps) {
-        
+        //ps.
     }
         
     private static Client getAuthenticatedClient() throws IOException {
