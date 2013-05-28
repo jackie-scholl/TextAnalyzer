@@ -78,23 +78,6 @@ public class SocialStats implements Runnable {
         ss.run();
     }
     
-    public void getWordFrequencies(PostSet ps) throws IOException {
-        File wordFrequencies = new File(userFolder, "wordFrequencies.txt");
-        
-        PrintStream fileStream = null;
-        try {
-            wordFrequencies.createNewFile();
-            fileStream = new PrintStream(wordFrequencies);
-            
-            fileStream.println(ps.getWordCount().toString2());
-            fileStream.close();
-        } finally {
-            if (fileStream != null) {
-                fileStream.close();
-            }
-        }
-    }
-    
     public void getGeneral(PostSet ps) throws IOException {
         postsPerHour = 0.0;
         File general = new File(userFolder, "general.txt");
@@ -134,6 +117,40 @@ public class SocialStats implements Runnable {
         stream.printf("Letter frequencies: %n%s", ps.getLetterCount().toString2());
         stream.close();
     }
+
+    public void getWordFrequencies(PostSet ps) throws IOException {
+        File wordFrequencies = new File(userFolder, "wordFrequencies.txt");
+        
+        PrintStream fileStream = null;
+        try {
+            wordFrequencies.createNewFile();
+            fileStream = new PrintStream(wordFrequencies);
+            
+            fileStream.println(ps.getWordCount().toString2());
+            fileStream.close();
+        } finally {
+            if (fileStream != null) {
+                fileStream.close();
+            }
+        }
+    }
+    
+    public void getLetterFrequencies(PostSet ps) throws IOException {
+        File wordFrequencies = new File(userFolder, "letterFrequencies.txt");
+        
+        PrintStream fileStream = null;
+        try {
+            wordFrequencies.createNewFile();
+            fileStream = new PrintStream(wordFrequencies);
+            
+            fileStream.println(ps.getLetterCount().toString2());
+            fileStream.close();
+        } finally {
+            if (fileStream != null) {
+                fileStream.close();
+            }
+        }
+    }
     
     private void plotHours(PostSet ps) {
         //ps.
@@ -147,8 +164,6 @@ public class SocialStats implements Runnable {
     }
     
     public static void tumblrThing(Client tclient, Set<User> blogs, int count) {
-        System.out.println(tclient.getAuthenticatedUser().getName());
-        
         Map<String, Object> options = new HashMap<String, Object>();
         //options.put("reblog_info", "true");
         options.put("filter", "text");
@@ -181,7 +196,7 @@ public class SocialStats implements Runnable {
     }
     
     public static void tumblrThing(Set<String> interesting, int count) throws IOException {
-        Client tclient = getAuthenticatedClient();
+        Client tclient = new TumblrClient("tumblr_credentials.json");
         
         Set<User> blogs = new HashSet<User>();
         for (String blogName : interesting) {
@@ -193,6 +208,7 @@ public class SocialStats implements Runnable {
     
     public static void tumblrThing(int count) throws IOException {
         Client tclient = getAuthenticatedClient();
+        System.out.println(tclient.getAuthenticatedUser().getName());
         
         Set<User> blogs = tclient.getInterestingUsers();
         
