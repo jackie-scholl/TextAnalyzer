@@ -3,10 +3,6 @@ package scholl.both.analyzer.util;
 import java.util.Calendar;
 
 public class TimeSample extends Sample<Calendar> {    
-    public TimeSample() {
-        super();
-    }
-    
     public DoubleSample getDayOfWeek() {
         DoubleSample sample = new DoubleSample();
         
