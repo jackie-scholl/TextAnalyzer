@@ -45,6 +45,11 @@ public class SocialStats implements Runnable {
         }
     }
     
+    public static void doStats(User b, int count) {
+        SocialStats ss = new SocialStats(b, count);
+        ss.run();
+    }
+
     public void run() {
         run(5);
     }
@@ -71,11 +76,6 @@ public class SocialStats implements Runnable {
                 run(retriesLeft - 1);
             }
         }
-    }
-    
-    public static void doStats(User b, int count) {
-        SocialStats ss = new SocialStats(b, count);
-        ss.run();
     }
     
     private void getGeneral(PostSet ps) throws IOException {
@@ -156,7 +156,6 @@ public class SocialStats implements Runnable {
         Client tclient = new TumblrClient("tumblr_credentials.json");
         tclient.authenticate();
         return tclient;
-        
     }
     
     public static void tumblrThing(Client tclient, Set<User> blogs, int count) {
