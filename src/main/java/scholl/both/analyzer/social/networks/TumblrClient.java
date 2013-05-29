@@ -63,7 +63,7 @@ public class TumblrClient implements Client {
     }
     
     public void authenticate() throws IOException {
-        AuthenticatorServer.tumblrAuthenticate(client, service);
+        client.authenticate();
     }
     
     public User getAuthenticatedUser() {
