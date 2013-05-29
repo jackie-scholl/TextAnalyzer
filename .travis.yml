@@ -10,3 +10,5 @@ before_install:
   - git submodule update --init --recursive
   - git clone --depth=50 --branch=automated_authentication git://github.com/raptortech-js/jumblr.git jumblr
   - cp -R jumblr/src src
+  - ls
+  - ls src
