@@ -35,8 +35,9 @@ public class MainClient {
         users.add("b41779690b83f182acc67d6388c7bac9");
         
         try {
+            System.out.println("Started analysis");
             long start = System.currentTimeMillis();
-            SocialStats.tumblrThing(users, count);
+            SocialStats.tumblrAnalysis(users, count);
             long end = System.currentTimeMillis();
             double timeTaken = (end - start) / 1000.0;            
             System.out.printf("Finished - took %.3f seconds%n", timeTaken);

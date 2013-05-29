@@ -10,12 +10,7 @@ import java.util.*;
 
 public class SocialStats implements Runnable {
     public static final int MAX_BLOGS = 10;
-    
     private static File outputFolder;
-    static {
-        outputFolder = new File("out");
-        outputFolder.mkdir();
-    }
     
     private final User b;
     private final int count;
@@ -23,7 +18,7 @@ public class SocialStats implements Runnable {
     
     private double postsPerHour = 0.0;
     
-    public SocialStats(User b, int count) {
+    private SocialStats(User b, int count) {
         this.b = b;
         this.count = count;
         userFolder = new File(outputFolder, b.getName());
@@ -45,11 +40,6 @@ public class SocialStats implements Runnable {
         }
     }
     
-    public static void doStats(User b, int count) {
-        SocialStats ss = new SocialStats(b, count);
-        ss.run();
-    }
-
     public void run() {
         run(5);
     }
@@ -69,7 +59,7 @@ public class SocialStats implements Runnable {
                     "- took %.3f seconds%n", b.getName(), ps.size(), postsPerHour,
                     (end - start) / 1000.0);
         } catch (IOException e) {
-            System.err.printf("Failed on user %s, folder %s.%n", b, userFolder);
+            System.out.printf("Failed on user %s, folder %s.%n", b, userFolder);
             if (retriesLeft <= 0) {
                 e.printStackTrace();
             } else {
@@ -83,14 +73,9 @@ public class SocialStats implements Runnable {
         File general = new File(userFolder, "general.txt");
         
         PrintStream stream = null;
-        try {
-            general.createNewFile();
-            stream = new PrintStream(general);
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
+        general.createNewFile();
+        stream = new PrintStream(general);
+
         
         stream.printf("Name: %s%n", b.getName());
         stream.printf("Title: %s%n", b.getTitle());
@@ -105,7 +90,7 @@ public class SocialStats implements Runnable {
             postsPerHour = ps.size() / timeDiffHours;
             
             stream.printf("Most recent post: %tc%n", mostRecent);
-            stream.printf("Oldest post: %tc%n", oldest);
+            stream.printf("Oldest post (surveyed): %tc%n", oldest);
             stream.printf("Difference: %.3g hours%n", timeDiffHours);
             stream.printf("Estimated post rate: %n");
             stream.printf("\t%.5g posts per hour%n", postsPerHour);
@@ -121,16 +106,19 @@ public class SocialStats implements Runnable {
     private void getWordFrequencies(PostSet ps) throws IOException {
         File wordFrequencies = new File(userFolder, "wordFrequencies.txt");
         
-        PrintStream fileStream = null;
+        printToFile(wordFrequencies, ps.getWordCount().toString2());
+    }
+    
+    private void printToFile(File f, String s) throws IOException {
+        PrintStream stream = null;
         try {
-            wordFrequencies.createNewFile();
-            fileStream = new PrintStream(wordFrequencies);
-            
-            fileStream.println(ps.getWordCount().toString2());
-            fileStream.close();
+            f.createNewFile();
+            stream = new PrintStream(f);            
+            stream.print(s);
+            stream.close();
         } finally {
-            if (fileStream != null) {
-                fileStream.close();
+            if (stream != null) {
+                stream.close();
             }
         }
     }
@@ -152,61 +140,43 @@ public class SocialStats implements Runnable {
         }
     }
         
-    private static Client getAuthenticatedClient() throws IOException {
-        Client tclient = new TumblrClient("tumblr_credentials.json");
-        tclient.authenticate();
-        return tclient;
+    public static void doStats(User b, int count) {
+        SocialStats ss = new SocialStats(b, count);
+        ss.run();
     }
-    
-    public static void tumblrThing(Client tclient, Set<User> blogs, int count) {
-        Map<String, Object> options = new HashMap<String, Object>();
-        //options.put("reblog_info", "true");
-        options.put("filter", "text");
-        //options.put("notes_info", "true");
-        options.put("limit", "20");
+
+    private static void runAnalysis(Set<User> users, int count) {
+        outputFolder = new File("out");
+        outputFolder.mkdir();
         
-        List<Thread> threads = new ArrayList<Thread>();
-        int i = 0;
-        for (User b : blogs) {
-            if (MainClient.THREADING) {
-                Thread t = new Thread(new SocialStats(b, count));
-                t.start();
-                threads.add(t);
-            } else {
-                doStats(b, 10);
-            }
-            i++;
-            if (i > MAX_BLOGS) {
-                break;
-            }
-        }
-        
-        try {
-            for (Thread t : threads) {
-                t.join();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        for (User u : users) {
+            doStats(u, count);
         }
     }
     
-    public static void tumblrThing(Set<String> interesting, int count) throws IOException {
-        Client tclient = new TumblrClient("tumblr_credentials.json");
-        
-        Set<User> blogs = new HashSet<User>();
-        for (String blogName : interesting) {
-            blogs.add(tclient.getUser(blogName));
+    private static void runAnalysis(Client c, Set<String> names, int count) {
+        Set<User> users = new HashSet<User>();
+        for (String name : names) {
+            users.add(c.getUser(name));
         }
-        
-        tumblrThing(tclient, blogs, count);
+        runAnalysis(users, count);
     }
     
-    public static void tumblrThing(int count) throws IOException {
-        Client tclient = getAuthenticatedClient();
-        System.out.println(tclient.getAuthenticatedUser().getName());
-        
-        Set<User> blogs = tclient.getInterestingUsers();
-        
-        tumblrThing(tclient, blogs, count);
+    private static void runAnalysis(Client c, int count) {
+        runAnalysis(c.getInterestingUsers(), count);
+    }
+    
+    public static Client getTumblrClient() throws IOException {
+        return new TumblrClient("tumblr_credentials.json");
+    }
+
+    public static void tumblrAnalysis(Set<String> interesting, int count) throws IOException {
+        runAnalysis(getTumblrClient(), interesting, count);
+    }
+    
+    public static void tumblrAnalysis(int count) throws IOException {
+        Client c = getTumblrClient();
+        c.authenticate();
+        runAnalysis(c, count);
     }
 }

@@ -3,6 +3,8 @@ package scholl.both.analyzer.social;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -22,7 +24,9 @@ public class SocialStatsTest {
     @Ignore
     public void simpleTest() {
         try {
-            SocialStats.tumblrThing(300);
+            Set<String> users = new HashSet<String>();
+            users.add("dataandphilosophy");
+            SocialStats.tumblrAnalysis(users, 100);
         } catch (IOException e) {
             org.junit.Assert.assertTrue("Failure - IO exception:\n", false);
         }
