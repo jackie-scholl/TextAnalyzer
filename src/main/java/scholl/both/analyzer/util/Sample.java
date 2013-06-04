@@ -99,6 +99,14 @@ public class Sample<E extends Comparable<E>> implements Iterable<E> {
         return list.toString();
     }
     
+    public String toString2() {
+        StringBuffer sb = new StringBuffer();
+        for (E e : this) {
+            sb.append(e.toString()+"\n");
+        }
+        return sb.toString();
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;

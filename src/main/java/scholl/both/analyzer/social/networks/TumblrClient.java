@@ -9,11 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.TumblrApi;
 import org.scribe.exceptions.OAuthConnectionException;
-import org.scribe.model.Token;
-import org.scribe.oauth.OAuthService;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -26,7 +22,6 @@ public class TumblrClient implements Client {
     
     public final static boolean THREADING = true;
     private JumblrClient client;
-    private OAuthService service;
     
     public TumblrClient(String credentialsFileName) throws IOException {
         this(new File(credentialsFileName));
@@ -43,8 +38,6 @@ public class TumblrClient implements Client {
     
     public TumblrClient(String consumerKey, String consumerSecret) {
         this.client = new JumblrClient(consumerKey, consumerSecret);
-        service = new ServiceBuilder().provider(TumblrApi.class).apiKey(consumerKey)
-                .apiSecret(consumerSecret).build();
     }
     
     public static JsonObject readCredential(File credentialsFile) throws IOException {
@@ -258,12 +251,13 @@ public class TumblrClient implements Client {
         }
         
         public void run() {
-            List<Post> posts = null;
-            for (int i = 0; i < 5; i++) {
+            List<Post> posts = new ArrayList<Post>();
+            int retries = 10;
+            for (int i = 0; i < retries; i++) {
                 try {
                     posts = blog.posts(options);
                 } catch (OAuthConnectionException e) {
-                    System.out.printf("Error on try %d of %d to get posts%n", i + 1, 5);
+                    System.out.printf("Error on try %d of %d to get posts%n", i + 1, retries);
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e1) {

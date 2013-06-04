@@ -28,16 +28,18 @@ public class MainClient {
     }
     
     private static void tumblrThing() {
-        int count = 100;
+        int count = 1000;
         Set<String> users = new HashSet<String>();
-        users.add("dataandphilosophy");
-        users.add("florescam");
-        users.add("b41779690b83f182acc67d6388c7bac9");
+        //users.add("dataandphilosophy");
+        //users.add("florescam");
+        //users.add("b41779690b83f182acc67d6388c7bac9");
+        users.add("murder-by-death");
         
         try {
             System.out.println("Started analysis");
             long start = System.currentTimeMillis();
             SocialStats.tumblrAnalysis(users, count);
+            //SocialStats.tumblrAnalysis(count);
             long end = System.currentTimeMillis();
             double timeTaken = (end - start) / 1000.0;            
             System.out.printf("Finished - took %.3f seconds%n", timeTaken);

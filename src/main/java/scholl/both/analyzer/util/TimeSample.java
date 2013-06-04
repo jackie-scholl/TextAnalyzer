@@ -46,7 +46,8 @@ public class TimeSample extends Sample<Calendar> {
     }
     
     public static double getHours(Calendar c) {
-        return c.get(Calendar.HOUR) + getMinutes(c)/60;
+        return c.get(Calendar.HOUR_OF_DAY) + getMinutes(c)/60;
+        //Calendar.H
     }
     
     public static double getDaysOfWeek(Calendar c) {

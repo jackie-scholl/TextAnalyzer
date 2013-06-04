@@ -40,6 +40,20 @@ public class SocialStats implements Runnable {
         }
     }
     
+    private void printToFile(File f, String s) throws IOException {
+        PrintStream stream = null;
+        try {
+            f.createNewFile();
+            stream = new PrintStream(f);            
+            stream.print(s);
+            stream.close();
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+    }
+
     public void run() {
         run(5);
     }
@@ -53,6 +67,8 @@ public class SocialStats implements Runnable {
             getGeneral(ps);
             getWordFrequencies(ps);
             getLetterFrequencies(ps);
+            getHours(ps);
+            getDays(ps);
             
             long end = System.currentTimeMillis();
             System.out.printf("Finished blog %-40s with %3d posts (%-9.5g posts per hour) " +
@@ -109,20 +125,6 @@ public class SocialStats implements Runnable {
         printToFile(wordFrequencies, ps.getWordCount().toString2());
     }
     
-    private void printToFile(File f, String s) throws IOException {
-        PrintStream stream = null;
-        try {
-            f.createNewFile();
-            stream = new PrintStream(f);            
-            stream.print(s);
-            stream.close();
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
-    }
-    
     private void getLetterFrequencies(PostSet ps) throws IOException {
         File wordFrequencies = new File(userFolder, "letterFrequencies.txt");
         
@@ -138,6 +140,16 @@ public class SocialStats implements Runnable {
                 fileStream.close();
             }
         }
+    }
+    
+    private void getHours(PostSet ps) throws IOException {
+        File hours = new File(userFolder, "hours.txt");
+        printToFile(hours, ps.getTimeSample().getHourOfDay().toString2());
+    }
+    
+    private void getDays(PostSet ps) throws IOException {
+        File days = new File(userFolder, "days.txt");
+        printToFile(days, ps.getTimeSample().getHourOfDay().toString2());
     }
         
     public static void doStats(User b, int count) {
