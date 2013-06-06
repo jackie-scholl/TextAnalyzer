@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.scribe.exceptions.OAuthConnectionException;
 
@@ -22,6 +25,10 @@ public class TumblrClient implements Client {
     
     public final static boolean THREADING = true;
     private JumblrClient client;
+    
+    public TumblrClient() throws IOException {
+        this("tumblr_credentials.json");
+    }
     
     public TumblrClient(String credentialsFileName) throws IOException {
         this(new File(credentialsFileName));
@@ -162,7 +169,13 @@ public class TumblrClient implements Client {
         int lim = 20;
         lim = num > lim ? lim : num;
         
-        List<Thread> threads = new ArrayList<Thread>();
+        ExecutorService es;
+        if (THREADING) {
+            es = Executors.newCachedThreadPool();
+        } else {
+            es = Executors.newSingleThreadExecutor();
+        }
+        
         int initialOffset = 0;
         for (int i = initialOffset; i < num; i += lim) {
             int diff = num - i;
@@ -170,27 +183,17 @@ public class TumblrClient implements Client {
             options.put("limit", lim);
             options.put("offset", i);
             
-            PostGetter pg = new PostGetter(blog, options, ps);
-            
-            if (THREADING) {
-                Thread t = new Thread(pg);
-                t.start();
-                threads.add(t);
-            } else {
-                pg.run();
-            }
+            PostGetter pg = new PostGetter(blog, options, ps);            
+            es.submit(pg);
         }
         
         try {
-            for (Thread t : threads) {
-                t.join();
-            }
-        } catch (InterruptedException e) {
-            System.err
-                    .println("Interrupted while waiting for worker threads of getPosts to finish.");
-            e.printStackTrace();
+            es.awaitTermination(10, TimeUnit.MINUTES);
+        } catch (InterruptedException e1) {
+            System.err.println("Interrupted while awaiting termination of executor service.");
+            e1.printStackTrace();
         }
-        
+                
         return ps;
     }
     
@@ -259,7 +262,7 @@ public class TumblrClient implements Client {
                 } catch (OAuthConnectionException e) {
                     System.out.printf("Error on try %d of %d to get posts%n", i + 1, retries);
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }

@@ -1,5 +1,7 @@
 package scholl.both.analyzer.social;
 
+import scholl.both.analyzer.social.networks.Client;
+import scholl.both.analyzer.social.networks.TumblrClient;
 import scholl.both.analyzer.text.Text;
 
 import java.io.IOException;
@@ -11,7 +13,7 @@ import java.util.Set;
 public class MainClient {
     public static final boolean THREADING = true;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         List<String> texts = new ArrayList<String>();
         
         for (String s : args) {
@@ -25,27 +27,38 @@ public class MainClient {
         }
         
         tumblrThing();
+        graph();
     }
     
-    private static void tumblrThing() {
-        int count = 1000;
+    private static void tumblrThing() throws IOException {
+        int count = 10;
         Set<String> users = new HashSet<String>();
-        //users.add("dataandphilosophy");
-        //users.add("florescam");
-        //users.add("b41779690b83f182acc67d6388c7bac9");
+        
+        /*Client c = new TumblrClient();
+        c.authenticate();
+        Set<User> interestingUsers = c.getInterestingUsers();
+        for (User u : interestingUsers) {
+            users.add(u.getName());
+        }*/
+        
         users.add("murder-by-death");
         
         try {
             System.out.println("Started analysis");
             long start = System.currentTimeMillis();
             SocialStats.tumblrAnalysis(users, count);
-            //SocialStats.tumblrAnalysis(count);
             long end = System.currentTimeMillis();
-            double timeTaken = (end - start) / 1000.0;            
+            double timeTaken = (end - start) / 1000.0;
             System.out.printf("Finished - took %.3f seconds%n", timeTaken);
             
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    private static void graph() throws IOException {
+        Runtime rt = Runtime.getRuntime();
+        Process p = rt.exec("Rscript src/main/R/hoursDaysGrapher.R");
+        
     }
 }

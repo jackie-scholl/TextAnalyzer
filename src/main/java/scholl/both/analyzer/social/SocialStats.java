@@ -62,7 +62,11 @@ public class SocialStats implements Runnable {
         try {
             long start = System.currentTimeMillis();
             
+            System.out.println("Running");
+            
             PostSet ps = b.getPosts(count);
+            
+            System.out.println("Posts received");
             
             getGeneral(ps);
             getWordFrequencies(ps);
